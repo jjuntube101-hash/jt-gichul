@@ -1,0 +1,24 @@
+{
+  "name": "JT기출 — 공무원 세법 기출 학습",
+  "short_name": "JT기출",
+  "description": "이현준 세무사의 1,245문항 전수분석. 선지별 정오판·근거조문·함정유형·출제의도.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

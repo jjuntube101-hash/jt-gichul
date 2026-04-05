@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "version": "3.2",
+    "generated": "2026-03-30",
+    "total_questions": 1245,
+    "changes_from_v2": {
+      "struct_note_section": "전면 교정 (build_section_map 버그 수정 + 1:N 세분화)",
+      "cross_law_resolution": "교차법령 59문항 검증, 4문항 재분류",
+      "trap_standardization": "비표준 7건 교정 + 무태그 107건 배정",
+      "verdict_fix": "국세징수법 14문항 verdict 누락 수정",
+      "validate_result": "PASS (ERROR 0, WARN 1 — 지방세 근거법령 미기재)"
+    },
+    "changes_from_v3": {
+      "verdict_inversion_fix": 13,
+      "multi_answer_normalize": 2,
+      "correct_choice_trap_cleanup": 94
+    },
+    "last_updated": "2026-04-04",
+    "chunked": true,
+    "chunk_size": 200,
+    "chunk_count": 7,
+    "chunked_at": "2026-04-05"
+  },
+  "chunks": [
+    {
+      "file": "chunk_0.json",
+      "start_no": 1,
+      "end_no": 200,
+      "count": 200
+    },
+    {
+      "file": "chunk_1.json",
+      "start_no": 201,
+      "end_no": 400,
+      "count": 200
+    },
+    {
+      "file": "chunk_2.json",
+      "start_no": 401,
+      "end_no": 600,
+      "count": 200
+    },
+    {
+      "file": "chunk_3.json",
+      "start_no": 601,
+      "end_no": 800,
+      "count": 200
+    },
+    {
+      "file": "chunk_4.json",
+      "start_no": 801,
+      "end_no": 1020,
+      "count": 200
+    },
+    {
+      "file": "chunk_5.json",
+      "start_no": 1021,
+      "end_no": 1220,
+      "count": 200
+    },
+    {
+      "file": "chunk_6.json",
+      "start_no": 1221,
+      "end_no": 1265,
+      "count": 45
+    }
+  ]
+}
