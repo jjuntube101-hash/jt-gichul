@@ -12,6 +12,9 @@ import { createClient } from '@supabase/supabase-js';
 import { AI_FEATURES, type AIFeature } from '@/lib/aiConfig';
 import { checkAndIncrement, getLimitForFeature } from '@/lib/rateLimit';
 import { makeCacheKey } from '@/lib/aiCache';
+import { diagnoseWrongAnswer } from '@/lib/wrongAnswerEngine';
+import { collectBriefingData, generateBriefing } from '@/lib/briefingEngine';
+import { generateMockExam } from '@/lib/mockExamEngine';
 
 // --- 서버사이드 Supabase ---
 
@@ -189,26 +192,83 @@ export async function POST(
       );
     }
 
-    // 5. 공유캐시 확인
+    // 5. 공유캐시 확인 (mock_exam은 매번 새로 생성하므로 캐시 스킵)
+    const skipCache = feature === 'mock_exam';
     const cacheKeyParts = Object.values(body)
       .filter((v): v is string => typeof v === 'string')
       .sort();
     const cacheKey = await makeCacheKey(feature, ...cacheKeyParts);
 
-    const cached = await getServerCache(cacheKey);
-    if (cached) {
-      return NextResponse.json({
-        data: cached,
-        cached: true,
-        remaining,
-      });
+    if (!skipCache) {
+      const cached = await getServerCache(cacheKey);
+      if (cached) {
+        return NextResponse.json({
+          data: cached,
+          cached: true,
+          remaining,
+        });
+      }
     }
 
-    // 6. AI 응답 생성 (TODO: Sprint 21에서 Claude API 호출로 교체)
-    const aiResponse = generatePlaceholder(feature, body);
+    // 6. AI 응답 생성
+    let aiResponse: unknown;
 
-    // 7. 캐시 저장
-    await setServerCache(cacheKey, feature, aiResponse);
+    if (feature === 'wrong_answer') {
+      const { questionNo, selectedChoice } = body as { questionNo: number; selectedChoice: number };
+      if (!questionNo || !selectedChoice) {
+        return NextResponse.json(
+          { error: 'questionNo와 selectedChoice가 필요합니다.', code: 'BAD_REQUEST' },
+          { status: 400 }
+        );
+      }
+      try {
+        aiResponse = await diagnoseWrongAnswer({
+          questionNo,
+          selectedChoice,
+          userId: auth.userId,
+        });
+      } catch (err) {
+        console.error('[AI API] 오답 진단 오류:', err);
+        return NextResponse.json(
+          { error: '오답 진단 처리 중 오류가 발생했습니다.', code: 'DIAGNOSIS_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else if (feature === 'briefing') {
+      try {
+        const briefingData = await collectBriefingData(auth.userId);
+        aiResponse = generateBriefing(briefingData);
+      } catch (err) {
+        console.error('[AI API] 브리핑 생성 오류:', err);
+        return NextResponse.json(
+          { error: '브리핑 생성 중 오류가 발생했습니다.', code: 'BRIEFING_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else if (feature === 'mock_exam') {
+      try {
+        const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
+        aiResponse = await generateMockExam({
+          userId: auth.userId,
+          examTarget,
+          questionCount: 20,
+        });
+      } catch (err) {
+        console.error('[AI API] 모의고사 생성 오류:', err);
+        return NextResponse.json(
+          { error: '모의고사 생성 중 오류가 발생했습니다.', code: 'MOCK_EXAM_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else {
+      // 나머지 기능은 placeholder (Sprint 21에서 Claude API로 교체)
+      aiResponse = generatePlaceholder(feature, body);
+    }
+
+    // 7. 캐시 저장 (mock_exam은 스킵)
+    if (!skipCache) {
+      await setServerCache(cacheKey, feature, aiResponse);
+    }
 
     // 8. 응답 반환
     return NextResponse.json({

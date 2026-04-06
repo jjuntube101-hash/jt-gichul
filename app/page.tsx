@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { BookOpen, Shuffle, Zap, Clock, FileX, Search } from "lucide-react";
+import { BookOpen, Shuffle, Zap, Clock, FileX, Search, Target } from "lucide-react";
 import * as fs from "fs";
 import * as path from "path";
 import type { ExamIndex } from "@/types/question";
@@ -126,6 +126,12 @@ export default function Home() {
           <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 transition-all hover:border-primary/30">
             <Shuffle className="h-3.5 w-3.5 text-warning" />
             <span className="text-xs font-medium text-card-foreground">랜덤 10문</span>
+          </div>
+        </Link>
+        <Link href="/mock-exam" className="flex-1">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 transition-all hover:border-primary/30">
+            <Target className="h-3.5 w-3.5 text-danger" />
+            <span className="text-xs font-medium text-card-foreground">모의고사</span>
           </div>
         </Link>
       </section>

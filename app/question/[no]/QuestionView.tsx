@@ -12,6 +12,7 @@ import { useSolveRecord } from "@/hooks/useSolveRecord";
 import BadgeToast from "@/components/engagement/BadgeToast";
 import { isCorrectAnswer, formatAnswer } from "@/lib/answer";
 import { trackSolve } from "@/lib/questTracker";
+import WrongAnswerDiagnosis from "@/components/question/WrongAnswerDiagnosis";
 
 interface Props {
   question: Question;
@@ -230,6 +231,21 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
               <RotateCcw className="h-3.5 w-3.5" />
               다시 풀기
             </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Wrong Answer Diagnosis */}
+      <AnimatePresence>
+        {isAnswered && !isCorrect && selected !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <WrongAnswerDiagnosis
+              questionNo={q.no}
+              selectedChoice={selected}
+            />
           </motion.div>
         )}
       </AnimatePresence>

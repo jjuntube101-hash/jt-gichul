@@ -22,6 +22,7 @@ function PracticeContent() {
   const topic = searchParams.get("topic");
   const filter = searchParams.get("filter");
   const scopeParam = searchParams.get("scope");
+  const nosParam = searchParams.get("nos");
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +42,15 @@ function PracticeContent() {
         const all = await loadAllQuestions();
         let filtered: Question[];
 
-        if (filter === "random") {
+        if (nosParam) {
+          // 문항 번호 직접 지정 (모의고사 등)
+          const nos = nosParam.split(",").map(Number).filter((n) => !isNaN(n) && n > 0);
+          // 원래 순서를 유지하기 위해 nos 순서로 정렬
+          const matched = nos
+            .map((n) => all.find((q) => q.no === n))
+            .filter((q): q is Question => q !== undefined);
+          filtered = matched;
+        } else if (filter === "random") {
           // 국세/지방세 스코프 적용 후 랜덤
           let pool = [...all];
           if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
@@ -75,7 +84,7 @@ function PracticeContent() {
       }
     }
     load();
-  }, [law, topic, filter, taxScope]);
+  }, [law, topic, filter, taxScope, nosParam]);
 
   // 함정유형 목록 추출
   const trapTypes = useMemo(() => {
@@ -112,7 +121,8 @@ function PracticeContent() {
 
   const scopeLabel = taxScope === "national" ? "국세" : taxScope === "local" ? "지방세" : "";
   let title = "전체 문항";
-  if (filter === "random") title = scopeLabel ? `${scopeLabel} 랜덤 10문` : "랜덤 10문";
+  if (nosParam) title = `맞춤 모의고사 (${sorted.length}문항)`;
+  else if (filter === "random") title = scopeLabel ? `${scopeLabel} 랜덤 10문` : "랜덤 10문";
   else if (filter === "recent") title = scopeLabel ? `${scopeLabel} 최근 기출` : "최근 기출 20문";
   else if (law && topic) title = topic;
   else if (law) title = law;

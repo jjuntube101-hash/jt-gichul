@@ -8,12 +8,86 @@ import {
   BookOpen,
   TrendingDown,
   BarChart3,
-  Lock,
+  Calendar,
+  AlertTriangle,
 } from "lucide-react";
 import { useUserStage } from "@/hooks/useUserStage";
 import { useAuth } from "@/hooks/useAuth";
 import { useTopicMastery } from "@/hooks/useTopicMastery";
 import { getSupabase } from "@/lib/supabase";
+import RoadmapCard from "@/components/roadmap/RoadmapCard";
+import DailyBriefing from "@/components/engagement/DailyBriefing";
+
+// ---------------------------------------------------------------------------
+// D-day Badge — exam_date, exam_name 기반
+// ---------------------------------------------------------------------------
+
+function DdayBadge({
+  examDate,
+  examName,
+}: {
+  examDate: string | null;
+  examName: string | null;
+}) {
+  if (!examDate) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const exam = new Date(examDate + "T00:00:00");
+  const diff = Math.ceil((exam.getTime() - today.getTime()) / 86400000);
+
+  // 시험이 지났으면 표시 안 함
+  if (diff < 0) return null;
+
+  const label = diff === 0 ? "D-Day" : `D-${diff}`;
+
+  return (
+    <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-primary">
+      <Calendar className="h-3.5 w-3.5" />
+      <span>
+        {label}
+        {examName ? ` \u00B7 ${examName}` : ""}
+      </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// useStudyProfile — exam_date, exam_name, weak_subjects 조회
+// ---------------------------------------------------------------------------
+
+function useStudyProfile(userId: string | undefined) {
+  const [profile, setProfile] = useState<{
+    examDate: string | null;
+    examName: string | null;
+    weakSubjects: string[];
+  }>({ examDate: null, examName: null, weakSubjects: [] });
+
+  useEffect(() => {
+    if (!userId) return;
+    const supabase = getSupabase();
+    if (!supabase) return;
+
+    supabase
+      .from("user_study_profiles")
+      .select("exam_date, exam_name, weak_subjects")
+      .eq("user_id", userId)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          setProfile({
+            examDate: data.exam_date ?? null,
+            examName: data.exam_name ?? null,
+            weakSubjects: Array.isArray(data.weak_subjects)
+              ? data.weak_subjects
+              : [],
+          });
+        }
+      });
+  }, [userId]);
+
+  return profile;
+}
 
 // ---------------------------------------------------------------------------
 // NewUserBanner — 신규 유저 (<10문항)
@@ -70,32 +144,66 @@ function NewUserBanner({
 // RegularUserCard — 일반 유저 (10~500)
 // ---------------------------------------------------------------------------
 
-function RegularUserCard({ solveCount }: { solveCount: number }) {
-  // 간단한 오늘의 할 일: 복습 3 + 신규 5 (고정, 추후 동적 변경 가능)
+function RegularUserCard({
+  solveCount,
+  examDate,
+  examName,
+  weakSubjects,
+}: {
+  solveCount: number;
+  examDate: string | null;
+  examName: string | null;
+  weakSubjects: string[];
+}) {
   return (
-    <section className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-start gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success-light text-success">
-          <BookOpen className="h-4 w-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-card-foreground">
-            오늘의 할 일
-          </p>
-          <ul className="mt-1.5 space-y-0.5 text-xs text-muted-foreground">
-            <li>복습 3문항 + 신규 5문항</li>
-            <li className="tabular-nums">
-              누적 {solveCount.toLocaleString()}문항 완료
-            </li>
-          </ul>
+    <section className="space-y-3">
+      <div className="rounded-xl border border-border bg-card p-4">
+        <DdayBadge examDate={examDate} examName={examName} />
+        <div className="flex items-start gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success-light text-success">
+            <BookOpen className="h-4 w-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold text-card-foreground">
+              오늘의 할 일
+            </p>
+            <ul className="mt-1.5 space-y-0.5 text-xs text-muted-foreground">
+              <li>복습 3문항 + 신규 5문항</li>
+              <li className="tabular-nums">
+                누적 {solveCount.toLocaleString()}문항 완료
+              </li>
+            </ul>
 
-          {/* 로드맵 카드 placeholder */}
-          <div className="mt-3 flex items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
-            <BarChart3 className="h-3.5 w-3.5" />
-            로드맵 — Sprint 20에서 활성화
+            {/* 약점 과목 추천 */}
+            {weakSubjects.length > 0 && (
+              <div className="mt-3 space-y-1">
+                <p className="flex items-center gap-1 text-xs font-semibold text-card-foreground">
+                  <AlertTriangle className="h-3 w-3 text-warning" />
+                  약점 과목
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {weakSubjects.map((subject) => (
+                    <Link
+                      key={subject}
+                      href={`/practice?law=${encodeURIComponent(subject)}`}
+                      className="inline-flex items-center gap-1 rounded-md bg-warning-light px-2 py-1 text-[11px] font-medium text-warning hover:opacity-80"
+                    >
+                      {subject} 풀기
+                      <ArrowRight className="h-2.5 w-2.5" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* 오늘의 브리핑 */}
+      <DailyBriefing />
+
+      {/* 로드맵 카드 */}
+      <RoadmapCard />
     </section>
   );
 }
@@ -104,7 +212,15 @@ function RegularUserCard({ solveCount }: { solveCount: number }) {
 // PowerUserCard — 파워 유저 (500+)
 // ---------------------------------------------------------------------------
 
-function PowerUserCard({ solveCount }: { solveCount: number }) {
+function PowerUserCard({
+  solveCount,
+  examDate,
+  examName,
+}: {
+  solveCount: number;
+  examDate: string | null;
+  examName: string | null;
+}) {
   const { data: masteryData, loading: masteryLoading } = useTopicMastery();
 
   // 약점 토픽: 정확도 낮은 순 상위 3개 (최소 3문항 이상 풀어본 것)
@@ -118,6 +234,7 @@ function PowerUserCard({ solveCount }: { solveCount: number }) {
     <section className="space-y-3">
       {/* 상단: 요약 + 로드맵 */}
       <div className="rounded-xl border border-border bg-card p-4">
+        <DdayBadge examDate={examDate} examName={examName} />
         <div className="flex items-start gap-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning-light text-warning">
             <BarChart3 className="h-4 w-4" />
@@ -127,20 +244,16 @@ function PowerUserCard({ solveCount }: { solveCount: number }) {
               누적 {solveCount.toLocaleString()}문항
             </p>
 
-            {/* 로드맵 placeholder */}
-            <div className="mt-2 flex items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
-              <BarChart3 className="h-3.5 w-3.5" />
-              로드맵 — Sprint 20에서 활성화
-            </div>
-
-            {/* AI 브리핑 placeholder */}
-            <div className="mt-2 flex items-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
-              <Lock className="h-3.5 w-3.5" />
-              AI 브리핑 — Sprint 21에서 활성화
-            </div>
+            {/* 누적 문항 아래 간격 */}
           </div>
         </div>
       </div>
+
+      {/* 오늘의 브리핑 */}
+      <DailyBriefing />
+
+      {/* 로드맵 카드 */}
+      <RoadmapCard />
 
       {/* 약점 토픽 */}
       {!masteryLoading && weakTopics.length > 0 && (
@@ -184,6 +297,7 @@ export default function StageHome() {
   const { stage, solveCount, loading } = useUserStage();
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState("");
+  const { examDate, examName, weakSubjects } = useStudyProfile(user?.id);
 
   // display_name 조회 (new 단계에서만 필요)
   useEffect(() => {
@@ -215,8 +329,21 @@ export default function StageHome() {
       {stage === "new" && (
         <NewUserBanner displayName={displayName} solveCount={solveCount} />
       )}
-      {stage === "regular" && <RegularUserCard solveCount={solveCount} />}
-      {stage === "power" && <PowerUserCard solveCount={solveCount} />}
+      {stage === "regular" && (
+        <RegularUserCard
+          solveCount={solveCount}
+          examDate={examDate}
+          examName={examName}
+          weakSubjects={weakSubjects}
+        />
+      )}
+      {stage === "power" && (
+        <PowerUserCard
+          solveCount={solveCount}
+          examDate={examDate}
+          examName={examName}
+        />
+      )}
     </>
   );
 }
