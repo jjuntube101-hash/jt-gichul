@@ -11,8 +11,8 @@ import DailyStudyPlan from "@/components/engagement/DailyStudyPlan";
 import WeeklyReport from "@/components/engagement/WeeklyReport";
 import SpacedReviewCard from "@/components/engagement/SpacedReviewCard";
 import RoadmapCard from "@/components/roadmap/RoadmapCard";
-import CategoryTree from "@/components/home/CategoryTree";
 import StageHome from "@/components/home/StageHome";
+import HomeContent from "@/components/home/HomeContent";
 
 function getExamIndex(): ExamIndex {
   const filePath = path.join(process.cwd(), "public/data/exam_index.json");
@@ -20,25 +20,20 @@ function getExamIndex(): ExamIndex {
   return JSON.parse(raw);
 }
 
+function getExamIndexAccounting(): ExamIndex {
+  const filePath = path.join(process.cwd(), "public/data/exam_index_accounting.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(raw);
+}
+
 export default function Home() {
-  const examIndex = getExamIndex();
+  const taxIndex = getExamIndex();
+  const accountingIndex = getExamIndexAccounting();
 
   return (
     <div className="space-y-6">
-      {/* Hero — compact */}
-      <section className="gradient-hero relative overflow-hidden rounded-2xl p-5 text-white">
-        <div className="relative z-10">
-          <p className="text-[10px] font-medium text-white/70">이현준 세무사의</p>
-          <h1 className="mt-0.5 text-xl font-bold tracking-tight">
-            공무원 세법 기출
-          </h1>
-          <p className="mt-1.5 text-xs text-white/80">
-            {examIndex.total_questions.toLocaleString()}문항 &middot; 선지별 정오판 &middot; 함정유형
-          </p>
-        </div>
-        <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute -bottom-4 -right-2 h-20 w-20 rounded-full bg-white/5" />
-      </section>
+      {/* Hero + 과목 탭 + 카테고리 (클라이언트 컴포넌트) */}
+      <HomeContent taxIndex={taxIndex} accountingIndex={accountingIndex} />
 
       {/* 단계별 홈 (로그인 유저만 표시) */}
       <StageHome />
@@ -135,9 +130,6 @@ export default function Home() {
           </div>
         </Link>
       </section>
-
-      {/* 과목별 문제 — 접힌 카테고리 트리 */}
-      <CategoryTree categories={examIndex.categories} />
     </div>
   );
 }

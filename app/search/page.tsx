@@ -6,8 +6,10 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Search, ChevronRight, Clock, X, SlidersHorizontal } from "lucide-react";
 import type { Question } from "@/types/question";
-import { loadAllQuestions } from "@/lib/questions";
+import { loadQuestionsBySubject } from "@/lib/questions";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useAppStore } from "@/stores/appStore";
+import SubjectTabs from "@/components/home/SubjectTabs";
 
 // --- Constants ---
 const RECENT_KEY = "jt-gichul-recent-searches";
@@ -17,7 +19,8 @@ const FUSE_LIMIT = 100;
 const MIN_YEAR = 2015;
 const MAX_YEAR = 2025;
 
-const SUGGESTED_KEYWORDS = ["양도소득세", "부가가치세", "세율", "납세의무", "가산세", "소득공제"];
+const SUGGESTED_KEYWORDS_TAX = ["양도소득세", "부가가치세", "세율", "납세의무", "가산세", "소득공제"];
+const SUGGESTED_KEYWORDS_ACC = ["감가상각", "재고자산", "유형자산", "수익인식", "원가계산", "재무제표"];
 
 // --- Highlight helper ---
 function highlightText(
@@ -82,13 +85,15 @@ function saveRecent(list: string[]) {
 }
 
 export default function SearchPage() {
+  const subject = useAppStore((s) => s.subject);
+  const isAccounting = subject === "accounting";
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 200);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filters
-  const [filterTaxType, setFilterTaxType] = useState<"all" | "국세" | "지방세">("all");
+  const [filterTaxType, setFilterTaxType] = useState<"all" | "국세" | "지방세" | "회계">("all");
   const [filterYearFrom, setFilterYearFrom] = useState(MIN_YEAR);
   const [filterYearTo, setFilterYearTo] = useState(MAX_YEAR);
 
@@ -110,15 +115,16 @@ export default function SearchPage() {
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
       try {
-        const all = await loadAllQuestions();
+        const all = await loadQuestionsBySubject(subject);
         setQuestions(all);
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [subject]);
 
   const fuse = useMemo(
     () =>
@@ -233,7 +239,12 @@ export default function SearchPage() {
         <span className="text-foreground font-medium">검색</span>
       </nav>
 
-      <h1 className="text-xl font-bold text-foreground">문항 검색</h1>
+      {/* 과목 선택 */}
+      <SubjectTabs />
+
+      <h1 className="text-xl font-bold text-foreground">
+        {isAccounting ? "회계 문항 검색" : "문항 검색"}
+      </h1>
 
       {/* Search Input */}
       <div className="relative">
@@ -281,27 +292,29 @@ export default function SearchPage() {
 
           {showFilters && (
             <div className="rounded-xl border border-border bg-card p-3 space-y-3">
-              {/* Tax Type */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                  세목 구분
-                </span>
-                <div className="flex gap-1.5">
-                  {(["all", "국세", "지방세"] as const).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setFilterTaxType(t)}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                        filterTaxType === t
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {t === "all" ? "전체" : t}
-                    </button>
-                  ))}
+              {/* Tax Type (세법만) */}
+              {!isAccounting && (
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                    세목 구분
+                  </span>
+                  <div className="flex gap-1.5">
+                    {(["all", "국세", "지방세"] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setFilterTaxType(t)}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                          filterTaxType === t
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t === "all" ? "전체" : t}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Year Range */}
               <div className="space-y-1.5">
@@ -437,7 +450,7 @@ export default function SearchPage() {
           <div className="space-y-2">
             <span className="text-xs font-medium text-muted-foreground">추천 검색어</span>
             <div className="flex flex-wrap gap-2">
-              {SUGGESTED_KEYWORDS.map((kw) => (
+              {(isAccounting ? SUGGESTED_KEYWORDS_ACC : SUGGESTED_KEYWORDS_TAX).map((kw) => (
                 <button
                   key={kw}
                   onClick={() => applyRecentSearch(kw)}

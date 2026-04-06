@@ -22,6 +22,61 @@ interface Props {
   currentIndex: number;
 }
 
+/** ㄱ,ㄴ,ㄷ,ㄹ 보기를 개별 항목으로 파싱 */
+function parseBogi(bogi: string): { letter: string; text: string }[] | null {
+  const regex = /^([ㄱ-ㅎ])\.\s*/m;
+  if (!regex.test(bogi)) return null;
+  const parts = bogi.split(/^(?=[ㄱ-ㅎ]\.)/m).filter(Boolean);
+  if (parts.length < 2) return null;
+  return parts.map(part => {
+    const m = part.match(/^([ㄱ-ㅎ])\.\s*([\s\S]*)/);
+    if (!m) return null;
+    return { letter: m[1], text: m[2].trimEnd() };
+  }).filter((x): x is { letter: string; text: string } => x !== null);
+}
+
+/** 정답 선택지에서 O인 ㄱ,ㄴ,ㄷ,ㄹ 문자 추출 */
+function getCorrectLetters(answer: number | number[], choices: string[]): Set<string> {
+  const answerNums = Array.isArray(answer) ? answer : [answer];
+  const correctText = answerNums.map(n => choices[n - 1] || "").join(", ");
+  const letters = new Set<string>();
+  const matches = correctText.match(/[ㄱ-ㅎ]/g);
+  if (matches) matches.forEach(l => letters.add(l));
+  return letters;
+}
+
+/** 계산문제 여부 판별 */
+function isCalcQuestion(subtype: string): boolean {
+  return ['계산', '세액계산', '금액계산'].includes(subtype);
+}
+
+/** 숫자/금액 패턴을 강조하는 렌더러 */
+function highlightNumbers(text: string): React.ReactNode[] {
+  const regex = /(\d{1,3}(,\d{3})*)(원|만원|억원|천원|백만원|%|개월|년|일)?/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <span key={key++} className="font-bold text-primary">{match[0]}</span>
+    );
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts.length > 0 ? parts : [text];
+}
+
+/** 선택지가 ①~⑤로 시작하는지 확인 */
+function startsWithCircledNumber(text: string): boolean {
+  return /^[①②③④⑤⑥⑦⑧⑨⑩]/.test(text.trim());
+}
+
 export default function QuestionView({ question, totalQuestions, prevNo, nextNo, currentIndex }: Props) {
   const [selected, setSelected] = useState<number | null>(null);
   const [startTime] = useState(() => Date.now());
@@ -144,71 +199,124 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
       {/* Question Body */}
       <div className="rounded-xl bg-card border border-border p-5 shadow-sm">
         <p className="text-sm leading-relaxed font-medium whitespace-pre-wrap text-card-foreground">
-          {q.문제_내용}
+          {isCalcQuestion(a.question_subtype) ? highlightNumbers(q.문제_내용) : q.문제_내용}
         </p>
-        {q.보기 && (
-          <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
-            {q.보기}
-          </div>
-        )}
+        {q.보기 && (() => {
+          const parsed = parseBogi(q.보기);
+          const isCalc = isCalcQuestion(a.question_subtype);
+          const correctLetters = getCorrectLetters(q.정답, q.선택지);
+
+          // ㄱ,ㄴ,ㄷ,ㄹ 보기형: 파싱 성공 시 개별 항목으로 렌더링
+          if (parsed && parsed.length >= 2) {
+            return (
+              <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed space-y-2">
+                {parsed.map((item) => {
+                  const isCorrectLetter = correctLetters.has(item.letter);
+                  return (
+                    <div
+                      key={item.letter}
+                      className={`flex items-start gap-2 rounded-md px-2 py-1.5 transition-colors ${
+                        isAnswered
+                          ? isCorrectLetter
+                            ? "bg-success-light/60"
+                            : "bg-danger-light/60"
+                          : ""
+                      }`}
+                    >
+                      {isAnswered && (
+                        <span className={`shrink-0 mt-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white ${
+                          isCorrectLetter ? "bg-success" : "bg-danger"
+                        }`}>
+                          {isCorrectLetter ? "O" : "X"}
+                        </span>
+                      )}
+                      <span className={`${isAnswered ? (isCorrectLetter ? "text-success" : "text-danger") : "text-muted-foreground"}`}>
+                        <span className="font-semibold">{item.letter}.</span>{" "}
+                        {isCalc ? highlightNumbers(item.text) : item.text}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          // 일반 보기: 기존 방식 (계산문제면 숫자 강조)
+          return (
+            <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
+              {isCalc ? highlightNumbers(q.보기) : q.보기}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Choices */}
       <div className="space-y-2.5" data-no-transition>
-        {q.선택지.map((text, idx) => {
-          const choiceNum = idx + 1;
-          const ca = a.choices_analysis.find(c => c.choice_num === choiceNum);
-          const isThis = selected === choiceNum;
-          const isAnswer = isCorrectAnswer(choiceNum, q.정답);
+        {(() => {
+          const hasCircledNumbers = q.선택지.every(t => startsWithCircledNumber(t));
+          const isCalc = isCalcQuestion(a.question_subtype);
 
-          let borderClass = "border-border";
-          let bgClass = "bg-card";
+          return q.선택지.map((text, idx) => {
+            const choiceNum = idx + 1;
+            const ca = a.choices_analysis.find(c => c.choice_num === choiceNum);
+            const isThis = selected === choiceNum;
+            const isAnswer = isCorrectAnswer(choiceNum, q.정답);
 
-          if (isAnswered) {
-            if (isAnswer) {
-              borderClass = "border-success";
-              bgClass = "bg-success-light";
-            } else if (isThis && !isCorrect) {
-              borderClass = "border-danger";
-              bgClass = "bg-danger-light";
+            let borderClass = "border-border";
+            let bgClass = "bg-card";
+
+            if (isAnswered) {
+              if (isAnswer) {
+                borderClass = "border-success";
+                bgClass = "bg-success-light";
+              } else if (isThis && !isCorrect) {
+                borderClass = "border-danger";
+                bgClass = "bg-danger-light";
+              }
             }
-          }
 
-          return (
-            <motion.button
-              key={choiceNum}
-              onClick={() => handleSelect(choiceNum)}
-              className={`w-full rounded-xl border-2 p-4 text-left transition-colors ${borderClass} ${bgClass} ${
-                !isAnswered ? "hover:border-primary/40 hover:shadow-sm cursor-pointer" : ""
-              }`}
-              whileTap={!isAnswered ? { scale: 0.98 } : undefined}
-            >
-              <div className="flex items-start gap-3">
-                <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
-                  isAnswered && isAnswer
-                    ? "bg-success text-white"
-                    : isAnswered && isThis && !isCorrect
-                    ? "bg-danger text-white"
-                    : "bg-muted text-muted-foreground"
-                }`}>
-                  {choiceNum}
-                </span>
-                <span className="text-sm leading-relaxed flex-1 text-card-foreground">{text}</span>
-                {isAnswered && ca && (
-                  <Badge
-                    className={`shrink-0 text-[10px] ${
-                      ca.verdict === "O"
-                        ? "bg-success-light text-success border-success/20"
-                        : "bg-danger-light text-danger border-danger/20"
-                    }`}
-                  >
-                    {ca.verdict === "O" ? "O" : "X"}
-                  </Badge>
-                )}
-              </div>
-            </motion.button>
-          );
-        })}
+            return (
+              <motion.button
+                key={choiceNum}
+                onClick={() => handleSelect(choiceNum)}
+                className={`w-full rounded-xl border-2 p-4 text-left transition-colors ${borderClass} ${bgClass} ${
+                  !isAnswered ? "hover:border-primary/40 hover:shadow-sm cursor-pointer" : ""
+                }`}
+                whileTap={!isAnswered ? { scale: 0.98 } : undefined}
+              >
+                <div className="flex items-start gap-3">
+                  {!hasCircledNumbers && (
+                    <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                      isAnswered && isAnswer
+                        ? "bg-success text-white"
+                        : isAnswered && isThis && !isCorrect
+                        ? "bg-danger text-white"
+                        : "bg-muted text-muted-foreground"
+                    }`}>
+                      {choiceNum}
+                    </span>
+                  )}
+                  <span className={`text-sm leading-relaxed flex-1 text-card-foreground ${
+                    hasCircledNumbers && isAnswered && isAnswer ? "font-bold" : ""
+                  }`}>
+                    {isCalc ? highlightNumbers(text) : text}
+                  </span>
+                  {isAnswered && ca && (
+                    <Badge
+                      className={`shrink-0 text-[10px] ${
+                        ca.verdict === "O"
+                          ? "bg-success-light text-success border-success/20"
+                          : "bg-danger-light text-danger border-danger/20"
+                      }`}
+                    >
+                      {ca.verdict === "O" ? "O" : "X"}
+                    </Badge>
+                  )}
+                </div>
+              </motion.button>
+            );
+          });
+        })()}
       </div>
 
       {/* Result Banner */}

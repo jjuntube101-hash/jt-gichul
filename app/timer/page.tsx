@@ -23,6 +23,7 @@ import { trackSolve, trackTimerComplete } from "@/lib/questTracker";
 import BadgeToast from "@/components/engagement/BadgeToast";
 import type { Question } from "@/types/question";
 import { isCorrectAnswer, formatAnswer } from "@/lib/answer";
+import SubjectTabs from "@/components/home/SubjectTabs";
 
 type Phase = "setup" | "solving" | "review" | "result";
 
@@ -52,6 +53,8 @@ export default function TimerPage() {
 
   const { saveSolve, newBadges, dismissNewBadges } = useSolveRecord();
   const setFocusMode = useAppStore((s) => s.setFocusMode);
+  const subject = useAppStore((s) => s.subject);
+  const isAccounting = subject === "accounting";
 
   // 컴포넌트 언마운트 시 포커스 모드 해제
   useEffect(() => {
@@ -84,11 +87,13 @@ export default function TimerPage() {
   const startTest = useCallback(async (count: number, minutes: number) => {
     setLoading(true);
     try {
-      const { loadAllQuestions } = await import("@/lib/questions");
-      const all = await loadAllQuestions();
+      const { loadQuestionsBySubject } = await import("@/lib/questions");
+      const all = await loadQuestionsBySubject(subject);
       let pool = [...all];
-      if (taxScope === "national") pool = pool.filter(q => NATIONAL_LAWS.includes(q.대분류));
-      else if (taxScope === "local") pool = pool.filter(q => !NATIONAL_LAWS.includes(q.대분류));
+      if (!isAccounting) {
+        if (taxScope === "national") pool = pool.filter(q => NATIONAL_LAWS.includes(q.대분류));
+        else if (taxScope === "local") pool = pool.filter(q => !NATIONAL_LAWS.includes(q.대분류));
+      }
       for (let i = pool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -108,7 +113,7 @@ export default function TimerPage() {
     } finally {
       setLoading(false);
     }
-  }, [taxScope, setFocusMode]);
+  }, [taxScope, setFocusMode, subject, isAccounting]);
 
   const handleSelect = useCallback(
     (choiceNum: number) => {
@@ -157,7 +162,7 @@ export default function TimerPage() {
           // 복원 가능한 상태가 있으면 질문 데이터를 다시 로드
           (async () => {
             const { loadAllQuestions } = await import("@/lib/questions");
-            const all = await loadAllQuestions();
+            const all = await loadAllQuestions(); // 모든 과목에서 복원
             const qMap = new Map(all.map(q => [q.no, q]));
             const restored = state.questions.map((no: number) => qMap.get(no)).filter(Boolean) as Question[];
             if (restored.length === state.questions.length) {
@@ -237,26 +242,31 @@ export default function TimerPage() {
           </p>
         </div>
 
-        {/* Tax Scope */}
-        <div className="flex rounded-xl bg-muted p-1 gap-1">
-          {([
-            { key: "all" as TaxScope, label: "전체" },
-            { key: "national" as TaxScope, label: "국세" },
-            { key: "local" as TaxScope, label: "지방세" },
-          ]).map((opt) => (
-            <button
-              key={opt.key}
-              onClick={() => setTaxScope(opt.key)}
-              className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
-                taxScope === opt.key
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        {/* 과목 선택 */}
+        <SubjectTabs />
+
+        {/* Tax Scope (세법만) */}
+        {!isAccounting && (
+          <div className="flex rounded-xl bg-muted p-1 gap-1">
+            {([
+              { key: "all" as TaxScope, label: "전체" },
+              { key: "national" as TaxScope, label: "국세" },
+              { key: "local" as TaxScope, label: "지방세" },
+            ]).map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => setTaxScope(opt.key)}
+                className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
+                  taxScope === opt.key
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-3">
           {PRESETS.map((preset) => (

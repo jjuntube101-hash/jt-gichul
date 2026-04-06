@@ -94,9 +94,9 @@ export async function generateMockExam(
 
   const solveRecords: SolveRecord[] = records ?? [];
 
-  // 2. 전체 문항 로드 + 직급 필터
+  // 2. 전체 문항 로드 + 직급 필터 (세법 문항만 — 회계는 no >= 2001)
   const allQuestions = loadAllQuestionsServer();
-  const pool = allQuestions.filter((q) => q.직급 === examTarget);
+  const pool = allQuestions.filter((q) => q.no < 2001 && q.직급 === examTarget);
 
   // 3. 풀이 기록 분석
   const solvedMap = new Map<number, { total: number; correct: number }>();

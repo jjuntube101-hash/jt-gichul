@@ -44,9 +44,12 @@ export interface Analysis {
   analysis_basis: string;
 }
 
+export type SubjectType = 'tax' | 'accounting';
+
 export interface Question {
   no: number;
-  tax_type: '국세' | '지방세';
+  tax_type: '국세' | '지방세' | '회계';
+  subject?: string;
   시험_구분: string;
   직급: string;
   과목명: string;
@@ -63,6 +66,16 @@ export interface Question {
   analysis: Analysis;
 }
 
+/** 문항 번호로 과목 판별 */
+export function getSubjectByNo(no: number): SubjectType {
+  return no >= 2001 ? 'accounting' : 'tax';
+}
+
+/** 문항의 tax_type으로 과목 판별 */
+export function getSubjectByQuestion(q: Question): SubjectType {
+  return q.tax_type === '회계' ? 'accounting' : 'tax';
+}
+
 /** 청크 메타 정보 (public/data/questions/meta.json) */
 export interface ChunkMeta {
   _meta: {
@@ -73,12 +86,20 @@ export interface ChunkMeta {
     chunk_size: number;
     chunk_count: number;
     chunked_at: string;
+    accounting?: {
+      total_questions: number;
+      no_range: [number, number];
+      chunk_count: number;
+      chunk_size: number;
+      generated: string;
+    };
   };
   chunks: {
     file: string;
     start_no: number;
     end_no: number;
     count: number;
+    subject?: 'accounting';
   }[];
 }
 
@@ -108,8 +129,9 @@ export interface ExamIndex {
   version: string;
   generated: string;
   total_questions: number;
-  national_count: number;
-  local_count: number;
+  national_count?: number;
+  local_count?: number;
+  exam_types?: Record<string, number>;
   categories: {
     [taxType: string]: {
       [law: string]: {

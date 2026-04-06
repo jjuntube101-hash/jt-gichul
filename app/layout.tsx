@@ -21,18 +21,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JT기출 — 공무원 세법 기출 학습",
+  title: "JT기출 — 공무원 세법·회계 기출 학습",
   description:
-    "이현준 세무사의 1,245문항 전수분석. 선지별 정오판·근거조문·함정유형·출제의도까지.",
+    "이현준 세무사의 세법 1,245문항 + 회계 820문항 전수분석. 선지별 정오판·근거조문·함정유형·출제의도까지.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "JT기출 — 공무원 세법 기출 학습",
+    title: "JT기출 — 공무원 세법·회계 기출 학습",
     description:
-      "세법 기출, 선지 하나까지 왜 틀렸는지 알려주는 앱. 1,245문항 전수분석.",
+      "세법·회계 기출, 선지 하나까지 왜 틀렸는지 알려주는 앱. 2,065문항 전수분석.",
     type: "website",
     url: "https://gichul.jttax.co.kr",
     siteName: "JT기출",
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "JT기출 — 공무원 세법 기출 학습",
-    description: "이현준 세무사의 1,245문항 전수분석. 선지별 정오판·근거조문·함정유형.",
+    title: "JT기출 — 공무원 세법·회계 기출 학습",
+    description: "이현준 세무사의 세법 1,245 + 회계 820문항 전수분석. 선지별 정오판·근거조문·함정유형.",
   },
   alternates: {
     canonical: "https://gichul.jttax.co.kr",

@@ -19,7 +19,17 @@
     "chunked": true,
     "chunk_size": 200,
     "chunk_count": 7,
-    "chunked_at": "2026-04-05"
+    "chunked_at": "2026-04-05",
+    "accounting": {
+      "total_questions": 820,
+      "no_range": [
+        2001,
+        2820
+      ],
+      "chunk_count": 3,
+      "chunk_size": 400,
+      "generated": "2026-04-06"
+    }
   },
   "chunks": [
     {
@@ -63,6 +73,27 @@
       "start_no": 1221,
       "end_no": 1265,
       "count": 45
+    },
+    {
+      "file": "chunk_accounting_0.json",
+      "start_no": 2001,
+      "end_no": 2400,
+      "count": 400,
+      "subject": "accounting"
+    },
+    {
+      "file": "chunk_accounting_1.json",
+      "start_no": 2401,
+      "end_no": 2800,
+      "count": 400,
+      "subject": "accounting"
+    },
+    {
+      "file": "chunk_accounting_2.json",
+      "start_no": 2801,
+      "end_no": 2820,
+      "count": 20,
+      "subject": "accounting"
     }
   ]
 }

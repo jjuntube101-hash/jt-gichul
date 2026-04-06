@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { SubjectType } from '@/types/question';
 
 interface SessionStats {
   correct: number;
@@ -16,6 +17,10 @@ interface StudyTimerState {
 }
 
 interface AppState {
+  /** 현재 선택된 과목 */
+  subject: SubjectType;
+  setSubject: (s: SubjectType) => void;
+
   /** 현재 선택된 답안 (문항 번호 → 선택지 번호) */
   selectedAnswers: Record<number, number>;
   /** 해설 표시 여부 (문항 번호 → boolean) */
@@ -96,7 +101,22 @@ function saveDailyStudyTime(totalStudySeconds: number, sessionsCompleted: number
   } catch { /* ignore */ }
 }
 
+function loadSubject(): SubjectType {
+  if (typeof window === 'undefined') return 'tax';
+  try {
+    const saved = localStorage.getItem('jt_gichul_subject');
+    if (saved === 'accounting') return 'accounting';
+  } catch { /* ignore */ }
+  return 'tax';
+}
+
 export const useAppStore = create<AppState>((set, get) => ({
+  subject: loadSubject(),
+  setSubject: (s) => {
+    try { localStorage.setItem('jt_gichul_subject', s); } catch { /* ignore */ }
+    set({ subject: s });
+  },
+
   selectedAnswers: {},
   showExplanation: {},
   sessionHistory: [],

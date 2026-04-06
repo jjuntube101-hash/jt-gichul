@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ChevronRight, AlertTriangle } from "lucide-react";
 import type { Question } from "@/types/question";
-import { loadAllQuestions } from "@/lib/questions";
+import { loadAllQuestions, loadQuestionsBySubject } from "@/lib/questions";
+import { useAppStore } from "@/stores/appStore";
+import SubjectTabs from "@/components/home/SubjectTabs";
 
 type SortOption = "default" | "difficulty-asc" | "difficulty-desc" | "rate-asc" | "rate-desc" | "year-desc";
 type TaxScope = "all" | "national" | "local";
@@ -23,6 +25,15 @@ function PracticeContent() {
   const filter = searchParams.get("filter");
   const scopeParam = searchParams.get("scope");
   const nosParam = searchParams.get("nos");
+  const subjectParam = searchParams.get("subject");
+
+  const storeSubject = useAppStore((s) => s.subject);
+  // URL의 subject 파라미터가 있으면 우선, 없으면 스토어 값 사용
+  const subject = subjectParam === "accounting" ? "accounting" as const
+    : subjectParam === "tax" ? "tax" as const
+    : storeSubject;
+
+  const isAccounting = subject === "accounting";
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,22 +50,22 @@ function PracticeContent() {
       setLoading(true);
       setError(null);
       try {
-        const all = await loadAllQuestions();
+        const all = await loadQuestionsBySubject(subject);
         let filtered: Question[];
 
         if (nosParam) {
-          // 문항 번호 직접 지정 (모의고사 등)
           const nos = nosParam.split(",").map(Number).filter((n) => !isNaN(n) && n > 0);
-          // 원래 순서를 유지하기 위해 nos 순서로 정렬
+          const allQ = await loadAllQuestions();
           const matched = nos
-            .map((n) => all.find((q) => q.no === n))
+            .map((n) => allQ.find((q) => q.no === n))
             .filter((q): q is Question => q !== undefined);
           filtered = matched;
         } else if (filter === "random") {
-          // 국세/지방세 스코프 적용 후 랜덤
           let pool = [...all];
-          if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
-          else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          if (!isAccounting) {
+            if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
+            else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          }
           for (let i = pool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -62,8 +73,10 @@ function PracticeContent() {
           filtered = pool.slice(0, 10);
         } else if (filter === "recent") {
           let pool = [...all];
-          if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
-          else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          if (!isAccounting) {
+            if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
+            else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          }
           filtered = pool.sort((a, b) => b.시행년도 - a.시행년도 || b.no - a.no).slice(0, 20);
         } else if (law && topic) {
           filtered = all.filter(q => q.대분류 === law && q.중분류 === topic);
@@ -71,9 +84,10 @@ function PracticeContent() {
           filtered = all.filter(q => q.대분류 === law);
         } else {
           filtered = all;
-          // 전체 보기에서도 스코프 적용
-          if (taxScope === "national") filtered = filtered.filter(q => isNationalLaw(q.대분류));
-          else if (taxScope === "local") filtered = filtered.filter(q => !isNationalLaw(q.대분류));
+          if (!isAccounting) {
+            if (taxScope === "national") filtered = filtered.filter(q => isNationalLaw(q.대분류));
+            else if (taxScope === "local") filtered = filtered.filter(q => !isNationalLaw(q.대분류));
+          }
         }
 
         setQuestions(filtered);
@@ -84,7 +98,7 @@ function PracticeContent() {
       }
     }
     load();
-  }, [law, topic, filter, taxScope, nosParam]);
+  }, [law, topic, filter, taxScope, nosParam, subject, isAccounting]);
 
   // 함정유형 목록 추출
   const trapTypes = useMemo(() => {
@@ -117,18 +131,19 @@ function PracticeContent() {
       case "year-desc": return arr.sort((a, b) => b.시행년도 - a.시행년도 || b.no - a.no);
       default: return arr;
     }
-  }, [questions, sort]);
+  }, [questions, sort, trapFilter]);
 
   const scopeLabel = taxScope === "national" ? "국세" : taxScope === "local" ? "지방세" : "";
-  let title = "전체 문항";
+  const subjectLabel = isAccounting ? "회계" : "";
+  let title = isAccounting ? "회계 전체 문항" : "전체 문항";
   if (nosParam) title = `맞춤 모의고사 (${sorted.length}문항)`;
-  else if (filter === "random") title = scopeLabel ? `${scopeLabel} 랜덤 10문` : "랜덤 10문";
-  else if (filter === "recent") title = scopeLabel ? `${scopeLabel} 최근 기출` : "최근 기출 20문";
+  else if (filter === "random") title = [subjectLabel, scopeLabel, "랜덤 10문"].filter(Boolean).join(" ");
+  else if (filter === "recent") title = [subjectLabel, scopeLabel, "최근 기출 20문"].filter(Boolean).join(" ");
   else if (law && topic) title = topic;
   else if (law) title = law;
   else if (scopeLabel) title = `${scopeLabel} 전체`;
 
-  const showScopeFilter = !law && !topic;
+  const showScopeFilter = !law && !topic && !isAccounting;
 
   const filterQuery = law
     ? `?from=practice&law=${encodeURIComponent(law)}${topic ? `&topic=${encodeURIComponent(topic)}` : ""}`
@@ -138,6 +153,11 @@ function PracticeContent() {
 
   return (
     <div className="space-y-4">
+      {/* Subject Tabs */}
+      {!law && !topic && !nosParam && (
+        <SubjectTabs />
+      )}
+
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Link href="/" className="hover:text-foreground transition-colors">홈</Link>
@@ -169,7 +189,7 @@ function PracticeContent() {
         )}
       </div>
 
-      {/* Tax Scope Filter */}
+      {/* Tax Scope Filter (세법 only) */}
       {showScopeFilter && (
         <div className="flex rounded-xl bg-muted p-1 gap-1">
           {([

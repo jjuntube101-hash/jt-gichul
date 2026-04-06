@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { loadAllQuestions } from "@/lib/questions";
+import { loadQuestionsBySubject } from "@/lib/questions";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import { useAppStore } from "@/stores/appStore";
 import { trackOX } from "@/lib/questTracker";
@@ -33,6 +33,7 @@ export default function QuickQuizPage() {
 
   const { saveOX } = useSolveRecord();
   const setFocusMode = useAppStore((s) => s.setFocusMode);
+  const subject = useAppStore((s) => s.subject);
 
   // Focus mode on mount/unmount
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function QuickQuizPage() {
   // Load questions and auto-start
   useEffect(() => {
     async function load() {
-      const questions = await loadAllQuestions();
+      const questions = await loadQuestionsBySubject(subject);
       const allOX: OXItem[] = [];
       for (const q of questions) {
         if (q.analysis.ox_items) {
@@ -149,7 +150,7 @@ export default function QuickQuizPage() {
     setResults(new Array(TOTAL_ITEMS).fill("skipped"));
 
     (async () => {
-      const questions = await loadAllQuestions();
+      const questions = await loadQuestionsBySubject(subject);
       const allOX: OXItem[] = [];
       for (const q of questions) {
         if (q.analysis.ox_items) {

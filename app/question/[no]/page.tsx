@@ -51,8 +51,11 @@ export async function generateMetadata({ params }: { params: Promise<{ no: strin
     ? `절반이 틀리는 문항 (정답률 ${rate}%)`
     : `정답률 ${rate}%`;
 
-  const title = `${q.대분류} ${q.중분류} — ${q.시험_구분} ${q.시행년도} | JT기출`;
-  const description = `${rateHook} — 선지별 정오판·근거조문·함정유형까지 무료 해설`;
+  const isAcc = q.tax_type === '회계';
+  const title = `${q.대분류} ${q.중분류} — ${q.시험_구분} ${q.시행년도} | JT기출${isAcc ? ' 회계' : ''}`;
+  const description = isAcc
+    ? `${rateHook} — 선지별 정오판 무료 해설`
+    : `${rateHook} — 선지별 정오판·근거조문·함정유형까지 무료 해설`;
 
   return {
     title,
@@ -81,17 +84,19 @@ export default async function QuestionPage({ params }: { params: Promise<{ no: s
     );
   }
 
-  // 갭을 건너뛰는 이전/다음 no 계산
+  // 같은 과목 내에서 이전/다음 no 계산
   const allNos = getAllNos();
-  const idx = allNos.indexOf(no);
-  const prevNo = idx > 0 ? allNos[idx - 1] : null;
-  const nextNo = idx < allNos.length - 1 ? allNos[idx + 1] : null;
+  const isAccounting = no >= 2001;
+  const subjectNos = allNos.filter(n => isAccounting ? n >= 2001 : n < 2001);
+  const idx = subjectNos.indexOf(no);
+  const prevNo = idx > 0 ? subjectNos[idx - 1] : null;
+  const nextNo = idx < subjectNos.length - 1 ? subjectNos[idx + 1] : null;
 
   return (
     <Suspense fallback={null}>
       <QuestionView
         question={question}
-        totalQuestions={allNos.length}
+        totalQuestions={subjectNos.length}
         prevNo={prevNo}
         nextNo={nextNo}
         currentIndex={idx + 1}

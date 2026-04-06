@@ -1,0 +1,440 @@
+{
+  "version": "1.0",
+  "generated": "2026-04-06",
+  "total_questions": 820,
+  "exam_types": {
+    "국가직_9급": 420,
+    "지방직_9급": 300,
+    "지방직(서울)_9급": 100
+  },
+  "categories": {
+    "회계": {
+      "정부회계": {
+        "지방재무제표": {
+          "card_path": "",
+          "total": 24,
+          "recent_5y": 6,
+          "grade": "★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 4,
+            "지방직_9급": 14,
+            "지방직(서울)_9급": 6
+          }
+        },
+        "국가재무제표": {
+          "card_path": "",
+          "total": 13,
+          "recent_5y": 5,
+          "grade": "★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 6,
+            "지방직_9급": 6,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "종합비교": {
+          "card_path": "",
+          "total": 1,
+          "recent_5y": 0,
+          "grade": "★",
+          "grade_recent": "—",
+          "by_exam": {
+            "국가직_9급": 1
+          }
+        },
+        "총론": {
+          "card_path": "",
+          "total": 2,
+          "recent_5y": 1,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "지방직_9급": 2
+          }
+        }
+      },
+      "재무회계-부채자본재무보고": {
+        "수익인식": {
+          "card_path": "",
+          "total": 18,
+          "recent_5y": 4,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 10,
+            "지방직_9급": 5,
+            "지방직(서울)_9급": 3
+          }
+        },
+        "충당부채·우발부채": {
+          "card_path": "",
+          "total": 10,
+          "recent_5y": 4,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 5,
+            "지방직_9급": 4,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "현금흐름표": {
+          "card_path": "",
+          "total": 30,
+          "recent_5y": 5,
+          "grade": "★★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 16,
+            "지방직_9급": 11,
+            "지방직(서울)_9급": 3
+          }
+        },
+        "자본": {
+          "card_path": "",
+          "total": 35,
+          "recent_5y": 7,
+          "grade": "★★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 17,
+            "지방직_9급": 11,
+            "지방직(서울)_9급": 7
+          }
+        },
+        "유동부채": {
+          "card_path": "",
+          "total": 11,
+          "recent_5y": 2,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 7,
+            "지방직_9급": 2,
+            "지방직(서울)_9급": 2
+          }
+        },
+        "사채": {
+          "card_path": "",
+          "total": 24,
+          "recent_5y": 3,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 20,
+            "지방직_9급": 4
+          }
+        },
+        "회계변경과오류수정": {
+          "card_path": "",
+          "total": 20,
+          "recent_5y": 5,
+          "grade": "★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 14,
+            "지방직_9급": 4,
+            "지방직(서울)_9급": 2
+          }
+        },
+        "재무제표분석": {
+          "card_path": "",
+          "total": 9,
+          "recent_5y": 1,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 5,
+            "지방직_9급": 3,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "주당이익": {
+          "card_path": "",
+          "total": 10,
+          "recent_5y": 1,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 5,
+            "지방직_9급": 2,
+            "지방직(서울)_9급": 3
+          }
+        },
+        "법인세회계·특수": {
+          "card_path": "",
+          "total": 3,
+          "recent_5y": 0,
+          "grade": "★",
+          "grade_recent": "—",
+          "by_exam": {
+            "국가직_9급": 1,
+            "지방직(서울)_9급": 2
+          }
+        },
+        "리스": {
+          "card_path": "",
+          "total": 1,
+          "recent_5y": 0,
+          "grade": "★",
+          "grade_recent": "—",
+          "by_exam": {
+            "지방직_9급": 1
+          }
+        }
+      },
+      "재무회계-자산": {
+        "무형자산": {
+          "card_path": "",
+          "total": 29,
+          "recent_5y": 5,
+          "grade": "★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 15,
+            "지방직_9급": 9,
+            "지방직(서울)_9급": 5
+          }
+        },
+        "재고자산": {
+          "card_path": "",
+          "total": 69,
+          "recent_5y": 13,
+          "grade": "★★★",
+          "grade_recent": "★★★",
+          "by_exam": {
+            "국가직_9급": 36,
+            "지방직_9급": 28,
+            "지방직(서울)_9급": 5
+          }
+        },
+        "유형자산": {
+          "card_path": "",
+          "total": 94,
+          "recent_5y": 17,
+          "grade": "★★★",
+          "grade_recent": "★★★",
+          "by_exam": {
+            "국가직_9급": 49,
+            "지방직_9급": 30,
+            "지방직(서울)_9급": 15
+          }
+        },
+        "수취채권": {
+          "card_path": "",
+          "total": 27,
+          "recent_5y": 4,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 10,
+            "지방직_9급": 11,
+            "지방직(서울)_9급": 6
+          }
+        },
+        "투자부동산": {
+          "card_path": "",
+          "total": 2,
+          "recent_5y": 2,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 2
+          }
+        },
+        "금융자산": {
+          "card_path": "",
+          "total": 34,
+          "recent_5y": 6,
+          "grade": "★★★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 12,
+            "지방직_9급": 16,
+            "지방직(서울)_9급": 6
+          }
+        },
+        "현금및현금성자산": {
+          "card_path": "",
+          "total": 21,
+          "recent_5y": 3,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 14,
+            "지방직_9급": 6,
+            "지방직(서울)_9급": 1
+          }
+        }
+      },
+      "회계원리": {
+        "회계순환과정": {
+          "card_path": "",
+          "total": 86,
+          "recent_5y": 15,
+          "grade": "★★★",
+          "grade_recent": "★★★",
+          "by_exam": {
+            "국가직_9급": 61,
+            "지방직_9급": 17,
+            "지방직(서울)_9급": 8
+          }
+        },
+        "복식부기": {
+          "card_path": "",
+          "total": 13,
+          "recent_5y": 3,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 11,
+            "지방직_9급": 1,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "개념체계": {
+          "card_path": "",
+          "total": 111,
+          "recent_5y": 23,
+          "grade": "★★★",
+          "grade_recent": "★★★",
+          "by_exam": {
+            "국가직_9급": 58,
+            "지방직_9급": 46,
+            "지방직(서울)_9급": 7
+          }
+        },
+        "회계의기초": {
+          "card_path": "",
+          "total": 2,
+          "recent_5y": 0,
+          "grade": "★",
+          "grade_recent": "—",
+          "by_exam": {
+            "국가직_9급": 2
+          }
+        }
+      },
+      "원가관리회계": {
+        "ABC": {
+          "card_path": "",
+          "total": 6,
+          "recent_5y": 1,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 3,
+            "지방직_9급": 2,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "개별원가계산": {
+          "card_path": "",
+          "total": 10,
+          "recent_5y": 6,
+          "grade": "★",
+          "grade_recent": "★★",
+          "by_exam": {
+            "국가직_9급": 4,
+            "지방직_9급": 6
+          }
+        },
+        "원가회계총론": {
+          "card_path": "",
+          "total": 25,
+          "recent_5y": 4,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 11,
+            "지방직_9급": 11,
+            "지방직(서울)_9급": 3
+          }
+        },
+        "종합원가계산": {
+          "card_path": "",
+          "total": 19,
+          "recent_5y": 3,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 6,
+            "지방직_9급": 10,
+            "지방직(서울)_9급": 3
+          }
+        },
+        "CVP분석": {
+          "card_path": "",
+          "total": 24,
+          "recent_5y": 4,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 7,
+            "지방직_9급": 16,
+            "지방직(서울)_9급": 1
+          }
+        },
+        "표준원가": {
+          "card_path": "",
+          "total": 12,
+          "recent_5y": 3,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 4,
+            "지방직_9급": 6,
+            "지방직(서울)_9급": 2
+          }
+        },
+        "의사결정": {
+          "card_path": "",
+          "total": 3,
+          "recent_5y": 0,
+          "grade": "★",
+          "grade_recent": "—",
+          "by_exam": {
+            "국가직_9급": 1,
+            "지방직_9급": 2
+          }
+        },
+        "결합원가": {
+          "card_path": "",
+          "total": 3,
+          "recent_5y": 1,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 1,
+            "지방직_9급": 2
+          }
+        },
+        "원가배분": {
+          "card_path": "",
+          "total": 15,
+          "recent_5y": 1,
+          "grade": "★★",
+          "grade_recent": "★",
+          "by_exam": {
+            "국가직_9급": 2,
+            "지방직_9급": 9,
+            "지방직(서울)_9급": 4
+          }
+        },
+        "전부vs변동원가": {
+          "card_path": "",
+          "total": 4,
+          "recent_5y": 2,
+          "grade": "★",
+          "grade_recent": "★",
+          "by_exam": {
+            "지방직_9급": 3,
+            "지방직(서울)_9급": 1
+          }
+        }
+      }
+    }
+  }
+}

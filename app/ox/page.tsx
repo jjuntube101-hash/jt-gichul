@@ -6,13 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ChevronRight, BookOpen, Flame } from "lucide-react";
-import { loadAllQuestions } from "@/lib/questions";
+import { loadQuestionsBySubject } from "@/lib/questions";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import { useAppStore } from "@/stores/appStore";
 import { trackOX } from "@/lib/questTracker";
 import { adaptiveShuffle, type OXItemWithDifficulty } from "@/lib/adaptiveDifficulty";
 import BadgeToast from "@/components/engagement/BadgeToast";
 import SessionSummary from "@/components/engagement/SessionSummary";
+import SubjectTabs from "@/components/home/SubjectTabs";
+import type { SubjectType } from "@/types/question";
 
 type OXItemWithMeta = OXItemWithDifficulty;
 
@@ -44,6 +46,8 @@ export default function OXPage() {
   const [streak, setStreak] = useState(0);
   const { saveOX, newBadges, dismissNewBadges } = useSolveRecord();
   const setFocusMode = useAppStore((s) => s.setFocusMode);
+  const subject = useAppStore((s) => s.subject);
+  const isAccounting = subject === "accounting";
   const shuffleOrderRef = useRef<number[]>([]);
 
   const saveSession = useCallback((idx: number, st: { correct: number; wrong: number }, scope: TaxScope) => {
@@ -61,7 +65,7 @@ export default function OXPage() {
   useEffect(() => {
     async function load() {
       try {
-        const questions = await loadAllQuestions();
+        const questions = await loadQuestionsBySubject(subject);
         const allOX: OXItemWithMeta[] = [];
         for (const q of questions) {
           if (q.analysis.ox_items) {
@@ -113,8 +117,11 @@ export default function OXPage() {
         setLoading(false);
       }
     }
+    // 과목 변경 시 다시 로드
+    setStarted(false);
+    setLoading(true);
     load();
-  }, []);
+  }, [subject]);
 
   // 컴포넌트 언마운트 시 포커스 모드 해제
   useEffect(() => {
@@ -214,7 +221,9 @@ export default function OXPage() {
   if (!started) {
     const nationalCount = items.filter(ox => isNationalLaw(ox.law)).length;
     const localCount = items.filter(ox => !isNationalLaw(ox.law)).length;
-    const scopeCount = taxScope === "national" ? nationalCount : taxScope === "local" ? localCount : items.length;
+    const scopeCount = isAccounting
+      ? items.length
+      : taxScope === "national" ? nationalCount : taxScope === "local" ? localCount : items.length;
 
     return (
       <div className="space-y-6">
@@ -225,30 +234,35 @@ export default function OXPage() {
           </p>
         </div>
 
-        {/* 국세/지방세 스코프 선택 */}
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground text-center">범위 선택</p>
-          <div className="flex rounded-xl bg-muted p-1 gap-1">
-            {([
-              { key: "all" as TaxScope, label: "전체", count: items.length },
-              { key: "national" as TaxScope, label: "국세", count: nationalCount },
-              { key: "local" as TaxScope, label: "지방세", count: localCount },
-            ]).map((opt) => (
-              <button
-                key={opt.key}
-                onClick={() => setTaxScope(opt.key)}
-                className={`flex-1 rounded-lg py-2.5 text-xs font-semibold transition-colors ${
-                  taxScope === opt.key
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {opt.label}
-                <span className="ml-1 text-[10px] opacity-60">{opt.count}</span>
-              </button>
-            ))}
+        {/* 과목 선택 */}
+        <SubjectTabs />
+
+        {/* 국세/지방세 스코프 선택 (세법만) */}
+        {!isAccounting && (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground text-center">범위 선택</p>
+            <div className="flex rounded-xl bg-muted p-1 gap-1">
+              {([
+                { key: "all" as TaxScope, label: "전체", count: items.length },
+                { key: "national" as TaxScope, label: "국세", count: nationalCount },
+                { key: "local" as TaxScope, label: "지방세", count: localCount },
+              ]).map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setTaxScope(opt.key)}
+                  className={`flex-1 rounded-lg py-2.5 text-xs font-semibold transition-colors ${
+                    taxScope === opt.key
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {opt.label}
+                  <span className="ml-1 text-[10px] opacity-60">{opt.count}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <button
           onClick={startDrill}
@@ -291,7 +305,7 @@ export default function OXPage() {
       {/* Header Stats */}
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold text-foreground">
-          OX 퀴즈{taxScope === "national" ? " · 국세" : taxScope === "local" ? " · 지방세" : ""}
+          OX 퀴즈{isAccounting ? " · 회계" : taxScope === "national" ? " · 국세" : taxScope === "local" ? " · 지방세" : ""}
         </h1>
         <div className="flex items-center gap-3 text-xs font-medium">
           {streak >= 3 && (
