@@ -2,7 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
-import type { User } from "@supabase/supabase-js";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
+
+/** 프로필이 없으면 생성 (트리거 대신 앱에서 처리) */
+async function ensureProfile(supabase: SupabaseClient, userId: string) {
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("user_id")
+    .eq("user_id", userId)
+    .single();
+  if (!data) {
+    await supabase.from("user_profiles").upsert({ user_id: userId });
+  }
+}
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -18,12 +30,14 @@ export function useAuth() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
+      if (session?.user) ensureProfile(supabase, session.user.id);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) ensureProfile(supabase, session.user.id);
     });
 
     return () => subscription.unsubscribe();
@@ -34,7 +48,9 @@ export function useAuth() {
     if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: "kakao",
-      options: { redirectTo: window.location.origin },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   };
 

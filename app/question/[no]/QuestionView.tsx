@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap } from "lucide-react";
 import type { Question } from "@/types/question";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
+import BadgeToast from "@/components/engagement/BadgeToast";
+import { isCorrectAnswer, formatAnswer } from "@/lib/answer";
+import { trackSolve } from "@/lib/questTracker";
 
 interface Props {
   question: Question;
@@ -21,18 +25,38 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
   const [selected, setSelected] = useState<number | null>(null);
   const [startTime] = useState(() => Date.now());
   const searchParams = useSearchParams();
-  const { saveSolve } = useSolveRecord();
+  const { saveSolve, newBadges, dismissNewBadges } = useSolveRecord();
   const q = question;
   const a = q.analysis;
 
-  const isAnswered = selected !== null;
-  const isCorrect = selected === q.정답;
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(["choices"]));
 
-  // 돌아갈 경로 복원
+  const isAnswered = selected !== null;
+  const isCorrect = selected !== null && isCorrectAnswer(selected, q.정답);
+
+  useEffect(() => {
+    if (isAnswered && !isCorrect) {
+      setOpenSections(prev => new Set([...prev, "guide"]));
+    }
+  }, [isAnswered, isCorrect]);
+
+  function toggleSection(id: string) {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   const from = searchParams.get("from");
   const lawParam = searchParams.get("law");
   const topicParam = searchParams.get("topic");
   const filterParam = searchParams.get("filter");
+
+  // 현재 쿼리 파라미터를 이전/다음 이동 시 유지
+  const queryString = searchParams.toString();
+  const navQuery = queryString ? `?${queryString}` : "";
 
   let backHref = "/";
   let backLabel = "홈";
@@ -50,287 +74,446 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
       backHref = "/practice";
       backLabel = "문항 목록";
     }
+  } else if (from === "review") {
+    backHref = "/review";
+    backLabel = "오답노트";
+  } else if (from === "timer") {
+    backHref = "/timer";
+    backLabel = "타이머 결과";
   }
 
   function handleSelect(choiceNum: number) {
     if (isAnswered) return;
     setSelected(choiceNum);
+    const correct = isCorrectAnswer(choiceNum, q.정답);
     saveSolve({
       questionNo: q.no,
-      isCorrect: choiceNum === q.정답,
+      isCorrect: correct,
       selectedChoice: choiceNum,
       timeSpentMs: Date.now() - startTime,
       mode: "practice",
     });
+    trackSolve(correct);
   }
 
   function handleReset() {
     setSelected(null);
+    setOpenSections(new Set(["choices"]));
   }
 
   return (
     <div className="space-y-4 pb-8">
-      {/* 뒤로가기 + 브레드크럼 */}
-      <nav className="flex items-center gap-1.5 text-xs text-slate-500">
-        <Link href="/" className="hover:text-slate-700">홈</Link>
-        <span>/</span>
-        <Link href={backHref} className="hover:text-slate-700">{backLabel}</Link>
-        <span>/</span>
-        <span className="text-slate-700 font-medium">#{q.no}</span>
+      <BadgeToast badgeIds={newBadges} onDismiss={dismissNewBadges} />
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Link href="/" className="hover:text-foreground transition-colors">홈</Link>
+        <ChevronRight className="h-3 w-3" />
+        <Link href={backHref} className="hover:text-foreground transition-colors">{backLabel}</Link>
+        <ChevronRight className="h-3 w-3" />
+        <span className="text-foreground font-medium">#{q.no}</span>
       </nav>
 
-      {/* 문항 헤더 */}
+      {/* Question Header */}
       <div className="flex items-center gap-2 flex-wrap">
-        <Badge variant="outline">{q.시험_구분} {q.직급}</Badge>
-        <Badge variant="secondary">{q.시행년도}</Badge>
-        <span className="text-xs text-slate-400">#{q.문제번호}</span>
-        <span className="text-xs text-slate-400">{q.대분류} &gt; {q.중분류}</span>
+        <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">{q.시험_구분} {q.직급}</Badge>
+        <Badge variant="secondary" className="bg-primary-light text-primary text-[10px]">{q.시행년도}</Badge>
+        <span className="text-[10px] text-muted-foreground">#{q.문제번호}</span>
+        <span className="text-[10px] text-muted-foreground">{q.대분류} &gt; {q.중분류}</span>
       </div>
 
-      {/* 난이도 + 정답률 */}
-      <div className="flex items-center gap-4 text-xs text-slate-500">
-        <span>난이도 {a.difficulty}/5</span>
-        <span>추정 정답률 {a.estimated_correct_rate}%</span>
+      {/* Difficulty & Stats */}
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <span className="flex">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                className={`inline-block h-1.5 w-3 rounded-sm mr-0.5 ${
+                  i < a.difficulty ? "bg-primary" : "bg-border"
+                }`}
+              />
+            ))}
+          </span>
+          난이도
+        </span>
+        <span>정답률 {a.estimated_correct_rate}%</span>
         <span>{a.question_type}</span>
       </div>
 
-      {/* 문제 */}
-      <div className="rounded-lg bg-white p-4 shadow-sm border">
-        <p className="text-sm leading-relaxed font-medium whitespace-pre-wrap">
+      {/* Question Body */}
+      <div className="rounded-xl bg-card border border-border p-5 shadow-sm">
+        <p className="text-sm leading-relaxed font-medium whitespace-pre-wrap text-card-foreground">
           {q.문제_내용}
         </p>
         {q.보기 && (
-          <div className="mt-3 rounded-md bg-slate-50 p-3 text-xs leading-relaxed whitespace-pre-wrap text-slate-700">
+          <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
             {q.보기}
           </div>
         )}
       </div>
 
-      {/* 선택지 */}
-      <div className="space-y-2">
+      {/* Choices */}
+      <div className="space-y-2.5" data-no-transition>
         {q.선택지.map((text, idx) => {
           const choiceNum = idx + 1;
           const ca = a.choices_analysis.find(c => c.choice_num === choiceNum);
           const isThis = selected === choiceNum;
-          const isAnswer = choiceNum === q.정답;
+          const isAnswer = isCorrectAnswer(choiceNum, q.정답);
 
-          let borderClass = "border-slate-200";
-          let bgClass = "bg-white";
+          let borderClass = "border-border";
+          let bgClass = "bg-card";
 
           if (isAnswered) {
             if (isAnswer) {
-              borderClass = "border-emerald-400";
-              bgClass = "bg-emerald-50";
+              borderClass = "border-success";
+              bgClass = "bg-success-light";
             } else if (isThis && !isCorrect) {
-              borderClass = "border-red-400";
-              bgClass = "bg-red-50";
+              borderClass = "border-danger";
+              bgClass = "bg-danger-light";
             }
           }
 
           return (
-            <button
+            <motion.button
               key={choiceNum}
               onClick={() => handleSelect(choiceNum)}
-              className={`w-full rounded-lg border p-4 text-left transition-colors ${borderClass} ${bgClass} ${
-                !isAnswered ? "hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer" : ""
+              className={`w-full rounded-xl border-2 p-4 text-left transition-colors ${borderClass} ${bgClass} ${
+                !isAnswered ? "hover:border-primary/40 hover:shadow-sm cursor-pointer" : ""
               }`}
+              whileTap={!isAnswered ? { scale: 0.98 } : undefined}
             >
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
+                <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                  isAnswered && isAnswer
+                    ? "bg-success text-white"
+                    : isAnswered && isThis && !isCorrect
+                    ? "bg-danger text-white"
+                    : "bg-muted text-muted-foreground"
+                }`}>
                   {choiceNum}
                 </span>
-                <span className="text-sm leading-relaxed flex-1">{text}</span>
+                <span className="text-sm leading-relaxed flex-1 text-card-foreground">{text}</span>
                 {isAnswered && ca && (
                   <Badge
-                    variant={ca.verdict === "O" ? "secondary" : "destructive"}
-                    className="shrink-0 text-xs"
+                    className={`shrink-0 text-[10px] ${
+                      ca.verdict === "O"
+                        ? "bg-success-light text-success border-success/20"
+                        : "bg-danger-light text-danger border-danger/20"
+                    }`}
                   >
-                    {ca.verdict === "O" ? "맞는 선지" : "틀린 선지"}
+                    {ca.verdict === "O" ? "O" : "X"}
                   </Badge>
                 )}
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>
 
-      {/* 결과 + 다시풀기 */}
-      {isAnswered && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {isCorrect ? (
-              <span className="text-sm font-bold text-emerald-600">정답!</span>
-            ) : (
-              <span className="text-sm font-bold text-red-600">
-                오답 (정답: {q.정답}번)
-              </span>
-            )}
-          </div>
-          <button
-            onClick={handleReset}
-            className="rounded-md bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+      {/* Result Banner */}
+      <AnimatePresence>
+        {isAnswered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-between"
           >
-            다시 풀기
-          </button>
-        </div>
-      )}
+            <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold ${
+              isCorrect ? "bg-success-light text-success" : "bg-danger-light text-danger"
+            }`}>
+              {isCorrect ? "정답!" : `오답 (정답: ${formatAnswer(q.정답)})`}
+            </div>
+            <button
+              onClick={handleReset}
+              className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              다시 풀기
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* === 해설 (답 선택 후 표시) === */}
-      {isAnswered && (
-        <div className="space-y-4">
-          <Separator />
+      {/* Explanation */}
+      <AnimatePresence>
+        {isAnswered && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="space-y-4 overflow-hidden"
+          >
+            {/* Intent */}
+            <section>
+              <button
+                onClick={() => toggleSection("intent")}
+                className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
+              >
+                <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                  <Target className="h-4 w-4 text-primary" />
+                  출제의도
+                </h3>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("intent") ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {openSections.has("intent") && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="rounded-b-xl bg-card border border-t-0 border-border px-4 pb-4 pt-2">
+                      <p className="text-sm leading-relaxed text-muted-foreground">{a.intent}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </section>
 
-          {/* 출제의도 */}
-          <section>
-            <h3 className="text-sm font-bold text-slate-800 mb-2">출제의도</h3>
-            <p className="text-sm leading-relaxed text-slate-700">{a.intent}</p>
-          </section>
+            {/* Discrimination Point */}
+            <section>
+              <button
+                onClick={() => toggleSection("discrimination")}
+                className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
+              >
+                <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                  <Lightbulb className="h-4 w-4 text-warning" />
+                  변별 포인트
+                </h3>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("discrimination") ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {openSections.has("discrimination") && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="rounded-b-xl bg-card border border-t-0 border-border px-4 pb-4 pt-2">
+                      <p className="text-sm leading-relaxed text-muted-foreground">{a.discrimination_point}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </section>
 
-          {/* 변별 포인트 */}
-          <section>
-            <h3 className="text-sm font-bold text-slate-800 mb-2">변별 포인트</h3>
-            <p className="text-sm leading-relaxed text-slate-700">{a.discrimination_point}</p>
-          </section>
+            {/* Choice Analysis */}
+            <section>
+              <button
+                onClick={() => toggleSection("choices")}
+                className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
+              >
+                <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                  선지별 분석
+                </h3>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("choices") ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {openSections.has("choices") && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="space-y-3 pt-3">
+                      {a.choices_analysis.map((ca) => (
+                        <div
+                          key={ca.choice_num}
+                          className={`rounded-xl border-l-4 bg-card border border-border p-4 space-y-2 ${
+                            ca.verdict === "X"
+                              ? "border-l-danger"
+                              : "border-l-success"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-card-foreground">{ca.choice_num}번</span>
+                            <Badge
+                              className={`text-[10px] ${
+                                ca.verdict === "O"
+                                  ? "bg-success-light text-success"
+                                  : "bg-danger-light text-danger"
+                              }`}
+                            >
+                              {ca.verdict === "O" ? "맞는 선지" : "틀린 선지"}
+                            </Badge>
+                            {ca.trap_type && (
+                              <Badge variant="outline" className="text-[10px] border-warning/30 text-warning">{ca.trap_type}</Badge>
+                            )}
+                          </div>
+                          <p className="text-sm leading-relaxed text-muted-foreground">{ca.analysis}</p>
+                          {ca.distortion && (
+                            <div className="flex items-start gap-2 rounded-lg bg-warning-light p-3 text-xs leading-relaxed text-warning">
+                              <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                              <span><strong>함정:</strong> {ca.distortion}</span>
+                            </div>
+                          )}
+                          <div className="text-xs text-muted-foreground">
+                            <span className="font-medium">근거:</span> {ca.law_ref}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </section>
 
-          <Separator />
-
-          {/* 선지별 분석 */}
-          <section>
-            <h3 className="text-sm font-bold text-slate-800 mb-3">선지별 분석</h3>
-            <div className="space-y-3">
-              {a.choices_analysis.map((ca) => (
-                <Card
-                  key={ca.choice_num}
-                  className={`${
-                    ca.verdict === "X"
-                      ? "border-l-4 border-l-red-400"
-                      : "border-l-4 border-l-emerald-400"
-                  }`}
+            {/* Trap Patterns */}
+            {a.trap_patterns.length > 0 && (
+              <section>
+                <button
+                  onClick={() => toggleSection("traps")}
+                  className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
                 >
-                  <CardContent className="p-3 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold">{ca.choice_num}번</span>
-                      <Badge
-                        variant={ca.verdict === "O" ? "secondary" : "destructive"}
-                        className="text-xs"
-                      >
-                        {ca.verdict === "O" ? "맞는 선지" : "틀린 선지"}
-                      </Badge>
-                      {ca.trap_type && (
-                        <Badge variant="outline" className="text-xs">{ca.trap_type}</Badge>
-                      )}
-                    </div>
-                    <p className="text-sm leading-relaxed text-slate-700">{ca.analysis}</p>
-                    {ca.distortion && (
-                      <div className="rounded-md bg-amber-50 p-2 text-xs leading-relaxed text-amber-800">
-                        <span className="font-bold">함정:</span> {ca.distortion}
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                    <AlertTriangle className="h-4 w-4 text-warning" />
+                    함정 패턴
+                  </h3>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("traps") ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {openSections.has("traps") && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="px-4 pb-4 pt-2">
+                        <div className="flex flex-wrap gap-1.5">
+                          {a.trap_patterns.map((tp, i) => (
+                            <Badge key={i} variant="outline" className="text-[10px] border-warning/30 text-warning">{tp}</Badge>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                    <div className="text-xs text-slate-500">
-                      <span className="font-medium">근거:</span> {ca.law_ref}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </section>
+            )}
+
+            {/* Study Guide */}
+            <section>
+              <button
+                onClick={() => toggleSection("guide")}
+                className="w-full flex items-center justify-between rounded-xl bg-primary-light border border-primary/10 p-4 transition-colors hover:bg-primary-light/80"
+              >
+                <h3 className="flex items-center gap-2 text-sm font-bold text-primary">
+                  <BookOpen className="h-4 w-4" />
+                  학습 가이드
+                </h3>
+                <ChevronDown className={`h-4 w-4 text-primary/60 transition-transform ${openSections.has("guide") ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {openSections.has("guide") && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="rounded-b-xl bg-primary-light border border-t-0 border-primary/10 px-5 pb-5 pt-2 space-y-3">
+                      <div>
+                        <p className="text-[10px] font-semibold text-primary/70 uppercase tracking-wide mb-1">출제자가 묻는 것</p>
+                        <p className="text-sm leading-relaxed text-foreground">{a.study_guide.what_examiner_tests}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold text-primary/70 uppercase tracking-wide mb-1">이렇게 공부하세요</p>
+                        <p className="text-sm leading-relaxed text-foreground">{a.study_guide.how_to_study}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold text-primary/70 uppercase tracking-wide mb-1">자주 하는 실수</p>
+                        <p className="text-sm leading-relaxed text-foreground">{a.study_guide.common_mistakes}</p>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-primary/80">
+                        <span>우선순위: <strong>{a.study_guide.study_priority}</strong></span>
+                        <span>태그: {a.study_guide.revision_tag}</span>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          {/* 함정 패턴 */}
-          {a.trap_patterns.length > 0 && (
-            <section>
-              <h3 className="text-sm font-bold text-slate-800 mb-2">함정 패턴</h3>
-              <div className="flex flex-wrap gap-1">
-                {a.trap_patterns.map((tp, i) => (
-                  <Badge key={i} variant="outline" className="text-xs">{tp}</Badge>
-                ))}
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </section>
-          )}
 
-          <Separator />
+            {/* Law Reference */}
+            {q.근거법령 && (
+              <section>
+                <button
+                  onClick={() => toggleSection("lawref")}
+                  className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
+                >
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                    근거법령
+                  </h3>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("lawref") ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {openSections.has("lawref") && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="rounded-b-xl bg-muted border border-t-0 border-border p-4">
+                        <div className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                          {q.근거법령}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </section>
+            )}
 
-          {/* 학습 가이드 */}
-          <section className="rounded-lg bg-blue-50 p-4 space-y-3">
-            <h3 className="text-sm font-bold text-blue-900">학습 가이드</h3>
-            <div>
-              <p className="text-xs font-medium text-blue-800 mb-1">출제자가 묻는 것</p>
-              <p className="text-sm leading-relaxed text-blue-900">{a.study_guide.what_examiner_tests}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-blue-800 mb-1">이렇게 공부하세요</p>
-              <p className="text-sm leading-relaxed text-blue-900">{a.study_guide.how_to_study}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-blue-800 mb-1">자주 하는 실수</p>
-              <p className="text-sm leading-relaxed text-blue-900">{a.study_guide.common_mistakes}</p>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-blue-700">
-              <span>학습 우선순위: <strong>{a.study_guide.study_priority}</strong></span>
-              <span>복습 태그: {a.study_guide.revision_tag}</span>
-            </div>
-          </section>
+            {/* Keywords */}
+            {a.keywords.length > 0 && (
+              <section>
+                <button
+                  onClick={() => toggleSection("keywords")}
+                  className="w-full flex items-center justify-between rounded-xl bg-card border border-border p-4 transition-colors hover:bg-muted/50"
+                >
+                  <h3 className="flex items-center gap-2 text-sm font-bold text-card-foreground">
+                    키워드
+                  </h3>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.has("keywords") ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {openSections.has("keywords") && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="px-4 pb-4 pt-2">
+                        <div className="flex flex-wrap gap-1.5">
+                          {a.keywords.map((kw, i) => (
+                            <Badge key={i} className="text-[10px] bg-primary-light text-primary">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </section>
+            )}
 
-          {/* 근거법령 */}
-          {q.근거법령 && (
-            <section>
-              <h3 className="text-sm font-bold text-slate-800 mb-2">근거법령</h3>
-              <div className="rounded-md bg-slate-50 p-3 text-sm leading-relaxed whitespace-pre-wrap text-slate-700">
-                {q.근거법령}
-              </div>
-            </section>
-          )}
+            {/* Related Questions */}
+            {a.related_questions.length > 0 && (
+              <section>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-foreground mb-2">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  관련 문항
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {a.related_questions.map((rq) => (
+                    <Link key={rq} href={`/question/${rq}`}>
+                      <Badge variant="outline" className="text-[10px] cursor-pointer hover:bg-primary-light hover:text-primary hover:border-primary/30 transition-colors">#{rq}</Badge>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {/* 키워드 */}
-          {a.keywords.length > 0 && (
-            <section>
-              <h3 className="text-sm font-bold text-slate-800 mb-2">키워드</h3>
-              <div className="flex flex-wrap gap-1">
-                {a.keywords.map((kw, i) => (
-                  <Badge key={i} variant="secondary" className="text-xs">{kw}</Badge>
-                ))}
-              </div>
-            </section>
-          )}
+            {/* Share */}
+            <ShareButton question={q} isCorrect={isCorrect} />
 
-          {/* 관련 문항 */}
-          {a.related_questions.length > 0 && (
-            <section>
-              <h3 className="text-sm font-bold text-slate-800 mb-2">관련 문항</h3>
-              <div className="flex flex-wrap gap-1">
-                {a.related_questions.map((rq) => (
-                  <Link key={rq} href={`/question/${rq}`}>
-                    <Badge variant="outline" className="text-xs cursor-pointer hover:bg-slate-100">#{rq}</Badge>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+            {/* 한 문제 더? — Flow 연속 */}
+            <SmartNextSection question={q} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* 공유 버튼 */}
-          <ShareButton question={q} isCorrect={isCorrect} />
-        </div>
-      )}
-
-      {/* 이전/다음 네비게이션 */}
-      <Separator />
+      {/* Prev/Next Navigation */}
+      <Separator className="bg-border" />
       <div className="flex items-center justify-between">
         {prevNo !== null ? (
           <Link
-            href={`/question/${prevNo}`}
-            className="rounded-md bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+            href={`/question/${prevNo}${navQuery}`}
+            className="flex items-center gap-1 rounded-xl bg-muted px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← 이전
+            <ChevronLeft className="h-4 w-4" />
+            이전
           </Link>
         ) : (
           <div />
         )}
-        <span className="text-xs text-slate-400">{currentIndex} / {totalQuestions}</span>
+        <span className="text-xs text-muted-foreground">{currentIndex} / {totalQuestions}</span>
         {nextNo !== null ? (
           <Link
-            href={`/question/${nextNo}`}
-            className="rounded-md bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+            href={`/question/${nextNo}${navQuery}`}
+            className="flex items-center gap-1 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors"
           >
-            다음 →
+            다음
+            <ChevronRight className="h-4 w-4" />
           </Link>
         ) : (
           <div />
@@ -340,38 +523,82 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
   );
 }
 
-/** 공유 버튼 */
 function ShareButton({ question, isCorrect }: { question: Question; isCorrect: boolean }) {
   const [copied, setCopied] = useState(false);
 
   async function handleShare() {
-    const text = `JT기출 #${question.no} | ${question.대분류} ${question.중분류}\n${isCorrect ? "✅ 정답" : "❌ 오답"} | 난이도 ${question.analysis.difficulty}/5\n\ngichul.jttax.co.kr/question/${question.no}`;
+    const q = question;
+    const diff = q.analysis.difficulty;
+    const rate = q.analysis.estimated_correct_rate;
+    const diffLabel = diff >= 4 ? "고난도" : diff >= 3 ? "중급" : "기본";
+    const emoji = isCorrect ? "✅" : "❌";
+    const challengeMsg = rate <= 40 ? `정답률 ${rate}%의 킬러 문항!` : rate <= 60 ? `정답률 ${rate}% — 절반은 틀리는 문항` : `정답률 ${rate}%`;
+
+    const text = `${emoji} ${q.시험_구분} ${q.시행년도} ${q.대분류}\n${challengeMsg}\n\n나는 ${isCorrect ? "맞혔다" : "틀렸다"}! 너는?\n👉 gichul.jttax.co.kr/question/${q.no}`;
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "JT기출", text });
+        await navigator.share({
+          title: `${diffLabel} 문항 도전 — ${q.대분류} | JT기출`,
+          text,
+          url: `https://gichul.jttax.co.kr/question/${q.no}`,
+        });
         return;
       } catch {
-        // 공유 취소 — 무시
+        // share cancelled
       }
     }
 
-    // 클립보드 복사 폴백
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // 복사 실패
+      // copy failed
     }
   }
 
   return (
     <button
       onClick={handleShare}
-      className="w-full rounded-lg border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
     >
+      <Share2 className="h-4 w-4" />
       {copied ? "복사됨!" : "결과 공유하기"}
     </button>
+  );
+}
+
+function SmartNextSection({ question }: { question: Question }) {
+  const a = question.analysis;
+  const related = a.related_questions ?? [];
+  // 추천 우선순위: ①관련 문항 중 랜덤 ②같은 과목 미풀이
+  const suggestedNo = related.length > 0
+    ? related[Math.floor(Math.random() * related.length)]
+    : null;
+
+  if (!suggestedNo) return null;
+
+  return (
+    <section className="rounded-xl bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 p-4">
+      <p className="text-xs font-bold text-foreground mb-2">
+        <Zap className="inline h-3.5 w-3.5 text-primary mr-1" />
+        한 문제 더?
+      </p>
+      <Link
+        href={`/question/${suggestedNo}`}
+        className="flex items-center justify-between rounded-lg bg-card border border-border p-3 hover:border-primary/40 transition-colors"
+      >
+        <div>
+          <p className="text-xs font-medium text-card-foreground">
+            관련 문항 #{suggestedNo}
+          </p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
+            같은 주제의 문항을 풀어보세요
+          </p>
+        </div>
+        <ChevronRight className="h-4 w-4 text-primary shrink-0" />
+      </Link>
+    </section>
   );
 }

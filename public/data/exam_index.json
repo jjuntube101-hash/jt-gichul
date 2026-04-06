@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "generated": "2026-03-14",
-  "total_questions": 1225,
+  "total_questions": 1245,
   "national_count": 665,
   "local_count": 560,
   "categories": {
@@ -9,7 +9,7 @@
       "국세기본법": {
         "과세": {
           "card_path": "exam_cards/국세/국세기본법_과세.md",
-          "total": 22,
+          "total": 21,
           "recent_5y": 6,
           "grade": "★★★",
           "grade_recent": "★★",
@@ -31,7 +31,7 @@
         },
         "국세와 일반채권의 관계": {
           "card_path": "exam_cards/국세/국세기본법_국세와_일반채권의_관계.md",
-          "total": 11,
+          "total": 12,
           "recent_5y": 5,
           "grade": "★★",
           "grade_recent": "★★",
@@ -75,7 +75,7 @@
         },
         "납세자의 권리": {
           "card_path": "exam_cards/국세/국세기본법_납세자의_권리.md",
-          "total": 30,
+          "total": 32,
           "recent_5y": 13,
           "grade": "★★★",
           "grade_recent": "★★★",
@@ -86,7 +86,7 @@
         },
         "보칙": {
           "card_path": "exam_cards/국세/국세기본법_보칙.md",
-          "total": 2,
+          "total": 3,
           "recent_5y": 0,
           "grade": "★",
           "grade_recent": "—",
@@ -97,7 +97,7 @@
         },
         "심사와 심판": {
           "card_path": "exam_cards/국세/국세기본법_심사와_심판.md",
-          "total": 18,
+          "total": 19,
           "recent_5y": 8,
           "grade": "★★★",
           "grade_recent": "★★★",
@@ -121,7 +121,7 @@
       "국세징수법": {
         "강제징수": {
           "card_path": "exam_cards/국세/국세징수법_강제징수.md",
-          "total": 29,
+          "total": 30,
           "recent_5y": 10,
           "grade": "★★★",
           "grade_recent": "★★★",
@@ -143,7 +143,7 @@
         },
         "납부고지 등": {
           "card_path": "exam_cards/국세/국세징수법_납부고지_등.md",
-          "total": 24,
+          "total": 23,
           "recent_5y": 9,
           "grade": "★★★",
           "grade_recent": "★★★",
@@ -154,7 +154,7 @@
         },
         "보칙": {
           "card_path": "exam_cards/국세/국세징수법_보칙.md",
-          "total": 14,
+          "total": 13,
           "recent_5y": 4,
           "grade": "★★",
           "grade_recent": "★★",
@@ -165,7 +165,7 @@
         },
         "총칙": {
           "card_path": "exam_cards/국세/국세징수법_총칙.md",
-          "total": 2,
+          "total": 4,
           "recent_5y": 0,
           "grade": "★",
           "grade_recent": "—",
@@ -200,7 +200,7 @@
         },
         "기업업무추진비와 기부금": {
           "card_path": "exam_cards/국세/법인세법_기업업무추진비와_기부금.md",
-          "total": 6,
+          "total": 7,
           "recent_5y": 3,
           "grade": "★",
           "grade_recent": "★",
@@ -222,7 +222,7 @@
         },
         "법인세 납세절차": {
           "card_path": "exam_cards/국세/법인세법_법인세_납세절차.md",
-          "total": 4,
+          "total": 5,
           "recent_5y": 3,
           "grade": "★",
           "grade_recent": "★",
@@ -266,7 +266,7 @@
         },
         "손금과 손금불산입": {
           "card_path": "exam_cards/국세/법인세법_손금과_손금불산입.md",
-          "total": 15,
+          "total": 16,
           "recent_5y": 6,
           "grade": "★★",
           "grade_recent": "★★",
@@ -277,7 +277,7 @@
         },
         "손익의 귀속시기": {
           "card_path": "exam_cards/국세/법인세법_손익의_귀속시기.md",
-          "total": 14,
+          "total": 15,
           "recent_5y": 5,
           "grade": "★★",
           "grade_recent": "★★",
@@ -354,7 +354,7 @@
         },
         "충당금과 준비금": {
           "card_path": "exam_cards/국세/법인세법_충당금과_준비금.md",
-          "total": 11,
+          "total": 12,
           "recent_5y": 3,
           "grade": "★★",
           "grade_recent": "★",
@@ -433,7 +433,7 @@
         },
         "과세표준과 세액의 계산": {
           "card_path": "exam_cards/국세/부가가치세법_과세표준과_세액의_계산.md",
-          "total": 46,
+          "total": 47,
           "recent_5y": 12,
           "grade": "★★★",
           "grade_recent": "★★★",
@@ -444,7 +444,7 @@
         },
         "신고와 납부 등": {
           "card_path": "exam_cards/국세/부가가치세법_신고와_납부_등.md",
-          "total": 8,
+          "total": 9,
           "recent_5y": 5,
           "grade": "★",
           "grade_recent": "★★",
@@ -455,7 +455,7 @@
         },
         "영세율과 면세": {
           "card_path": "exam_cards/국세/부가가치세법_영세율과_면세.md",
-          "total": 10,
+          "total": 11,
           "recent_5y": 3,
           "grade": "★",
           "grade_recent": "★",
@@ -466,7 +466,7 @@
         },
         "총칙": {
           "card_path": "exam_cards/국세/부가가치세법_총칙.md",
-          "total": 17,
+          "total": 18,
           "recent_5y": 9,
           "grade": "★★",
           "grade_recent": "★★★",
@@ -525,7 +525,7 @@
       "소득세법": {
         "근로소득": {
           "card_path": "exam_cards/국세/소득세법_근로소득.md",
-          "total": 9,
+          "total": 10,
           "recent_5y": 2,
           "grade": "★",
           "grade_recent": "★",
@@ -580,7 +580,7 @@
         },
         "양도소득세": {
           "card_path": "exam_cards/국세/소득세법_양도소득세.md",
-          "total": 19,
+          "total": 20,
           "recent_5y": 4,
           "grade": "★★★",
           "grade_recent": "★★",
@@ -602,7 +602,7 @@
         },
         "종합소득세의 계산": {
           "card_path": "exam_cards/국세/소득세법_종합소득세의_계산.md",
-          "total": 18,
+          "total": 19,
           "recent_5y": 6,
           "grade": "★★★",
           "grade_recent": "★★",
@@ -613,7 +613,7 @@
         },
         "총칙": {
           "card_path": "exam_cards/국세/소득세법_총칙.md",
-          "total": 18,
+          "total": 20,
           "recent_5y": 6,
           "grade": "★★★",
           "grade_recent": "★★",
@@ -650,7 +650,7 @@
       "종합부동산세법": {
         "종부세": {
           "card_path": "exam_cards/국세/종합부동산세법_종부세.md",
-          "total": 1,
+          "total": 2,
           "recent_5y": 0,
           "grade": "★",
           "grade_recent": "—",

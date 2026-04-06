@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
     { url: `${baseUrl}/practice`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/ox`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/timer`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
   ];
 
   // 문항 페이지 1,245개

@@ -2,24 +2,36 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo, Suspense } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { ChevronRight, AlertTriangle } from "lucide-react";
 import type { Question } from "@/types/question";
 import { loadAllQuestions } from "@/lib/questions";
 
 type SortOption = "default" | "difficulty-asc" | "difficulty-desc" | "rate-asc" | "rate-desc" | "year-desc";
+type TaxScope = "all" | "national" | "local";
+
+const NATIONAL_LAWS = ["국세기본법", "국세징수법", "법인세법", "부가가치세법", "상속세 및 증여세법", "소득세법", "조세법 총론", "종합부동산세법"];
+const LOCAL_LAWS = ["지방세기본법", "지방세법", "지방세징수법", "지방세특례제한법"];
+
+function isNationalLaw(law: string) { return NATIONAL_LAWS.includes(law); }
 
 function PracticeContent() {
   const searchParams = useSearchParams();
   const law = searchParams.get("law");
   const topic = searchParams.get("topic");
   const filter = searchParams.get("filter");
+  const scopeParam = searchParams.get("scope");
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("default");
+  const [trapFilter, setTrapFilter] = useState<string | null>(null);
+  const [showTrapPanel, setShowTrapPanel] = useState(false);
+  const [taxScope, setTaxScope] = useState<TaxScope>(
+    scopeParam === "national" ? "national" : scopeParam === "local" ? "local" : "all"
+  );
 
   useEffect(() => {
     async function load() {
@@ -27,25 +39,32 @@ function PracticeContent() {
       setError(null);
       try {
         const all = await loadAllQuestions();
-
         let filtered: Question[];
 
         if (filter === "random") {
-          for (let i = all.length - 1; i > 0; i--) {
+          // 국세/지방세 스코프 적용 후 랜덤
+          let pool = [...all];
+          if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
+          else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          for (let i = pool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [all[i], all[j]] = [all[j], all[i]];
+            [pool[i], pool[j]] = [pool[j], pool[i]];
           }
-          filtered = all.slice(0, 10);
+          filtered = pool.slice(0, 10);
         } else if (filter === "recent") {
-          filtered = [...all]
-            .sort((a, b) => b.시행년도 - a.시행년도 || b.no - a.no)
-            .slice(0, 20);
+          let pool = [...all];
+          if (taxScope === "national") pool = pool.filter(q => isNationalLaw(q.대분류));
+          else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
+          filtered = pool.sort((a, b) => b.시행년도 - a.시행년도 || b.no - a.no).slice(0, 20);
         } else if (law && topic) {
           filtered = all.filter(q => q.대분류 === law && q.중분류 === topic);
         } else if (law) {
           filtered = all.filter(q => q.대분류 === law);
         } else {
           filtered = all;
+          // 전체 보기에서도 스코프 적용
+          if (taxScope === "national") filtered = filtered.filter(q => isNationalLaw(q.대분류));
+          else if (taxScope === "local") filtered = filtered.filter(q => !isNationalLaw(q.대분류));
         }
 
         setQuestions(filtered);
@@ -56,11 +75,31 @@ function PracticeContent() {
       }
     }
     load();
-  }, [law, topic, filter]);
+  }, [law, topic, filter, taxScope]);
 
-  // 정렬 적용
+  // 함정유형 목록 추출
+  const trapTypes = useMemo(() => {
+    const types = new Set<string>();
+    for (const q of questions) {
+      for (const ca of q.analysis.choices_analysis) {
+        if (ca.trap_type) types.add(ca.trap_type);
+      }
+      for (const tp of q.analysis.trap_patterns) {
+        types.add(tp);
+      }
+    }
+    return Array.from(types).sort();
+  }, [questions]);
+
   const sorted = useMemo(() => {
-    const arr = [...questions];
+    let arr = [...questions];
+    // 함정유형 필터 적용
+    if (trapFilter) {
+      arr = arr.filter((q) =>
+        q.analysis.choices_analysis.some((ca) => ca.trap_type === trapFilter) ||
+        q.analysis.trap_patterns.includes(trapFilter)
+      );
+    }
     switch (sort) {
       case "difficulty-asc": return arr.sort((a, b) => a.analysis.difficulty - b.analysis.difficulty);
       case "difficulty-desc": return arr.sort((a, b) => b.analysis.difficulty - a.analysis.difficulty);
@@ -71,14 +110,16 @@ function PracticeContent() {
     }
   }, [questions, sort]);
 
-  // 페이지 제목 + 브레드크럼
+  const scopeLabel = taxScope === "national" ? "국세" : taxScope === "local" ? "지방세" : "";
   let title = "전체 문항";
-  if (filter === "random") title = "랜덤 10문";
-  else if (filter === "recent") title = "최근 기출 20문";
+  if (filter === "random") title = scopeLabel ? `${scopeLabel} 랜덤 10문` : "랜덤 10문";
+  else if (filter === "recent") title = scopeLabel ? `${scopeLabel} 최근 기출` : "최근 기출 20문";
   else if (law && topic) title = topic;
   else if (law) title = law;
+  else if (scopeLabel) title = `${scopeLabel} 전체`;
 
-  // 문항 링크에 전달할 필터 쿼리
+  const showScopeFilter = !law && !topic;
+
   const filterQuery = law
     ? `?from=practice&law=${encodeURIComponent(law)}${topic ? `&topic=${encodeURIComponent(topic)}` : ""}`
     : filter
@@ -87,54 +128,52 @@ function PracticeContent() {
 
   return (
     <div className="space-y-4">
-      {/* 브레드크럼 */}
-      <nav className="flex items-center gap-1.5 text-xs text-slate-500">
-        <Link href="/" className="hover:text-slate-700">홈</Link>
-        <span>/</span>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Link href="/" className="hover:text-foreground transition-colors">홈</Link>
+        <ChevronRight className="h-3 w-3" />
         {law ? (
           <>
-            <Link href="/practice" className="hover:text-slate-700">문항</Link>
-            <span>/</span>
+            <Link href="/practice" className="hover:text-foreground transition-colors">문항</Link>
+            <ChevronRight className="h-3 w-3" />
             {topic ? (
               <>
-                <Link href={`/practice?law=${encodeURIComponent(law)}`} className="hover:text-slate-700">{law}</Link>
-                <span>/</span>
-                <span className="text-slate-700 font-medium">{topic}</span>
+                <Link href={`/practice?law=${encodeURIComponent(law)}`} className="hover:text-foreground transition-colors">{law}</Link>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-foreground font-medium">{topic}</span>
               </>
             ) : (
-              <span className="text-slate-700 font-medium">{law}</span>
+              <span className="text-foreground font-medium">{law}</span>
             )}
           </>
         ) : (
-          <span className="text-slate-700 font-medium">{title}</span>
+          <span className="text-foreground font-medium">{title}</span>
         )}
       </nav>
 
-      {/* 헤더 */}
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">{title}</h1>
+        <h1 className="text-xl font-bold text-foreground">{title}</h1>
         {!loading && !error && (
-          <span className="text-sm text-slate-500">{sorted.length}문항</span>
+          <span className="text-sm text-muted-foreground">{sorted.length}문항</span>
         )}
       </div>
 
-      {/* 정렬 버튼 */}
-      {!loading && !error && sorted.length > 1 && (
-        <div className="flex flex-wrap gap-1.5">
-          {[
-            { key: "default" as SortOption, label: "기본" },
-            { key: "year-desc" as SortOption, label: "최신순" },
-            { key: "difficulty-desc" as SortOption, label: "난이도↓" },
-            { key: "difficulty-asc" as SortOption, label: "난이도↑" },
-            { key: "rate-asc" as SortOption, label: "낮은정답률순" },
-          ].map((opt) => (
+      {/* Tax Scope Filter */}
+      {showScopeFilter && (
+        <div className="flex rounded-xl bg-muted p-1 gap-1">
+          {([
+            { key: "all" as TaxScope, label: "전체" },
+            { key: "national" as TaxScope, label: "국세" },
+            { key: "local" as TaxScope, label: "지방세" },
+          ]).map((opt) => (
             <button
               key={opt.key}
-              onClick={() => setSort(opt.key)}
-              className={`rounded-full px-3 py-1 text-xs transition-colors ${
-                sort === opt.key
-                  ? "bg-slate-900 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              onClick={() => setTaxScope(opt.key)}
+              className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
+                taxScope === opt.key
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {opt.label}
@@ -143,73 +182,127 @@ function PracticeContent() {
         </div>
       )}
 
-      {/* 로딩 스켈레톤 */}
+      {/* Sort */}
+      {!loading && !error && sorted.length > 1 && (
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { key: "default" as SortOption, label: "기본" },
+            { key: "year-desc" as SortOption, label: "최신순" },
+            { key: "difficulty-desc" as SortOption, label: "난이도 높은순" },
+            { key: "difficulty-asc" as SortOption, label: "난이도 낮은순" },
+            { key: "rate-asc" as SortOption, label: "낮은정답률순" },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => setSort(opt.key)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                sort === opt.key
+                  ? "bg-primary text-white"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Trap Type Filter */}
+      {!loading && !error && trapTypes.length > 0 && (
+        <div>
+          <button
+            onClick={() => { setShowTrapPanel((p) => !p); if (trapFilter) { setTrapFilter(null); setShowTrapPanel(false); } }}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors mb-2 ${
+              trapFilter || showTrapPanel
+                ? "bg-warning text-white"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <AlertTriangle className="h-3 w-3" />
+            {trapFilter ? `함정: ${trapFilter}` : "함정유형 필터"}
+          </button>
+          {showTrapPanel && !trapFilter && (
+            <div className="flex flex-wrap gap-1.5">
+              {trapTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => { setTrapFilter(type); setShowTrapPanel(false); }}
+                  className="rounded-lg px-2.5 py-1 text-[10px] font-medium bg-muted text-muted-foreground hover:bg-warning hover:text-white transition-colors"
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Loading */}
       {loading && (
         <div className="space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="rounded-xl border bg-white p-4 animate-pulse">
+            <div key={i} className="rounded-xl border border-border bg-card p-4 animate-pulse">
               <div className="flex gap-2 mb-2">
-                <div className="h-5 w-16 rounded bg-slate-200" />
-                <div className="h-5 w-10 rounded bg-slate-200" />
+                <div className="h-5 w-16 rounded bg-muted" />
+                <div className="h-5 w-10 rounded bg-muted" />
               </div>
-              <div className="h-4 w-full rounded bg-slate-200 mb-1" />
-              <div className="h-4 w-3/4 rounded bg-slate-200" />
+              <div className="h-4 w-full rounded bg-muted mb-1" />
+              <div className="h-4 w-3/4 rounded bg-muted" />
             </div>
           ))}
         </div>
       )}
 
-      {/* 에러 */}
+      {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center">
-          <p className="text-sm text-red-800 mb-2">{error}</p>
+        <div className="rounded-xl border border-danger/20 bg-danger-light p-4 text-center">
+          <p className="text-sm text-danger mb-2">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="rounded-md bg-red-100 px-4 py-1.5 text-xs font-medium text-red-800 hover:bg-red-200"
+            className="rounded-lg bg-danger/10 px-4 py-1.5 text-xs font-medium text-danger hover:bg-danger/20 transition-colors"
           >
             다시 시도
           </button>
         </div>
       )}
 
-      {/* 문항 목록 */}
+      {/* Empty */}
       {!loading && !error && sorted.length === 0 && (
         <div className="py-12 text-center">
-          <p className="text-sm text-slate-500 mb-2">해당 조건의 문항이 없습니다.</p>
-          <Link href="/" className="text-xs text-blue-600 hover:underline">
+          <p className="text-sm text-muted-foreground mb-2">해당 조건의 문항이 없습니다.</p>
+          <Link href="/" className="text-xs text-primary hover:underline">
             홈으로 돌아가기
           </Link>
         </div>
       )}
 
+      {/* Question List */}
       {!loading && !error && sorted.length > 0 && (
         <div className="space-y-2">
           {sorted.map((q) => (
             <Link key={q.no} href={`/question/${q.no}${filterQuery}`}>
-              <Card className="cursor-pointer transition-colors hover:bg-slate-100">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Badge variant="outline" className="text-xs shrink-0">
-                          {q.시험_구분} {q.직급}
-                        </Badge>
-                        <span className="text-xs text-slate-400">{q.시행년도}</span>
-                        <span className="text-xs text-slate-400">#{q.문제번호}</span>
-                      </div>
-                      <p className="text-sm leading-relaxed line-clamp-2">
-                        {q.문제_내용}
-                      </p>
+              <div className="rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Badge variant="outline" className="text-[10px] shrink-0 border-primary/20 text-primary">
+                        {q.시험_구분} {q.직급}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">{q.시행년도}</span>
+                      <span className="text-[10px] text-muted-foreground">#{q.문제번호}</span>
                     </div>
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <DifficultyDots level={q.analysis.difficulty} />
-                      <span className="text-xs text-slate-400">
-                        {q.analysis.estimated_correct_rate}%
-                      </span>
-                    </div>
+                    <p className="text-sm leading-relaxed line-clamp-2 text-card-foreground">
+                      {q.문제_내용}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <DifficultyBar level={q.analysis.difficulty} />
+                    <span className="text-[10px] text-muted-foreground">
+                      {q.analysis.estimated_correct_rate}%
+                    </span>
+                  </div>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
@@ -218,14 +311,14 @@ function PracticeContent() {
   );
 }
 
-function DifficultyDots({ level }: { level: number }) {
+function DifficultyBar({ level }: { level: number }) {
   return (
     <div className="flex gap-0.5" aria-label={`난이도 ${level}/5`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <div
           key={i}
-          className={`h-1.5 w-1.5 rounded-full ${
-            i <= level ? "bg-slate-700" : "bg-slate-200"
+          className={`h-1.5 w-3 rounded-sm ${
+            i <= level ? "bg-primary" : "bg-border"
           }`}
         />
       ))}
@@ -239,9 +332,9 @@ export default function PracticePage() {
       fallback={
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl border bg-white p-4 animate-pulse">
-              <div className="h-4 w-full rounded bg-slate-200 mb-1" />
-              <div className="h-4 w-3/4 rounded bg-slate-200" />
+            <div key={i} className="rounded-xl border border-border bg-card p-4 animate-pulse">
+              <div className="h-4 w-full rounded bg-muted mb-1" />
+              <div className="h-4 w-3/4 rounded bg-muted" />
             </div>
           ))}
         </div>

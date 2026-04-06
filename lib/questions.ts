@@ -1,10 +1,11 @@
 /**
  * 문항 데이터 로딩 유틸리티
  * - 청크 기반 lazy loading
- * - localStorage 캐시
+ * - IndexedDB 캐시 (localStorage 5MB 제한 우회)
  */
 
 import type { Question, ChunkMeta, ExamIndex } from '@/types/question';
+import { cacheGet, cacheSet, cleanupLocalStorage } from './cache';
 
 const BASE = '/data/questions';
 const INDEX_PATH = '/data/exam_index.json';
@@ -30,33 +31,26 @@ export async function loadExamIndex(): Promise<ExamIndex> {
   return indexCache!;
 }
 
-/** 특정 청크 로드 (localStorage 캐시) */
+/** 특정 청크 로드 (IndexedDB 캐시) */
 async function loadChunk(chunkFile: string): Promise<Question[]> {
-  const cacheKey = `jt_chunk_${chunkFile}`;
+  const cacheKey = `chunk_${chunkFile}`;
 
-  // localStorage 캐시 확인
-  if (typeof window !== 'undefined') {
-    try {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached) return JSON.parse(cached);
-    } catch {
-      // localStorage 용량 초과 등 — 무시
-    }
-  }
+  // IndexedDB 캐시 확인
+  const cached = await cacheGet<Question[]>(cacheKey);
+  if (cached) return cached;
 
   const res = await fetch(`${BASE}/${chunkFile}`);
   const data: Question[] = await res.json();
 
-  // localStorage 캐시 저장
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify(data));
-    } catch {
-      // 용량 초과 — 무시
-    }
-  }
+  // IndexedDB 캐시 저장 (비동기, 실패해도 무시)
+  cacheSet(cacheKey, data);
 
   return data;
+}
+
+// 앱 시작 시 기존 localStorage 청크 캐시 정리 (1회)
+if (typeof window !== "undefined") {
+  cleanupLocalStorage();
 }
 
 /** 문항 번호로 해당 청크 찾기 */

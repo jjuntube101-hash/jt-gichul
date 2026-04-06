@@ -55,7 +55,7 @@ export interface Question {
   문제_내용: string;
   보기: string;
   선택지: string[];
-  정답: number;
+  정답: number | number[];
   대분류: string;
   중분류: string;
   소분류: string;

@@ -44,9 +44,26 @@ export async function generateMetadata({ params }: { params: Promise<{ no: strin
   const q = getQuestion(no);
   if (!q) return { title: "문항을 찾을 수 없습니다" };
 
+  const rate = q.analysis.estimated_correct_rate;
+  const rateHook = rate <= 40
+    ? `정답률 ${rate}% 킬러 문항`
+    : rate <= 60
+    ? `절반이 틀리는 문항 (정답률 ${rate}%)`
+    : `정답률 ${rate}%`;
+
+  const title = `${q.대분류} ${q.중분류} — ${q.시험_구분} ${q.시행년도} | JT기출`;
+  const description = `${rateHook} — 선지별 정오판·근거조문·함정유형까지 무료 해설`;
+
   return {
-    title: `#${q.no} ${q.대분류} — JT기출`,
-    description: q.문제_내용.slice(0, 100),
+    title,
+    description,
+    openGraph: {
+      title: `${q.대분류} — 이 문제 맞힐 수 있어? | JT기출`,
+      description,
+      type: "article",
+      url: `https://gichul.jttax.co.kr/question/${q.no}`,
+      siteName: "JT기출",
+    },
   };
 }
 

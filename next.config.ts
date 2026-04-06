@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 import withSerwist from "@serwist/next";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  turbopack: {},
+};
 
 export default withSerwist({
   swSrc: "app/sw.ts",

@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
+/* ===== JT기출 Design System v2 ===== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary — Indigo */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --primary-muted: #c7d2fe;
+
+  /* Surfaces */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+
+  /* Semantic */
+  --success: #059669;
+  --success-light: #ecfdf5;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --info: #2563eb;
+  --info-light: #eff6ff;
+
+  /* Layout */
+  --header-height: 3.5rem;
+  --bottom-nav-height: 4rem;
+  --max-width: 40rem;
+  --radius: 0.75rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-float: 0 8px 30px rgb(0 0 0 / 0.12);
+}
+
+.dark {
+  --primary: #818cf8;
+  --primary-hover: #a5b4fc;
+  --primary-light: #1e1b4b;
+  --primary-muted: #3730a3;
+
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
+
+  --success: #34d399;
+  --success-light: #064e3b;
+  --danger: #f87171;
+  --danger-light: #7f1d1d;
+  --warning: #fbbf24;
+  --warning-light: #78350f;
+  --info: #60a5fa;
+  --info-light: #1e3a5f;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-float: 0 8px 30px rgb(0 0 0 / 0.4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-primary-muted: var(--primary-muted);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-danger: var(--danger);
+  --color-danger-light: var(--danger-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  --color-info: var(--info);
+  --color-info-light: var(--info-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ===== Base ===== */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Safe area for PWA */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Glassmorphism header/nav */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.85);
+}
+
+/* Gradient hero */
+.gradient-hero {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
+}
+
+.dark .gradient-hero {
+  background: linear-gradient(135deg, #3730a3 0%, #5b21b6 50%, #1e40af 100%);
+}
+
+/* Smooth transitions for dark mode */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transitions on elements that animate themselves */
+[data-no-transition],
+[data-no-transition] * {
+  transition-property: none !important;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* ===== Selection ===== */
+::selection {
+  background-color: var(--primary-muted);
+  color: var(--foreground);
 }

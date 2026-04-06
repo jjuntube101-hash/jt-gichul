@@ -1,7 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/navigation/Header";
 import BottomNav from "@/components/navigation/BottomNav";
+import AuthListener from "@/components/auth/AuthListener";
+import FeedbackButton from "@/components/feedback/FeedbackButton";
+import StudyTimer from "@/components/engagement/StudyTimer";
+import RestReminder from "@/components/engagement/RestReminder";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import OnboardingGate from "@/components/onboarding/OnboardingGate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +25,26 @@ export const metadata: Metadata = {
   description:
     "이현준 세무사의 1,245문항 전수분석. 선지별 정오판·근거조문·함정유형·출제의도까지.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "JT기출 — 공무원 세법 기출 학습",
     description:
-      "세법 기출, 선지 하나까지 왜 틀렸는지 알려주는 앱",
+      "세법 기출, 선지 하나까지 왜 틀렸는지 알려주는 앱. 1,245문항 전수분석.",
     type: "website",
+    url: "https://gichul.jttax.co.kr",
+    siteName: "JT기출",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary",
+    title: "JT기출 — 공무원 세법 기출 학습",
+    description: "이현준 세무사의 1,245문항 전수분석. 선지별 정오판·근거조문·함정유형.",
+  },
+  alternates: {
+    canonical: "https://gichul.jttax.co.kr",
   },
   appleWebApp: {
     capable: true,
@@ -34,8 +56,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#0f172a",
+  maximumScale: 5,
+  themeColor: "#4f46e5",
 };
 
 export default function RootLayout({
@@ -46,23 +68,31 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
-        <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-sm">
-          <div className="mx-auto flex h-14 max-w-2xl items-center px-4">
-            <a href="/" className="text-lg font-bold tracking-tight">
-              JT기출
-            </a>
-            <span className="ml-2 text-xs text-slate-500">세법</span>
-          </div>
-        </header>
-        <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6 pb-20">
-          {children}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("jt-gichul-theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
+        <AuthListener />
+        <Header />
+        <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6 pb-24">
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </main>
-        <footer className="border-t bg-white py-4 pb-16 text-center text-xs text-slate-400">
+        <footer className="border-t border-border bg-card py-4 pb-20 text-center text-xs text-muted-foreground">
           이현준 세무사 &middot; 제이티 세무회계
         </footer>
+        <FeedbackButton />
+        <StudyTimer />
+        <RestReminder />
+        <OnboardingGate />
         <BottomNav />
       </body>
     </html>
