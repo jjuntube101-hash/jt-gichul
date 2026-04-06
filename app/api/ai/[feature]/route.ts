@@ -15,6 +15,8 @@ import { makeCacheKey } from '@/lib/aiCache';
 import { diagnoseWrongAnswer } from '@/lib/wrongAnswerEngine';
 import { collectBriefingData, generateBriefing } from '@/lib/briefingEngine';
 import { generateMockExam } from '@/lib/mockExamEngine';
+import { generateWeeklyReport } from '@/lib/weeklyReportEngine';
+import { generateDdayStrategy } from '@/lib/ddayStrategyEngine';
 
 // --- 서버사이드 Supabase ---
 
@@ -257,6 +259,41 @@ export async function POST(
         console.error('[AI API] 모의고사 생성 오류:', err);
         return NextResponse.json(
           { error: '모의고사 생성 중 오류가 발생했습니다.', code: 'MOCK_EXAM_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else if (feature === 'weekly_report') {
+      try {
+        const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
+        aiResponse = await generateWeeklyReport({
+          userId: auth.userId,
+          examTarget,
+        });
+      } catch (err) {
+        console.error('[AI API] 주간 보고서 생성 오류:', err);
+        return NextResponse.json(
+          { error: '주간 보고서 생성 중 오류가 발생했습니다.', code: 'WEEKLY_REPORT_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else if (feature === 'dday_strategy') {
+      try {
+        const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
+        aiResponse = await generateDdayStrategy({
+          userId: auth.userId,
+          examTarget,
+        });
+      } catch (err) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        if (errMsg === 'EXAM_DATE_NOT_SET') {
+          return NextResponse.json(
+            { error: '시험일을 먼저 설정해주세요.', code: 'EXAM_DATE_NOT_SET' },
+            { status: 400 }
+          );
+        }
+        console.error('[AI API] D-day 전략 생성 오류:', err);
+        return NextResponse.json(
+          { error: 'D-day 전략 생성 중 오류가 발생했습니다.', code: 'DDAY_STRATEGY_ERROR' },
           { status: 500 }
         );
       }

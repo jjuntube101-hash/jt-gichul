@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
-import { BookOpen, CircleDot, Shuffle, LogOut, Target, Trophy, TrendingUp, Flame, Award, Bell, BellOff, Clock, FileX, Search, BarChart3 } from "lucide-react";
+import { BookOpen, CircleDot, Shuffle, LogOut, Target, Trophy, TrendingUp, Flame, Award, Bell, BellOff, Clock, FileX, Search, BarChart3, ClipboardList, Calendar } from "lucide-react";
 import { useStreak } from "@/hooks/useStreak";
 import { useBadges } from "@/hooks/useBadges";
 import { usePush } from "@/hooks/usePush";
@@ -221,6 +221,8 @@ export default function MyPage() {
       <section>
         <h2 className="text-sm font-bold text-foreground mb-3">학습하기</h2>
         <div className="space-y-2">
+          <MenuLink href="/dday-strategy" icon={<Calendar className="h-4 w-4 text-primary" />} label="D-day 전략" />
+          <MenuLink href="/weekly-report" icon={<ClipboardList className="h-4 w-4 text-info" />} label="약점 해부 보고서" />
           <MenuLink href="/practice?filter=random" icon={<Shuffle className="h-4 w-4 text-primary" />} label="랜덤 10문 풀기" />
           <MenuLink href="/ox" icon={<CircleDot className="h-4 w-4 text-success" />} label="OX 퀴즈" />
           <MenuLink href="/timer" icon={<Clock className="h-4 w-4 text-warning" />} label="타이머 모드" />
