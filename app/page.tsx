@@ -10,7 +10,9 @@ import DailyQuestCard from "@/components/engagement/DailyQuestCard";
 import DailyStudyPlan from "@/components/engagement/DailyStudyPlan";
 import WeeklyReport from "@/components/engagement/WeeklyReport";
 import SpacedReviewCard from "@/components/engagement/SpacedReviewCard";
+import RoadmapCard from "@/components/roadmap/RoadmapCard";
 import CategoryTree from "@/components/home/CategoryTree";
+import StageHome from "@/components/home/StageHome";
 
 function getExamIndex(): ExamIndex {
   const filePath = path.join(process.cwd(), "public/data/exam_index.json");
@@ -38,11 +40,17 @@ export default function Home() {
         <div className="absolute -bottom-4 -right-2 h-20 w-20 rounded-full bg-white/5" />
       </section>
 
+      {/* 단계별 홈 (로그인 유저만 표시) */}
+      <StageHome />
+
       {/* 1문제만! CTA */}
       <QuickStartCTA />
 
       {/* Streak + 미완성 업무 카드 (logged in users) */}
       <HomeEngagement />
+
+      {/* 이번 주 학습 로드맵 (logged in + onboarded) */}
+      <RoadmapCard />
 
       {/* 오늘의 학습 플랜 */}
       <DailyStudyPlan />
