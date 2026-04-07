@@ -40,7 +40,6 @@ import TopicMasteryMap from "@/components/stats/TopicMasteryMap";
 import PeerBenchmark from "@/components/engagement/PeerBenchmark";
 import JourneyMap from "@/components/progress/JourneyMap";
 import { getRoadmap } from "@/lib/roadmap";
-import type { SubjectType } from "@/lib/roadmap";
 
 interface Stats {
   totalSolved: number;
@@ -68,7 +67,7 @@ export default function MyPage() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editName, setEditName] = useState("");
   const [editExamTarget, setEditExamTarget] = useState<
-    "9급" | "7급" | "회계"
+    "9급" | "7급"
   >("9급");
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
@@ -112,7 +111,7 @@ export default function MyPage() {
         // 프로필 초기값 설정
         if (profileRes.data) {
           setEditExamTarget(
-            (profileRes.data.exam_target as "9급" | "7급" | "회계") ?? "9급"
+            (profileRes.data.exam_target as "9급" | "7급") ?? "9급"
           );
           setEditName(
             profileRes.data.display_name ?? user.user_metadata?.name ?? ""
@@ -135,13 +134,10 @@ export default function MyPage() {
   // 로드맵 주차 계산
   const roadmapInfo = useMemo(() => {
     if (!profileLoaded) return null;
-    const isAccounting = editExamTarget === "회계";
-    const target = isAccounting ? "9급" : editExamTarget;
-    const subject: SubjectType = isAccounting ? "accounting" : "tax";
-    const rm = getRoadmap(target as "9급" | "7급", subject);
+    // 세법 로드맵 기준 (회계 로드맵은 별도 탭에서)
+    const rm = getRoadmap(editExamTarget);
     if (!rm) return null;
 
-    // 현재 주차 추정: examDate 기반 역산 또는 단순 표시
     let currentWeek: number | undefined;
     if (examDate) {
       const now = new Date();
@@ -156,12 +152,8 @@ export default function MyPage() {
     return { currentWeek, totalWeeks: rm.totalWeeks };
   }, [profileLoaded, editExamTarget, examDate]);
 
-  // 총 문항 수 (시험 목표별)
-  const totalQuestions = useMemo(() => {
-    if (editExamTarget === "회계") return 820;
-    if (editExamTarget === "7급") return 1245; // 7급은 세법만
-    return 1245; // 9급도 세법 기준
-  }, [editExamTarget]);
+  // 총 문항 수 (9급/7급 모두 세법+회계 = 2,065)
+  const totalQuestions = 2065;
 
   if (authLoading) {
     return (
@@ -242,7 +234,7 @@ export default function MyPage() {
                 시험 목표
               </label>
               <div className="grid grid-cols-3 gap-2">
-                {(["9급", "7급", "회계"] as const).map((target) => (
+                {(["9급", "7급"] as const).map((target) => (
                   <button
                     key={target}
                     onClick={() => setEditExamTarget(target)}

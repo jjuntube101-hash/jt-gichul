@@ -17,7 +17,7 @@ import { getTodayReviewCards } from "@/lib/spacedRepetition";
 interface JourneyMapProps {
   totalSolved: number;
   totalQuestions: number; // 전체 문항 수 (세법+회계)
-  examTarget: "9급" | "7급" | "회계";
+  examTarget: "9급" | "7급";
   examDate?: string | null; // YYYY-MM-DD
   roadmapWeek?: number; // 현재 진행 주차
   roadmapTotal?: number; // 전체 주차 수

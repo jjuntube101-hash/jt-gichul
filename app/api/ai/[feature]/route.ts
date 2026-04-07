@@ -339,17 +339,81 @@ export async function POST(
       }
     } else if (feature === 'briefing') {
       try {
+        // 사전 조건 확인: 프로필 존재 여부
+        const sb = getServiceSupabase();
+        const { data: profile } = await sb
+          .from('user_study_profiles')
+          .select('onboarding_completed')
+          .eq('user_id', auth.userId)
+          .single();
+
+        if (!profile || !profile.onboarding_completed) {
+          return NextResponse.json(
+            { error: '온보딩을 먼저 완료해주세요.', code: 'ONBOARDING_REQUIRED' },
+            { status: 400 }
+          );
+        }
+
+        // 사전 조건 확인: 최소 풀이 기록
+        const { count: solveCount } = await sb
+          .from('solve_records')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', auth.userId);
+
+        if (!solveCount || solveCount < 5) {
+          return NextResponse.json(
+            {
+              error: `브리핑을 생성하려면 최소 5문항을 풀어야 해요. (현재 ${solveCount ?? 0}문항)`,
+              code: 'INSUFFICIENT_DATA',
+              detail: { current: solveCount ?? 0, required: 5 },
+            },
+            { status: 400 }
+          );
+        }
+
         const briefingData = await collectBriefingData(auth.userId);
         aiResponse = generateBriefing(briefingData);
       } catch (err) {
         console.error('[AI API] 브리핑 생성 오류:', err);
         return NextResponse.json(
-          { error: '브리핑 생성 중 오류가 발생했습니다.', code: 'BRIEFING_ERROR' },
+          { error: '브리핑 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', code: 'BRIEFING_ERROR' },
           { status: 500 }
         );
       }
     } else if (feature === 'mock_exam') {
       try {
+        // 사전 조건 확인: 프로필 존재 여부
+        const sb = getServiceSupabase();
+        const { data: profile } = await sb
+          .from('user_study_profiles')
+          .select('onboarding_completed')
+          .eq('user_id', auth.userId)
+          .single();
+
+        if (!profile || !profile.onboarding_completed) {
+          return NextResponse.json(
+            { error: '모의고사를 생성하려면 먼저 프로필을 설정해주세요.', code: 'ONBOARDING_REQUIRED' },
+            { status: 400 }
+          );
+        }
+
+        // 사전 조건 확인: 최소 풀이 기록
+        const { count: solveCount } = await sb
+          .from('solve_records')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', auth.userId);
+
+        if (!solveCount || solveCount < 5) {
+          return NextResponse.json(
+            {
+              error: `맞춤 모의고사를 생성하려면 최소 5문항을 풀어야 해요. (현재 ${solveCount ?? 0}문항)`,
+              code: 'INSUFFICIENT_DATA',
+              detail: { current: solveCount ?? 0, required: 5 },
+            },
+            { status: 400 }
+          );
+        }
+
         const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
         aiResponse = await generateMockExam({
           userId: auth.userId,
@@ -359,12 +423,30 @@ export async function POST(
       } catch (err) {
         console.error('[AI API] 모의고사 생성 오류:', err);
         return NextResponse.json(
-          { error: '모의고사 생성 중 오류가 발생했습니다.', code: 'MOCK_EXAM_ERROR' },
+          { error: '모의고사 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', code: 'MOCK_EXAM_ERROR' },
           { status: 500 }
         );
       }
     } else if (feature === 'weekly_report') {
       try {
+        // 사전 조건 확인
+        const sb = getServiceSupabase();
+        const { count: solveCount } = await sb
+          .from('solve_records')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', auth.userId);
+
+        if (!solveCount || solveCount < 10) {
+          return NextResponse.json(
+            {
+              error: `주간 보고서를 생성하려면 최소 10문항을 풀어야 해요. (현재 ${solveCount ?? 0}문항)`,
+              code: 'INSUFFICIENT_DATA',
+              detail: { current: solveCount ?? 0, required: 10 },
+            },
+            { status: 400 }
+          );
+        }
+
         const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
         aiResponse = await generateWeeklyReport({
           userId: auth.userId,
@@ -373,7 +455,7 @@ export async function POST(
       } catch (err) {
         console.error('[AI API] 주간 보고서 생성 오류:', err);
         return NextResponse.json(
-          { error: '주간 보고서 생성 중 오류가 발생했습니다.', code: 'WEEKLY_REPORT_ERROR' },
+          { error: '주간 보고서 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', code: 'WEEKLY_REPORT_ERROR' },
           { status: 500 }
         );
       }

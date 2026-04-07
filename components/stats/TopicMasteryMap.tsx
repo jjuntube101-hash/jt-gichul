@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Map } from "lucide-react";
-import { useTopicMastery, type TopicMastery, type LawMastery } from "@/hooks/useTopicMastery";
+import { useTopicMastery, getLawCategory, type TopicMastery, type LawMastery, type LawCategory } from "@/hooks/useTopicMastery";
 import { useAuth } from "@/hooks/useAuth";
 
 const LEVEL_STYLES: Record<TopicMastery["level"], { bg: string; text: string; ring: string }> = {
@@ -54,9 +54,30 @@ export default function TopicMasteryMap() {
         </div>
       </div>
 
-      {data.map((law, idx) => (
-        <LawSection key={law.law} law={law} index={idx} />
-      ))}
+      {/* 카테고리별 그룹 렌더링 */}
+      {(["국세", "지방세", "회계"] as LawCategory[]).map((category) => {
+        const laws = data.filter((l) => getLawCategory(l.law) === category);
+        if (laws.length === 0) return null;
+
+        const label =
+          category === "국세" ? "세법 — 국세"
+          : category === "지방세" ? "세법 — 지방세"
+          : "회계";
+
+        return (
+          <div key={category} className="space-y-3">
+            <div className="flex items-center gap-2 pt-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                {label}
+              </span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+            {laws.map((law, idx) => (
+              <LawSection key={law.law} law={law} index={idx} />
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BarChart3, ArrowRight, RefreshCw } from "lucide-react";
+import { BarChart3, ArrowRight, RefreshCw, BookOpen, ClipboardList } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
 
@@ -20,12 +20,28 @@ interface BriefingResult {
   generatedAt: string;
 }
 
+/** API 오류 코드 → 사용자 메시지/액션 매핑 */
+type ErrorCode =
+  | "ONBOARDING_REQUIRED"
+  | "INSUFFICIENT_DATA"
+  | "BRIEFING_ERROR"
+  | "RATE_LIMITED"
+  | "UNAUTHORIZED"
+  | "INTERNAL_ERROR"
+  | "NETWORK_ERROR";
+
+interface ErrorInfo {
+  code: ErrorCode;
+  message: string;
+  detail?: { current?: number; required?: number };
+}
+
 type BriefingState =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "ok"; data: BriefingResult; cached: boolean }
   | { status: "rate_limited"; data: BriefingResult | null }
-  | { status: "error"; message: string };
+  | { status: "error"; error: ErrorInfo };
 
 const STORAGE_KEY = "jt_briefing_cache";
 
@@ -77,7 +93,7 @@ export default function DailyBriefing() {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session?.access_token) {
-        setState({ status: "error", message: "인증 정보 없음" });
+        setState({ status: "error", error: { code: "UNAUTHORIZED", message: "로그인이 필요합니다." } });
         return;
       }
 
@@ -98,7 +114,23 @@ export default function DailyBriefing() {
       }
 
       if (!res.ok) {
-        setState({ status: "error", message: "브리핑 생성 실패" });
+        // API 오류 응답 파싱
+        try {
+          const errJson = await res.json();
+          setState({
+            status: "error",
+            error: {
+              code: (errJson.code as ErrorCode) ?? "INTERNAL_ERROR",
+              message: errJson.error ?? "브리핑 생성 실패",
+              detail: errJson.detail,
+            },
+          });
+        } catch {
+          setState({
+            status: "error",
+            error: { code: "INTERNAL_ERROR", message: "브리핑 생성 실패" },
+          });
+        }
         return;
       }
 
@@ -107,7 +139,10 @@ export default function DailyBriefing() {
       setCachedBriefing(briefing);
       setState({ status: "ok", data: briefing, cached: !!json.cached });
     } catch {
-      setState({ status: "error", message: "네트워크 오류" });
+      setState({
+        status: "error",
+        error: { code: "NETWORK_ERROR", message: "인터넷 연결을 확인해주세요." },
+      });
     }
   }, [user]);
 
@@ -143,6 +178,9 @@ export default function DailyBriefing() {
 
   // --- Error state ---
   if (state.status === "error") {
+    const { error } = state;
+    const isRetryable = error.code === "BRIEFING_ERROR" || error.code === "INTERNAL_ERROR" || error.code === "NETWORK_ERROR";
+
     return (
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-center justify-between">
@@ -150,17 +188,42 @@ export default function DailyBriefing() {
             <BarChart3 className="h-4 w-4 text-primary" />
             오늘의 브리핑
           </div>
-          <button
-            onClick={fetchBriefing}
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <RefreshCw className="h-3 w-3" />
-            재시도
-          </button>
+          {isRetryable && (
+            <button
+              onClick={fetchBriefing}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <RefreshCw className="h-3 w-3" />
+              재시도
+            </button>
+          )}
         </div>
+
         <p className="mt-2 text-xs text-muted-foreground">
-          브리핑을 불러올 수 없습니다. 잠시 후 다시 시도해주세요.
+          {error.message}
         </p>
+
+        {/* 문맥에 맞는 CTA */}
+        {error.code === "INSUFFICIENT_DATA" && (
+          <Link
+            href="/practice?filter=random"
+            className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            문제 풀러 가기
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        )}
+        {error.code === "ONBOARDING_REQUIRED" && (
+          <Link
+            href="/mypage"
+            className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+          >
+            <ClipboardList className="h-3.5 w-3.5" />
+            프로필 설정하기
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        )}
       </div>
     );
   }

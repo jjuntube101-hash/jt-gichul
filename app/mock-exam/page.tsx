@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Target, Eye, ShieldCheck, Flame, Loader2, AlertCircle, LogIn } from "lucide-react";
+import { ChevronRight, Target, Eye, ShieldCheck, Flame, Loader2, AlertCircle, LogIn, BookOpen, ClipboardList, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
 
@@ -22,7 +22,7 @@ interface MockExamData {
   generatedAt: string;
 }
 
-type ExamTarget = "9급" | "7급" | "회계";
+type ExamTarget = "9급" | "7급";
 
 export default function MockExamPage() {
   const { user, loading: authLoading } = useAuth();
@@ -30,12 +30,14 @@ export default function MockExamPage() {
   const [generating, setGenerating] = useState(false);
   const [examData, setExamData] = useState<MockExamData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!user) return;
 
     setGenerating(true);
     setError(null);
+    setErrorCode(null);
     setExamData(null);
 
     try {
@@ -66,7 +68,9 @@ export default function MockExamPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => null);
-        throw new Error(errData?.error ?? "모의고사 생성에 실패했습니다.");
+        setErrorCode(errData?.code ?? null);
+        setError(errData?.error ?? "모의고사 생성에 실패했습니다.");
+        return;
       }
 
       const json = await res.json();
@@ -170,7 +174,7 @@ export default function MockExamPage() {
               시험 목표
             </p>
             <div className="flex rounded-xl bg-muted p-1 gap-1">
-              {(["9급", "7급", "회계"] as ExamTarget[]).map((t) => (
+              {(["9급", "7급"] as ExamTarget[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setExamTarget(t)}
@@ -193,9 +197,31 @@ export default function MockExamPage() {
 
           {/* 에러 */}
           {error && (
-            <div className="mb-4 rounded-xl border border-danger/20 bg-danger-light p-3 flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-danger shrink-0 mt-0.5" />
-              <p className="text-xs text-danger">{error}</p>
+            <div className="mb-4 rounded-xl border border-danger/20 bg-danger-light p-3 space-y-2">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-danger shrink-0 mt-0.5" />
+                <p className="text-xs text-danger">{error}</p>
+              </div>
+              {errorCode === "INSUFFICIENT_DATA" && (
+                <Link
+                  href="/practice?filter=random"
+                  className="flex items-center justify-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  문제 풀러 가기
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              )}
+              {errorCode === "ONBOARDING_REQUIRED" && (
+                <Link
+                  href="/mypage"
+                  className="flex items-center justify-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+                >
+                  <ClipboardList className="h-3.5 w-3.5" />
+                  프로필 설정하기
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              )}
             </div>
           )}
 

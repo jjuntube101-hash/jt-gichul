@@ -22,7 +22,7 @@ interface OnboardingModalProps {
   onSkip: () => void;
 }
 
-type ExamTarget = '9급' | '7급' | '회계';
+type ExamTarget = '9급' | '7급';
 
 interface ExamDate {
   name: string;
@@ -68,11 +68,6 @@ const EXAM_SCHEDULE: Record<ExamTarget, ExamDate[]> = {
   ],
   '7급': [
     { name: '국가직 7급', month: 8, day: 23 },
-  ],
-  '회계': [
-    { name: '국가직 9급(회계)', month: 3, day: 22 },
-    { name: '지방직 9급(회계)', month: 6, day: 14 },
-    { name: '국가직 7급(회계)', month: 8, day: 23 },
   ],
 };
 
@@ -207,7 +202,7 @@ function Step1({
         <p className="mb-2 text-sm font-medium text-card-foreground">
           시험 목표
         </p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {/* 9급 Card */}
           <button
             type="button"
@@ -227,9 +222,9 @@ function Step1({
             />
             <span className="text-lg font-bold text-card-foreground">9급</span>
             <span className="text-center text-xs text-muted-foreground leading-relaxed">
-              지방직 · 국가직
+              국가직 · 지방직
               <br />
-              9급 세법
+              세법개론 + 회계학
             </span>
             {examTarget === '9급' && (
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
@@ -259,7 +254,7 @@ function Step1({
             <span className="text-center text-xs text-muted-foreground leading-relaxed">
               국가직
               <br />
-              7급 세법
+              세법 + 회계학
             </span>
             {examTarget === '7급' && (
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
@@ -268,35 +263,6 @@ function Step1({
             )}
           </button>
 
-          {/* 회계 Card */}
-          <button
-            type="button"
-            onClick={() => setExamTarget('회계')}
-            className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-5 transition-all ${
-              examTarget === '회계'
-                ? 'border-primary bg-primary/5 shadow-sm'
-                : 'border-border bg-card hover:border-primary/40'
-            }`}
-          >
-            <BookOpen
-              className={`h-8 w-8 ${
-                examTarget === '회계'
-                  ? 'text-primary'
-                  : 'text-muted-foreground'
-              }`}
-            />
-            <span className="text-lg font-bold text-card-foreground">회계</span>
-            <span className="text-center text-xs text-muted-foreground leading-relaxed">
-              공무원
-              <br />
-              회계학
-            </span>
-            {examTarget === '회계' && (
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
-                <Check className="h-3 w-3 text-white" />
-              </div>
-            )}
-          </button>
         </div>
       </div>
     </div>
@@ -441,9 +407,10 @@ function Step3({
   toggleSubject: (s: SubjectCategory) => void;
   examTarget: ExamTarget;
 }) {
-  const categories: readonly SubjectCategory[] = examTarget === '회계'
-    ? ACCOUNTING_CATEGORIES
-    : TAX_CATEGORIES;
+  const categories: readonly SubjectCategory[] = [
+    ...TAX_CATEGORIES,
+    ...ACCOUNTING_CATEGORIES,
+  ];
 
   return (
     <div className="flex flex-col gap-6">

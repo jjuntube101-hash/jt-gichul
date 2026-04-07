@@ -14,7 +14,7 @@ import type { Question, ChunkMeta } from '@/types/question';
 
 export interface MockExamConfig {
   userId: string;
-  examTarget: '9급' | '7급' | '회계';
+  examTarget: '9급' | '7급';
   questionCount: number; // 기본 20문항
 }
 
@@ -94,12 +94,11 @@ export async function generateMockExam(
 
   const solveRecords: SolveRecord[] = records ?? [];
 
-  // 2. 전체 문항 로드 + 직급/과목 필터
+  // 2. 전체 문항 로드 + 직급 필터 (9급/7급 모두 세법+회계 포함)
   const allQuestions = loadAllQuestionsServer();
-  const isAccounting = examTarget === "회계";
-  const pool = isAccounting
-    ? allQuestions.filter((q) => q.no >= 2001) // 회계 문항
-    : allQuestions.filter((q) => q.no < 2001 && q.직급 === examTarget); // 세법 문항
+  const pool = allQuestions.filter(
+    (q) => q.no >= 2001 || q.직급 === examTarget || q.직급 === "공통"
+  );
 
   // 3. 풀이 기록 분석
   const solvedMap = new Map<number, { total: number; correct: number }>();

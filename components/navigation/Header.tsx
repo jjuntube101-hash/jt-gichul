@@ -25,12 +25,9 @@ export default function Header() {
             height={28}
             className={`${resolved === "dark" ? "invert" : ""}`}
           />
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-              기출
-            </span>
-            <span className="text-[10px] font-medium text-muted-foreground">세법</span>
-          </div>
+          <span className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            기출
+          </span>
         </Link>
 
         {/* Right actions */}

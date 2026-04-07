@@ -62,7 +62,7 @@ export default function AIHubPage() {
           <h1 className="text-lg font-bold">AI 학습 도구</h1>
         </div>
         <p className="text-xs text-muted-foreground">
-          2,065문항 전수분석 기반. API 비용 없이 즉시 사용 가능한 정적 분석 도구.
+          2,065문항 전수분석 데이터로 출제 경향과 약점을 파악하세요.
         </p>
       </motion.div>
 
