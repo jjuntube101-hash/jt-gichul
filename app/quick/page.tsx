@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { loadQuestionsBySubject } from "@/lib/questions";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import { useAppStore } from "@/stores/appStore";
@@ -34,6 +36,7 @@ export default function QuickQuizPage() {
   const { saveOX } = useSolveRecord();
   const setFocusMode = useAppStore((s) => s.setFocusMode);
   const subject = useAppStore((s) => s.subject);
+  const router = useRouter();
 
   // Focus mode on mount/unmount
   useEffect(() => {
@@ -296,9 +299,23 @@ export default function QuickQuizPage() {
       {/* Timer bar */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">
-            {currentIndex + 1}/{TOTAL_ITEMS}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (confirm("퀴즈를 종료하시겠습니까?")) {
+                  setFocusMode(false);
+                  router.push("/");
+                }
+              }}
+              className="flex items-center justify-center h-7 w-7 rounded-lg hover:bg-muted transition-colors"
+              aria-label="나가기"
+            >
+              <X className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+            <span className="text-xs font-medium text-muted-foreground">
+              {currentIndex + 1}/{TOTAL_ITEMS}
+            </span>
+          </div>
           <span
             className={`text-sm font-bold tabular-nums ${
               timerUrgent ? "text-danger animate-pulse" : "text-foreground"

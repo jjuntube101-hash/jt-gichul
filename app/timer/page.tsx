@@ -15,7 +15,9 @@ import {
   XCircle,
   Trophy,
   Zap,
+  X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 // loadAllQuestions is dynamically imported in startTest
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import { useAppStore } from "@/stores/appStore";
@@ -55,6 +57,7 @@ export default function TimerPage() {
   const setFocusMode = useAppStore((s) => s.setFocusMode);
   const subject = useAppStore((s) => s.subject);
   const isAccounting = subject === "accounting";
+  const router = useRouter();
 
   // 컴포넌트 언마운트 시 포커스 모드 해제
   useEffect(() => {
@@ -317,6 +320,20 @@ export default function TimerPage() {
 
         {/* Timer Bar */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (confirm("시험을 종료하시겠습니까?")) {
+                if (timerRef.current) clearInterval(timerRef.current);
+                setFocusMode(false);
+                setPhase("setup");
+                router.push("/");
+              }
+            }}
+            className="flex items-center justify-center h-8 w-8 rounded-lg hover:bg-muted transition-colors shrink-0"
+            aria-label="나가기"
+          >
+            <X className="h-4 w-4 text-muted-foreground" />
+          </button>
           <div
             className={`text-lg font-mono font-bold ${
               isLowTime ? "text-danger animate-pulse" : "text-foreground"

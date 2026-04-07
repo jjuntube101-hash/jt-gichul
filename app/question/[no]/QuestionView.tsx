@@ -199,7 +199,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
 
       {/* Question Body */}
       <div className="rounded-xl bg-card border border-border p-5 shadow-sm">
-        <p className="text-sm leading-relaxed font-medium whitespace-pre-wrap text-card-foreground">
+        <p className="text-sm leading-relaxed whitespace-pre-wrap text-card-foreground">
           {isCalcQuestion(a.question_subtype) ? highlightNumbers(q.문제_내용) : q.문제_내용}
         </p>
         {q.보기 && (() => {
@@ -297,7 +297,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
                       {choiceNum}
                     </span>
                   )}
-                  <span className={`text-sm leading-relaxed flex-1 text-card-foreground ${
+                  <span className={`text-sm leading-relaxed flex-1 text-card-foreground whitespace-pre-wrap ${
                     hasCircledNumbers && isAnswered && isAnswer ? "font-bold" : ""
                   }`}>
                     {isCalc ? highlightNumbers(text) : text}

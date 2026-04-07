@@ -1,13 +1,37 @@
 # JT기출 진행기록
 
 ## 현재 상태
-- **완료**: DESIGN.md + JourneyMap + 사전생성 AI 4종 + FeatureTooltip + AI 허브 홈 링크 + **Claude API 인프라**
+- **완료**: 보안/저작권 강화 + Claude API 인프라 + UX 개선 + **프로덕션 배포 완료**
 - 배포 URL: https://gichul.jttax.co.kr (커스텀 도메인) / https://jt-gichul.vercel.app
+- GitHub: https://github.com/jjuntube101-hash/jt-gichul (Private)
+- 배포 방법: `npx vercel --prod --yes` (CLI 직접 배포, Git 연동 미사용)
 - Supabase: xddaqkymeactyfqqfcuv, **11테이블** (기존 6 + Sprint 19 추가 5)
 - 총 문항: 2,065 (세법 1,245 + 회계 820)
 - 빌드: 2,095 페이지 정상 생성
 - 9급 커리큘럼: 12주 → **13주** (지방세 분할)
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
+- 다음 할 일: 프로덕션 재배포 (`npx vercel --prod --yes`), Supabase RLS 마이그레이션, Vercel ANTHROPIC_API_KEY 추가
+
+### UX 버그 수정 + 크로스 브라우저 테스트 (260407 오후)
+- [x] **포커스 모드 나가기 버튼** — OX 퀴즈/타이머/1분 퀴즈 진행 중 X 닫기 버튼 추가 (focusMode에서 Header+BottomNav 숨김 시 탈출 불가 버그 수정)
+- [x] **선택지 문단 구분 수정** — QuestionView 선택지에 `whitespace-pre-wrap` 추가 (\n 포함 선택지 줄바꿈 표시)
+- [x] **문제 본문 굵은 글씨 범위** — `font-medium` → `font-normal` (전체 굵게 → 일반 두께, 강조 구분 가능)
+- [x] **피드백 해결** — [d151a720] 문단 구분 + 굵은 글씨 처리 → resolved
+- [x] **크로스 브라우저 테스트** — 홈/OX/문제상세(#651) 다크·라이트 모드 확인, 선택지 줄바꿈 정상
+- 빌드 검증: 2,095페이지, 에러 0
+
+### 보안 강화 + UX 개선 + 프로덕션 배포 (260407)
+- [x] **보안/저작권 강화** — Edge middleware(rate limiting, bot blocking, security headers), robots.txt 크롤러 차단, ContentProtection(select-none, contextmenu 차단), 프린트 워터마크, noarchive 메타, 프롬프트 인젝션 방어(sanitizeInput)
+- [x] **Claude API 인프라** — `lib/claude.ts` 싱글턴 클라이언트, 2-tier 구조(로컬엔진 + Claude 보강), 5개 기능(briefing/wrong_answer/mock_exam/weekly_report/dday_strategy)
+- [x] **시험목표 재분류** — "회계" 제거, 9급/7급 모두 세법+회계 포함으로 통일 (OnboardingModal, MockExam, MyPage, Roadmap, JourneyMap)
+- [x] **학습맵 목차순 정렬** — 17개 법률 + 164개 토픽 기본서 목차 순서 적용, 국세/지방세/회계 3그룹 분리 (useTopicMastery.ts, TopicMasteryMap.tsx)
+- [x] **에러 메시지 구체화** — 브리핑/모의고사/주간보고서 API에 사전 조건 체크(온보딩 완료, 최소 풀이 수) + 에러 코드별 CTA 버튼(문제 풀러 가기, 프로필 설정하기)
+- [x] **헤더 "세법" 제거** — "JT 기출"로 변경 (세법+회계 통합)
+- [x] **AI 도구 설명** — 개발자 문구 → 수험생 친화 문구
+- [x] **GitHub 저장소** — jjuntube101-hash/jt-gichul (Private) 생성 + push
+- [x] **Vercel 프로덕션 배포** — CLI 직접 배포 성공 (gichul.jttax.co.kr)
+- 빌드: 2,095페이지, 에러 0
+- 커밋: `95b8dcc` "UX 개선: 시험목표 재분류, 학습맵 목차순 정렬, 에러 메시지 구체화"
 
 ### DESIGN.md + JourneyMap + 마이페이지 리프레시 (260407)
 - [x] **DESIGN.md 작성** — awesome-design-md 9-섹션 포맷, 기존 디자인 시스템 문서화 (Visual Theme/Colors/Typography/Components/Layout/Depth/Don'ts/Responsive/Agent Prompt Guide)

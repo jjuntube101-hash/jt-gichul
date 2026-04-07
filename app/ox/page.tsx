@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { ChevronRight, BookOpen, Flame } from "lucide-react";
+import { ChevronRight, BookOpen, Flame, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { loadQuestionsBySubject } from "@/lib/questions";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import { useAppStore } from "@/stores/appStore";
@@ -49,6 +50,7 @@ export default function OXPage() {
   const subject = useAppStore((s) => s.subject);
   const isAccounting = subject === "accounting";
   const shuffleOrderRef = useRef<number[]>([]);
+  const router = useRouter();
 
   const saveSession = useCallback((idx: number, st: { correct: number; wrong: number }, scope: TaxScope) => {
     try {
@@ -302,11 +304,25 @@ export default function OXPage() {
   return (
     <div className="space-y-4">
       <BadgeToast badgeIds={newBadges} onDismiss={dismissNewBadges} />
-      {/* Header Stats */}
+      {/* Exit + Header Stats */}
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-foreground">
-          OX 퀴즈{isAccounting ? " · 회계" : taxScope === "national" ? " · 국세" : taxScope === "local" ? " · 지방세" : ""}
-        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (confirm("퀴즈를 종료하시겠습니까?")) {
+                handleReset();
+                router.push("/");
+              }
+            }}
+            className="flex items-center justify-center h-8 w-8 rounded-lg hover:bg-muted transition-colors"
+            aria-label="나가기"
+          >
+            <X className="h-4 w-4 text-muted-foreground" />
+          </button>
+          <h1 className="text-lg font-bold text-foreground">
+            OX 퀴즈{isAccounting ? " · 회계" : taxScope === "national" ? " · 국세" : taxScope === "local" ? " · 지방세" : ""}
+          </h1>
+        </div>
         <div className="flex items-center gap-3 text-xs font-medium">
           {streak >= 3 && (
             <span className="flex items-center gap-0.5 text-orange-500">
