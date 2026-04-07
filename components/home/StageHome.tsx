@@ -307,8 +307,8 @@ function RegularUserCard({
       </div>
 
 
-      {/* 로드맵 카드 */}
-      <RoadmapCard />
+      {/* 로드맵 카드 — 디벨롭 후 다시 오픈 예정 */}
+      {/* <RoadmapCard /> */}
     </section>
   );
 }
@@ -357,8 +357,8 @@ function PowerUserCard({
       </div>
 
 
-      {/* 로드맵 카드 */}
-      <RoadmapCard />
+      {/* 로드맵 카드 — 디벨롭 후 다시 오픈 예정 */}
+      {/* <RoadmapCard /> */}
 
       {/* 약점 토픽 */}
       {!masteryLoading && weakTopics.length > 0 && (

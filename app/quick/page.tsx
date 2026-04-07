@@ -14,6 +14,7 @@ interface OXItem {
   ox_text: string;
   answer: "O" | "X";
   law_ref: string;
+  explanation?: string;
   questionNo: number;
   law: string;
 }
@@ -51,9 +52,12 @@ export default function QuickQuizPage() {
       const allOX: OXItem[] = [];
       for (const q of questions) {
         if (q.analysis.ox_items) {
-          for (const ox of q.analysis.ox_items) {
+          for (let i = 0; i < q.analysis.ox_items.length; i++) {
+            const ox = q.analysis.ox_items[i];
+            const ca = q.analysis.choices_analysis?.find((c) => c.choice_num === i + 1);
             allOX.push({
               ...ox,
+              explanation: ca?.analysis,
               questionNo: q.no,
               law: q.대분류,
             });
@@ -157,9 +161,12 @@ export default function QuickQuizPage() {
       const allOX: OXItem[] = [];
       for (const q of questions) {
         if (q.analysis.ox_items) {
-          for (const ox of q.analysis.ox_items) {
+          for (let i = 0; i < q.analysis.ox_items.length; i++) {
+            const ox = q.analysis.ox_items[i];
+            const ca = q.analysis.choices_analysis?.find((c) => c.choice_num === i + 1);
             allOX.push({
               ...ox,
+              explanation: ca?.analysis,
               questionNo: q.no,
               law: q.대분류,
             });
@@ -252,6 +259,11 @@ export default function QuickQuizPage() {
                   {item.law_ref && (
                     <p className="mt-0.5 text-[10px] text-muted-foreground leading-relaxed">
                       {item.law_ref}
+                    </p>
+                  )}
+                  {item.explanation && (
+                    <p className="mt-1 text-[10px] text-muted-foreground leading-relaxed border-t border-border pt-1">
+                      {item.explanation}
                     </p>
                   )}
                 </div>

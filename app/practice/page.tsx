@@ -329,7 +329,7 @@ function PracticeContent() {
                       <span className="text-[10px] text-muted-foreground">{q.시행년도}</span>
                       <span className="text-[10px] text-muted-foreground">#{q.문제번호}</span>
                     </div>
-                    <p className="text-sm leading-relaxed line-clamp-2 text-card-foreground">
+                    <p className="text-base leading-relaxed line-clamp-2 text-card-foreground">
                       {q.문제_내용}
                     </p>
                   </div>

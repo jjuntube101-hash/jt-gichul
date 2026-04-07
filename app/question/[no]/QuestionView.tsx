@@ -199,7 +199,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
 
       {/* Question Body */}
       <div className="rounded-xl bg-card border border-border p-5 shadow-sm">
-        <p className="text-sm leading-relaxed whitespace-pre-wrap text-card-foreground">
+        <p className="text-base leading-relaxed whitespace-pre-wrap text-card-foreground">
           {isCalcQuestion(a.question_subtype) ? highlightNumbers(q.문제_내용) : q.문제_내용}
         </p>
         {q.보기 && (() => {
@@ -210,7 +210,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
           // ㄱ,ㄴ,ㄷ,ㄹ 보기형: 파싱 성공 시 개별 항목으로 렌더링
           if (parsed && parsed.length >= 2) {
             return (
-              <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed space-y-2">
+              <div className="mt-3 rounded-lg bg-muted p-3.5 text-sm leading-relaxed space-y-2">
                 {parsed.map((item) => {
                   const isCorrectLetter = correctLetters.has(item.letter);
                   return (
@@ -244,7 +244,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
 
           // 일반 보기: 기존 방식 (계산문제면 숫자 강조)
           return (
-            <div className="mt-3 rounded-lg bg-muted p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
+            <div className="mt-3 rounded-lg bg-muted p-3.5 text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
               {isCalc ? highlightNumbers(q.보기) : q.보기}
             </div>
           );
@@ -297,7 +297,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
                       {choiceNum}
                     </span>
                   )}
-                  <span className={`text-sm leading-relaxed flex-1 text-card-foreground whitespace-pre-wrap ${
+                  <span className={`text-[15px] leading-relaxed flex-1 text-card-foreground whitespace-pre-wrap ${
                     hasCircledNumbers && isAnswered && isAnswer ? "font-bold" : ""
                   }`}>
                     {isCalc ? highlightNumbers(text) : text}

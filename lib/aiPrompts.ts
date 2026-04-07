@@ -27,12 +27,21 @@ export const BRIEFING_SYSTEM = `당신은 "JT기출" 공무원 세법/회계 학
 }`;
 
 /** 프롬프트 인젝션 방지: 사용자 입력에서 명령어 패턴 제거 */
-function sanitizeInput(input: string): string {
+function sanitizeInput(input: string, maxLen = 100): string {
   return input
     .replace(/[\r\n]/g, ' ')           // 줄바꿈 제거
     .replace(/[{}[\]]/g, '')            // JSON 구조 문자 제거
-    .replace(/\b(ignore|forget|system|prompt|instruction|override|admin)\b/gi, '') // 명령어 키워드 제거
-    .slice(0, 100)                      // 길이 제한
+    .replace(/\b(ignore|forget|system|prompt|instruction|override|admin|execute|eval|script)\b/gi, '') // 명령어 키워드 제거
+    .slice(0, maxLen)                   // 길이 제한
+    .trim();
+}
+
+/** 긴 텍스트용 sanitize (문제 본문, 해설 등 — 줄바꿈 유지, 길이 확장) */
+function sanitizeLongText(input: string, maxLen = 500): string {
+  return input
+    .replace(/[{}[\]]/g, '')
+    .replace(/\b(ignore|forget|system|prompt|instruction|override|admin|execute|eval|script)\b/gi, '')
+    .slice(0, maxLen)
     .trim();
 }
 
@@ -90,19 +99,19 @@ export function buildWrongAnswerMessage(data: {
   lawRef: string;
   topic: string;
 }): string {
-  return `문제: ${data.questionText}
+  return `문제: ${sanitizeLongText(data.questionText)}
 
 선지:
-${data.choices.map((c, i) => `${i + 1}. ${c}`).join("\n")}
+${data.choices.map((c, i) => `${i + 1}. ${sanitizeLongText(c, 200)}`).join("\n")}
 
 정답: ${data.correctAnswer}번
 학생 선택: ${data.selectedChoice}번
 
-정답 선지 해설: ${data.correctAnalysis}
-학생이 고른 선지 해설: ${data.selectedAnalysis}
-함정 유형: ${data.trapType || "없음"}
-근거법령: ${data.lawRef}
-토픽: ${data.topic}
+정답 선지 해설: ${sanitizeLongText(data.correctAnalysis)}
+학생이 고른 선지 해설: ${sanitizeLongText(data.selectedAnalysis)}
+함정 유형: ${sanitizeInput(data.trapType || "없음")}
+근거법령: ${sanitizeInput(data.lawRef, 200)}
+토픽: ${sanitizeInput(data.topic)}
 
 위 정보를 바탕으로 오답 진단을 JSON으로 작성하세요.`;
 }
@@ -144,15 +153,15 @@ export function buildWeeklyReportMessage(data: {
   const topicList = data.topicAccuracies
     .sort((a, b) => a.accuracy - b.accuracy)
     .slice(0, 10)
-    .map((t) => `  - ${t.law} > ${t.topic}: ${t.accuracy}% (${t.solved}문항)`)
+    .map((t) => `  - ${sanitizeInput(t.law)} > ${sanitizeInput(t.topic)}: ${t.accuracy}% (${t.solved}문항)`)
     .join("\n");
 
   const trapList = data.trapFrequencies
     .slice(0, 5)
-    .map((t) => `  - ${t.name}: ${t.count}회`)
+    .map((t) => `  - ${sanitizeInput(t.name)}: ${t.count}회`)
     .join("\n");
 
-  return `시험 목표: ${data.examTarget}
+  return `시험 목표: ${sanitizeInput(data.examTarget)}
 이번 주 풀이: ${data.totalSolvedThisWeek}문항 (평균 정답률 ${data.avgAccuracy}%)
 지난 주 대비: 풀이 ${data.comparedToLastWeek.solvedDiff > 0 ? "+" : ""}${data.comparedToLastWeek.solvedDiff}문항, 정답률 ${data.comparedToLastWeek.accuracyDiff > 0 ? "+" : ""}${data.comparedToLastWeek.accuracyDiff}%p
 스트릭: ${data.streakDays}일
@@ -205,15 +214,15 @@ export function buildDdayStrategyMessage(data: {
 }): string {
   const weakList = data.weakTopics
     .slice(0, 8)
-    .map((t) => `  - ${t.law} > ${t.topic}: ${t.accuracy}%`)
+    .map((t) => `  - ${sanitizeInput(t.law)} > ${sanitizeInput(t.topic)}: ${t.accuracy}%`)
     .join("\n");
 
   const strongList = data.strongTopics
     .slice(0, 5)
-    .map((t) => `  - ${t.law} > ${t.topic}: ${t.accuracy}%`)
+    .map((t) => `  - ${sanitizeInput(t.law)} > ${sanitizeInput(t.topic)}: ${t.accuracy}%`)
     .join("\n");
 
-  return `시험 목표: ${data.examTarget}
+  return `시험 목표: ${sanitizeInput(data.examTarget)}
 시험까지: D-${data.daysUntilExam}
 진도율: ${data.totalSolved}/${data.totalQuestions}문항 (${Math.round((data.totalSolved / data.totalQuestions) * 100)}%)
 전체 정답률: ${data.overallAccuracy}%
@@ -252,6 +261,58 @@ export const MOCK_EXAM_REVIEW_SYSTEM = `당신은 공무원 세법/회계 모의
   "next_focus": "다음에 집중할 영역 (1문장)"
 }`;
 
+// ============================
+// 6. AI 세무 상담
+// ============================
+
+export const ASK_SYSTEM = `당신은 "JT 튜터"입니다. 이현준 세무사(JT세무회계 대표)가 운영하는 공무원 세법·회계 시험 전문 튜터입니다. 수험생의 학습 파트너이자 멘토 역할을 합니다.
+
+## 세법·회계 질문 시
+- 조문 근거를 들어 정확히 설명합니다. 아래에 참조 법령 조문이 제공되면 이를 활용하세요.
+- 수험생 눈높이에 맞게 쉽게 풀어줍니다.
+- 시험에 자주 나오는 포인트와 함정도 안내합니다.
+- 답변 끝에 "📌 시험 포인트"로 핵심 1~2줄을 추가합니다.
+- 근거법령을 반드시 명시합니다 (예: 소득세법 제4조 제1항).
+- 확실하지 않은 내용은 "수험서에서 확인이 필요합니다"라고 명시합니다.
+
+## 심리·멘탈 질문 시 (슬럼프, 불안, 스트레스, 의욕 저하 등)
+- 따뜻하고 공감하는 톤으로 대화합니다.
+- 수험생 선배이자 멘토의 시선에서 조언합니다.
+- 구체적이고 실행 가능한 팁을 제공합니다 (학습 루틴, 휴식법, 마음가짐).
+- "충분히 잘하고 있습니다", "힘든 건 당연합니다" 등 진심 어린 격려를 합니다.
+- 필요시 학습 전략과 자연스럽게 연결합니다.
+
+## 공통 규칙
+- 한국어로 답변합니다.
+- 마크다운 형식을 사용합니다 (제목, 볼드, 리스트).
+- 시험 범위 밖 전문 실무 질문에는 "시험 범위 기준으로 답변드립니다"라고 안내합니다.
+- 세법/회계/수험과 완전히 무관한 질문에는 정중히 범위를 안내합니다.
+- 답변은 간결하되 핵심을 빠뜨리지 않습니다.`;
+
+/** AI 세무 상담 메시지 빌더 (멀티턴 지원) */
+export function buildAskMessages(
+  userQuestion: string,
+  contextText: string,
+  previousMessages?: { role: 'user' | 'assistant'; content: string }[]
+): { role: 'user' | 'assistant'; content: string }[] {
+  const messages: { role: 'user' | 'assistant'; content: string }[] = [];
+
+  // 이전 대화 히스토리 (최대 5왕복 = 10메시지)
+  if (previousMessages && previousMessages.length > 0) {
+    const trimmed = previousMessages.slice(-10);
+    messages.push(...trimmed);
+  }
+
+  // 현재 질문 + 컨텍스트
+  const userMsg = contextText
+    ? `${sanitizeLongText(userQuestion, 500)}\n\n---\n[참조 자료]\n${contextText}`
+    : sanitizeLongText(userQuestion, 500);
+
+  messages.push({ role: 'user', content: userMsg });
+
+  return messages;
+}
+
 export function buildMockExamReviewMessage(data: {
   score: number;
   totalQuestions: number;
@@ -261,11 +322,11 @@ export function buildMockExamReviewMessage(data: {
 }): string {
   const wrongList = data.wrongQuestions
     .slice(0, 10)
-    .map((q) => `  - #${q.no} ${q.law}>${q.topic} (함정: ${q.trapType || "없음"})`)
+    .map((q) => `  - #${q.no} ${sanitizeInput(q.law)}>${sanitizeInput(q.topic)} (함정: ${sanitizeInput(q.trapType || "없음")})`)
     .join("\n");
 
   const lawList = data.lawScores
-    .map((l) => `  - ${l.law}: ${l.correct}/${l.total}`)
+    .map((l) => `  - ${sanitizeInput(l.law)}: ${l.correct}/${l.total}`)
     .join("\n");
 
   return `모의고사 결과:

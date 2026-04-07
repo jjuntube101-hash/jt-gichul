@@ -71,9 +71,15 @@ export default function OXPage() {
         const allOX: OXItemWithMeta[] = [];
         for (const q of questions) {
           if (q.analysis.ox_items) {
-            for (const ox of q.analysis.ox_items) {
+            for (let i = 0; i < q.analysis.ox_items.length; i++) {
+              const ox = q.analysis.ox_items[i];
+              // choices_analysis에서 매칭되는 해설 가져오기 (choice_num은 1-based)
+              const choiceAnalysis = q.analysis.choices_analysis?.find(
+                (c) => c.choice_num === i + 1
+              );
               allOX.push({
                 ...ox,
+                explanation: choiceAnalysis?.analysis,
                 questionNo: q.no,
                 law: q.대분류,
                 difficulty: q.analysis.difficulty,
@@ -231,7 +237,7 @@ export default function OXPage() {
       <div className="space-y-6">
         <div className="text-center pt-8">
           <h1 className="text-xl font-bold text-foreground">OX 퀴즈</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-base text-muted-foreground">
             선지를 O/X로 빠르게 판단하는 훈련
           </p>
         </div>
@@ -394,7 +400,7 @@ export default function OXPage() {
               : "border-border bg-card"
           }`}
         >
-          <p className="text-sm leading-relaxed text-card-foreground">{current.ox_text}</p>
+          <p className="text-base leading-relaxed text-card-foreground">{current.ox_text}</p>
         </motion.div>
       </AnimatePresence>
 
@@ -436,8 +442,15 @@ export default function OXPage() {
               {selected === current.answer ? "정답!" : `오답 (정답: ${current.answer})`}
             </div>
 
-            <div className="rounded-xl bg-muted p-3.5 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">근거:</span> {current.law_ref}
+            <div className="rounded-xl bg-muted p-3.5 text-sm text-muted-foreground space-y-2">
+              <div>
+                <span className="font-medium text-foreground">근거:</span> {current.law_ref}
+              </div>
+              {current.explanation && (
+                <div className="text-xs leading-relaxed border-t border-border pt-2">
+                  {current.explanation}
+                </div>
+              )}
             </div>
 
             <motion.button

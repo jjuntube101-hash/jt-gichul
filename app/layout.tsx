@@ -5,8 +5,7 @@ import Header from "@/components/navigation/Header";
 import BottomNav from "@/components/navigation/BottomNav";
 import AuthListener from "@/components/auth/AuthListener";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
-import StudyTimer from "@/components/engagement/StudyTimer";
-import RestReminder from "@/components/engagement/RestReminder";
+import AskFAB from "@/components/ai/AskFAB";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import OnboardingGate from "@/components/onboarding/OnboardingGate";
 
@@ -81,7 +80,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
         <AuthListener />
         <Header />
-        <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6 pb-24">
+        <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6 pb-6">
           <ErrorBoundary>
             {children}
           </ErrorBoundary>
@@ -90,8 +89,7 @@ export default function RootLayout({
           이현준 세무사 &middot; 제이티 세무회계
         </footer>
         <FeedbackButton />
-        <StudyTimer />
-        <RestReminder />
+        <AskFAB />
         <OnboardingGate />
         <BottomNav />
       </body>

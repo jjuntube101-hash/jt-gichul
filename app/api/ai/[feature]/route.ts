@@ -20,7 +20,7 @@ import { collectBriefingData, generateBriefing } from '@/lib/briefingEngine';
 import { generateMockExam } from '@/lib/mockExamEngine';
 import { generateWeeklyReport } from '@/lib/weeklyReportEngine';
 import { generateDdayStrategy } from '@/lib/ddayStrategyEngine';
-import { callClaudeJSON, logAIUsage } from '@/lib/claude';
+import { callClaude, callClaudeJSON, logAIUsage } from '@/lib/claude';
 import {
   BRIEFING_SYSTEM,
   buildBriefingMessage,
@@ -32,24 +32,47 @@ import {
   buildDdayStrategyMessage,
   MOCK_EXAM_REVIEW_SYSTEM,
   buildMockExamReviewMessage,
+  ASK_SYSTEM,
+  buildAskMessages,
 } from '@/lib/aiPrompts';
+import { gatherContext, formatContextForPrompt } from '@/lib/askContextEngine';
 
 // --- 서버사이드 Supabase ---
 
 function getServiceSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) {
     throw new Error('Supabase 환경변수 미설정');
   }
   return createClient(url, key);
 }
 
+// --- 보안 상수 ---
+
+/** 월간 Claude API 비용 상한 (달러). 초과 시 전체 AI 기능 차단 */
+const MONTHLY_COST_CAP_USD = 10;
+
+/** 신규 가입 후 AI 기능 사용까지 대기 시간 (ms) — 계정 팜 방지 */
+const NEW_ACCOUNT_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24시간
+
+/** 토큰당 예상 비용 (USD). Haiku input/output, Sonnet input/output */
+const TOKEN_COST = {
+  'claude-haiku-4-5-20251001': { input: 0.8 / 1_000_000, output: 4 / 1_000_000 },
+  'claude-sonnet-4-20250514': { input: 3 / 1_000_000, output: 15 / 1_000_000 },
+} as Record<string, { input: number; output: number }>;
+
+// --- 접근 실패 로깅 ---
+
+function logSecurityEvent(event: string, details: Record<string, unknown>) {
+  console.warn(`[AI-SECURITY] ${event}`, JSON.stringify(details));
+}
+
 // --- 인증 확인 ---
 
 async function authenticateUser(
   request: NextRequest
-): Promise<{ userId: string } | null> {
+): Promise<{ userId: string; createdAt: string } | null> {
   const authHeader = request.headers.get('authorization');
   if (!authHeader?.startsWith('Bearer ')) return null;
 
@@ -62,7 +85,40 @@ async function authenticateUser(
   } = await supabase.auth.getUser(token);
 
   if (error || !user) return null;
-  return { userId: user.id };
+  return { userId: user.id, createdAt: user.created_at };
+}
+
+// --- 월간 비용 상한 체크 ---
+
+async function checkMonthlyCostCap(): Promise<{ allowed: boolean; estimatedCost: number }> {
+  try {
+    const supabase = getServiceSupabase();
+    const now = new Date();
+    const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const monthStart = kst.toISOString().slice(0, 7) + '-01'; // YYYY-MM-01
+
+    // ai_usage 테이블에서 이번 달 전체 토큰 합산
+    const { data } = await supabase
+      .from('ai_usage')
+      .select('count')
+      .gte('use_date', monthStart);
+
+    // 간단 추정: 각 호출당 평균 ~500 input + ~300 output tokens (Haiku 기준)
+    const totalCalls = data?.reduce((sum, row) => sum + (row.count ?? 0), 0) ?? 0;
+    const estimatedCost = totalCalls * (500 * 0.8 / 1_000_000 + 300 * 4 / 1_000_000);
+
+    return { allowed: estimatedCost < MONTHLY_COST_CAP_USD, estimatedCost };
+  } catch {
+    // 비용 체크 실패 시 허용 (서비스 중단 방지)
+    return { allowed: true, estimatedCost: 0 };
+  }
+}
+
+// --- 신규 가입자 쿨다운 체크 ---
+
+function checkNewAccountCooldown(createdAt: string): boolean {
+  const accountAge = Date.now() - new Date(createdAt).getTime();
+  return accountAge >= NEW_ACCOUNT_COOLDOWN_MS;
 }
 
 // --- 서버사이드 캐시 조회/저장 ---
@@ -261,10 +317,32 @@ export async function POST(
     // 2. 인증 확인
     const auth = await authenticateUser(request);
     if (!auth) {
+      logSecurityEvent('AUTH_FAILED', { feature, ip: request.headers.get('x-forwarded-for') ?? 'unknown' });
       return NextResponse.json(
         { error: '인증이 필요합니다.', code: 'UNAUTHORIZED' },
         { status: 401 }
       );
+    }
+
+    // 2a. 신규 가입자 쿨다운 체크 (계정 팜 방지)
+    if (!checkNewAccountCooldown(auth.createdAt)) {
+      logSecurityEvent('NEW_ACCOUNT_BLOCKED', { userId: auth.userId, feature });
+      return NextResponse.json(
+        { error: '가입 후 24시간이 지나야 AI 기능을 사용할 수 있습니다.', code: 'ACCOUNT_TOO_NEW' },
+        { status: 403 }
+      );
+    }
+
+    // 2b. 월간 비용 상한 체크
+    if (isClaudeEnabled()) {
+      const { allowed: costAllowed, estimatedCost } = await checkMonthlyCostCap();
+      if (!costAllowed) {
+        logSecurityEvent('MONTHLY_CAP_REACHED', { estimatedCost, cap: MONTHLY_COST_CAP_USD });
+        return NextResponse.json(
+          { error: '이번 달 AI 사용량이 상한에 도달했습니다. 기본 분석은 계속 이용 가능합니다.', code: 'MONTHLY_CAP' },
+          { status: 429 }
+        );
+      }
     }
 
     // 3. 요청 바디 파싱
@@ -276,7 +354,7 @@ export async function POST(
     }
 
     // 4. 공유캐시 확인 (캐시 히트 시 레이트리밋 소비 안 함)
-    const skipCache = feature === 'mock_exam';
+    const skipCache = feature === 'mock_exam' || feature === 'ask';
     const cacheKeyParts = Object.values(body)
       .filter((v): v is string => typeof v === 'string')
       .sort();
@@ -302,6 +380,7 @@ export async function POST(
     );
 
     if (!allowed) {
+      logSecurityEvent('RATE_LIMITED', { userId: auth.userId, feature });
       const isWeekly = feature === 'weekly_report' || feature === 'dday_strategy';
       return NextResponse.json(
         {
@@ -415,9 +494,13 @@ export async function POST(
         }
 
         const examTarget = (body.examTarget as '9급' | '7급') ?? '9급';
+        const examSubject = (body.subject as 'tax' | 'accounting') ?? 'tax';
+        const examTaxScope = (body.taxScope as 'all' | 'national' | 'local') ?? 'all';
         aiResponse = await generateMockExam({
           userId: auth.userId,
           examTarget,
+          subject: examSubject,
+          taxScope: examTaxScope,
           questionCount: 20,
         });
       } catch (err) {
@@ -477,6 +560,91 @@ export async function POST(
         console.error('[AI API] D-day 전략 생성 오류:', err);
         return NextResponse.json(
           { error: 'D-day 전략 생성 중 오류가 발생했습니다.', code: 'DDAY_STRATEGY_ERROR' },
+          { status: 500 }
+        );
+      }
+    } else if (feature === 'ask') {
+      // --- AI 세무 상담 ---
+      try {
+        if (!isClaudeEnabled()) {
+          return NextResponse.json(
+            { error: 'AI 상담 기능이 준비 중입니다.', code: 'AI_UNAVAILABLE' },
+            { status: 503 }
+          );
+        }
+
+        const question = body.question as string | undefined;
+        if (!question || question.trim().length < 2) {
+          return NextResponse.json(
+            { error: '질문을 입력해주세요.', code: 'BAD_REQUEST' },
+            { status: 400 }
+          );
+        }
+        if (question.length > 500) {
+          return NextResponse.json(
+            { error: '질문은 500자 이내로 작성해주세요.', code: 'BAD_REQUEST' },
+            { status: 400 }
+          );
+        }
+
+        // Premium 확인
+        const sb = getServiceSupabase();
+        const { data: profile } = await sb
+          .from('user_profiles')
+          .select('is_premium, premium_expires_at')
+          .eq('user_id', auth.userId)
+          .single();
+
+        const isPremium = profile?.is_premium &&
+          (!profile.premium_expires_at || new Date(profile.premium_expires_at) > new Date());
+
+        const effectiveModel = isPremium ? 'sonnet' : 'haiku';
+        const effectiveMaxTokens = isPremium ? 2048 : 1024;
+
+        // 이중 컨텍스트 수집 (법령 + 기출)
+        const context = await gatherContext(question);
+        const contextText = formatContextForPrompt(context);
+
+        // 멀티턴 메시지 빌드
+        const prevMessages = (body.messages as { role: 'user' | 'assistant'; content: string }[]) ?? [];
+        const messages = buildAskMessages(question, contextText, prevMessages);
+
+        // Claude API 호출 (텍스트 응답)
+        const result = await callClaude({
+          feature,
+          systemPrompt: ASK_SYSTEM,
+          userMessage: '', // messages 필드 사용
+          messages,
+          modelOverride: effectiveModel,
+          maxTokens: effectiveMaxTokens,
+          temperature: 0.4,
+        });
+
+        // 사용량 로깅
+        logAIUsage({
+          userId: auth.userId,
+          feature,
+          model: result.model,
+          inputTokens: result.inputTokens,
+          outputTokens: result.outputTokens,
+          durationMs: result.durationMs,
+          cached: false,
+        }).catch(() => {});
+
+        return NextResponse.json({
+          data: {
+            answer: result.content,
+            isPremium: !!isPremium,
+            model: effectiveModel,
+          },
+          cached: false,
+          remaining,
+          aiGenerated: true,
+        });
+      } catch (err) {
+        console.error('[AI API] 세무 상담 오류:', err);
+        return NextResponse.json(
+          { error: 'AI 상담 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', code: 'ASK_ERROR' },
           { status: 500 }
         );
       }

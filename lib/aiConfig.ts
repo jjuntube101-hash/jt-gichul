@@ -9,6 +9,7 @@ export const AI_FEATURES = {
   mock_exam: { dailyLimit: 1, model: 'haiku', label: 'AI 모의고사' },
   weekly_report: { weeklyLimit: 1, model: 'sonnet', label: '약점 해부 보고서' },
   dday_strategy: { weeklyLimit: 1, model: 'sonnet', label: 'D-day 전략' },
+  ask: { dailyLimit: 3, model: 'haiku', label: 'AI 세무 상담', premiumDailyLimit: 20, premiumModel: 'sonnet' },
 } as const;
 
 export type AIFeature = keyof typeof AI_FEATURES;
@@ -16,7 +17,7 @@ export type AIFeature = keyof typeof AI_FEATURES;
 /** 일일 제한이 있는 기능인지 확인 */
 export function isDailyLimited(
   feature: AIFeature
-): feature is 'briefing' | 'wrong_answer' | 'mock_exam' {
+): feature is 'briefing' | 'wrong_answer' | 'mock_exam' | 'ask' {
   return 'dailyLimit' in AI_FEATURES[feature];
 }
 

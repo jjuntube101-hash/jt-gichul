@@ -10,7 +10,40 @@
 - 빌드: 2,095 페이지 정상 생성
 - 9급 커리큘럼: 12주 → **13주** (지방세 분할)
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
-- 다음 할 일: 프로덕션 재배포 (`npx vercel --prod --yes`), Supabase RLS 마이그레이션, Vercel ANTHROPIC_API_KEY 추가
+- Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
+- 마지막 배포: 260407 (API 보안 + UX 개선 + 오답노트 필터 + SEO/성능)
+- 다음 할 일: 크로스 브라우저 테스트 (프로덕션 사이트에서)
+
+### 기능 개선 + SEO + 성능 (260407 심야)
+- [x] **오답노트 필터 강화** — 모드 필터(전체/연습/OX) UI 노출 + 법별(과목별) 필터 추가 (review/page.tsx)
+- [x] **SEO 사이트맵 보강** — review/ai/mock-exam/login 정적 페이지 추가 (sitemap.ts)
+- [x] **manifest.json 업데이트** — "세법" → "세법·회계", 문항 수 2,065 반영
+- [x] **정적 데이터 캐시** — /data/ 경로 Cache-Control 헤더 추가 (24h + stale-while-revalidate 7d)
+- [x] **Anthropic 크레딧 충전** — $10 충전, Auto reload OFF (3중 보호 완성)
+- [x] **피드백 처리** — d151a720 resolved
+- PWA 푸시: 인프라 완성, VAPID 키 + PUSH_API_KEY 환경변수 추가 시 활성화
+- 빌드 검증: 2,095페이지, 에러 0
+
+### API 키 보호 대책 (260407 밤)
+- [x] **Haiku 모델 분리** — 브리핑/오답진단/모의고사 claude-haiku-4-5 사용 (비용 ~1/10 절감)
+- [x] **월간 $10 상한** — 서버측 월간 비용 추정, 초과 시 Claude 보강 차단 (로컬 엔진만 작동)
+- [x] **신규 계정 24시간 대기** — 가입 후 24시간 미만 계정 AI 기능 차단 (계정 팜 방지)
+- [x] **sanitizeInput 전체 적용** — 5개 AI 기능 모두 프롬프트 인젝션 방어 (기존 briefing만 → 전체)
+- [x] **접근 실패 로깅** — 401/403/429 시 [AI-SECURITY] 태그로 console.warn 기록
+- [x] **Anthropic Console** — $10 크레딧 충전, Auto reload OFF (소진 시 자동 차단 = 사실상 $10 한도)
+- 빌드 검증: 2,095페이지, 에러 0
+
+### UI/UX 개선 2차 (260407 밤)
+- [x] **글자 크기 업그레이드** — 본문 text-sm→text-base, 선택지 text-[15px], 보기/해설 text-sm (QuestionView, OX, practice, review, WrongAnswerDiagnosis)
+- [x] **DESIGN.md 타이포그래피** — 5단계 규칙 업데이트 (본문 16px, 콘텐츠 보조 15px)
+- [x] **휴식 모달 빈도 조정** — 3시간→5시간, 스누즈 30분→1시간 (RestReminder.tsx)
+- [x] **홈 빈 공간 수정** — main pb-24→pb-6 (footer가 bottom nav 여유 처리)
+- 빌드 검증: 2,095페이지, 에러 0
+
+### 수동 작업 완료 (260407 저녁)
+- [x] **Supabase RLS 마이그레이션** — v5 보안 강화: ai_usage/ai_cache 불필요 RLS 정책 3개 DROP 완료
+- [x] **Vercel ANTHROPIC_API_KEY** — 환경변수 추가 (All Environments) + Redeploy 트리거
+- AI API 프로덕션 연동 완료 (코드 변경 없이 환경변수만 추가)
 
 ### UX 버그 수정 + 크로스 브라우저 테스트 (260407 오후)
 - [x] **포커스 모드 나가기 버튼** — OX 퀴즈/타이머/1분 퀴즈 진행 중 X 닫기 버튼 추가 (focusMode에서 Header+BottomNav 숨김 시 탈출 불가 버그 수정)

@@ -14,7 +14,7 @@ import { AI_FEATURES } from "./aiConfig";
 // --- 모델 매핑 ---
 
 const MODEL_MAP: Record<string, string> = {
-  haiku: "claude-sonnet-4-20250514",    // 경량 기능 (브리핑, 오답진단, 모의고사)
+  haiku: "claude-haiku-4-5-20251001",   // 경량 기능 (브리핑, 오답진단, 모의고사) — 비용 1/10
   sonnet: "claude-sonnet-4-20250514",   // 심층 분석 (주간보고서, D-day전략)
 };
 
@@ -39,6 +39,8 @@ export interface ClaudeRequest {
   feature: AIFeature;
   systemPrompt: string;
   userMessage: string;
+  messages?: { role: 'user' | 'assistant'; content: string }[];  // 멀티턴 대화
+  modelOverride?: string;  // premium 사용자용 모델 오버라이드 ('haiku' | 'sonnet')
   maxTokens?: number;
   temperature?: number;
 }
@@ -58,22 +60,23 @@ export interface ClaudeResponse {
  */
 export async function callClaude(req: ClaudeRequest): Promise<ClaudeResponse> {
   const featureConfig = AI_FEATURES[req.feature];
-  const modelId = MODEL_MAP[featureConfig.model] || MODEL_MAP.haiku;
+  const modelKey = req.modelOverride || featureConfig.model;
+  const modelId = MODEL_MAP[modelKey] || MODEL_MAP.haiku;
 
   const anthropic = getClient();
   const startTime = Date.now();
+
+  // 멀티턴 메시지가 있으면 사용, 없으면 단일 메시지
+  const messages = req.messages
+    ? req.messages.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+    : [{ role: 'user' as const, content: req.userMessage }];
 
   const response = await anthropic.messages.create({
     model: modelId,
     max_tokens: req.maxTokens ?? 1024,
     temperature: req.temperature ?? 0.3,
     system: req.systemPrompt,
-    messages: [
-      {
-        role: "user",
-        content: req.userMessage,
-      },
-    ],
+    messages,
   });
 
   const durationMs = Date.now() - startTime;
@@ -145,7 +148,7 @@ export async function logAIUsage(params: {
     // 동적 import로 서버사이드 Supabase 사용
     const { createClient } = await import("@supabase/supabase-js");
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const key = process.env.SUPABASE_SERVICE_KEY;
     if (!url || !key) return;
 
     const supabase = createClient(url, key);

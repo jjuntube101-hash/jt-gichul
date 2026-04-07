@@ -58,8 +58,9 @@
 
 | 요소 | 폰트 | 크기 | 굵기 | 색상 |
 |------|------|------|------|------|
-| **본문** | Geist Sans | `text-sm` (14px) | normal | `foreground` |
-| **제목 (페이지)** | Geist Sans | `text-lg` ~ `text-xl` | `font-bold` | `foreground` |
+| **본문** | Geist Sans | `text-base` (16px) | normal | `foreground` |
+| **콘텐츠 보조** | Geist Sans | `text-[15px]` (15px) | normal | `card-foreground` |
+| **제목 (페이지)** | Geist Sans | `text-xl` (20px) | `font-bold` | `foreground` |
 | **제목 (카드)** | Geist Sans | `text-base` | `font-semibold` | `foreground` |
 | **라벨/캡션** | Geist Sans | `text-xs` (12px) | `font-medium` | `muted-foreground` |
 | **네비 라벨** | Geist Sans | `text-[10px]` | `font-medium` | `muted-foreground` / `primary` |
@@ -67,7 +68,7 @@
 | **숫자 (통계)** | Geist Sans | `text-2xl` ~ `text-3xl` | `font-bold` | `primary` or semantic |
 
 ### 규칙
-- 폰트 사이즈 4단계만: `text-xs`, `text-sm`, `text-base`, `text-lg`~`text-xl`
+- 폰트 사이즈 5단계: `text-xs`(UI), `text-sm`(보조), `text-[15px]`(선택지), `text-base`(본문), `text-xl`(제목)
 - `text-[10px]`은 네비게이션 라벨에만 허용
 - 줄 간격: Tailwind 기본 (`leading-normal`). 본문은 `leading-relaxed` 허용
 

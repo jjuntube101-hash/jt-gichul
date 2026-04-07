@@ -23,10 +23,14 @@ interface MockExamData {
 }
 
 type ExamTarget = "9급" | "7급";
+type ExamSubject = "tax" | "accounting";
+type TaxScope = "all" | "national" | "local";
 
 export default function MockExamPage() {
   const { user, loading: authLoading } = useAuth();
   const [examTarget, setExamTarget] = useState<ExamTarget>("9급");
+  const [examSubject, setExamSubject] = useState<ExamSubject>("tax");
+  const [taxScope, setTaxScope] = useState<TaxScope>("all");
   const [generating, setGenerating] = useState(false);
   const [examData, setExamData] = useState<MockExamData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +57,7 @@ export default function MockExamPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ examTarget }),
+        body: JSON.stringify({ examTarget, subject: examSubject, taxScope: examSubject === "tax" ? taxScope : undefined }),
       });
 
       if (res.status === 429) {
@@ -168,10 +172,32 @@ export default function MockExamPage() {
             />
           </div>
 
-          {/* 직급 선택 */}
-          <div className="mb-5">
+          {/* 과목 선택 */}
+          <div className="mb-4">
             <p className="text-xs font-medium text-muted-foreground mb-2">
-              시험 목표
+              과목
+            </p>
+            <div className="flex rounded-xl bg-muted p-1 gap-1">
+              {([["tax", "세법"], ["accounting", "회계"]] as [ExamSubject, string][]).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setExamSubject(key)}
+                  className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
+                    examSubject === key
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 직급 선택 */}
+          <div className="mb-4">
+            <p className="text-xs font-medium text-muted-foreground mb-2">
+              직급
             </p>
             <div className="flex rounded-xl bg-muted p-1 gap-1">
               {(["9급", "7급"] as ExamTarget[]).map((t) => (
@@ -189,6 +215,30 @@ export default function MockExamPage() {
               ))}
             </div>
           </div>
+
+          {/* 세법일 때 국가직/지방직 선택 */}
+          {examSubject === "tax" && (
+            <div className="mb-5">
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                시험 유형
+              </p>
+              <div className="flex rounded-xl bg-muted p-1 gap-1">
+                {([["all", "전체"], ["national", "국가직(국세)"], ["local", "지방직(지방세)"]] as [TaxScope, string][]).map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => setTaxScope(key)}
+                    className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-colors ${
+                      taxScope === key
+                        ? "bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 문항수 + 예상시간 */}
           <p className="text-sm text-muted-foreground text-center mb-4">

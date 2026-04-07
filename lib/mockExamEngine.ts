@@ -12,9 +12,13 @@ import type { Question, ChunkMeta } from '@/types/question';
 
 // --- 인터페이스 ---
 
+const NATIONAL_LAWS = ["국세기본법", "국세징수법", "법인세법", "부가가치세법", "상속세 및 증여세법", "소득세법", "조세법 총론", "종합부동산세법"];
+
 export interface MockExamConfig {
   userId: string;
   examTarget: '9급' | '7급';
+  subject?: 'tax' | 'accounting'; // 과목 필터
+  taxScope?: 'all' | 'national' | 'local'; // 세법 시 국세/지방세
   questionCount: number; // 기본 20문항
 }
 
@@ -36,7 +40,7 @@ export interface MockExamResult {
 
 function getServiceSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) throw new Error('Supabase 환경변수 미설정');
   return createClient(url, key);
 }
@@ -79,7 +83,7 @@ interface SolveRecord {
 export async function generateMockExam(
   config: MockExamConfig
 ): Promise<MockExamResult> {
-  const { userId, examTarget, questionCount } = config;
+  const { userId, examTarget, subject, taxScope, questionCount } = config;
   const supabase = getServiceSupabase();
 
   // 1. 유저 풀이 기록 전체 조회
@@ -94,11 +98,25 @@ export async function generateMockExam(
 
   const solveRecords: SolveRecord[] = records ?? [];
 
-  // 2. 전체 문항 로드 + 직급 필터 (9급/7급 모두 세법+회계 포함)
+  // 2. 전체 문항 로드 + 과목/직급/시험유형 필터
   const allQuestions = loadAllQuestionsServer();
-  const pool = allQuestions.filter(
-    (q) => q.no >= 2001 || q.직급 === examTarget || q.직급 === "공통"
-  );
+  let pool: Question[];
+
+  if (subject === 'accounting') {
+    // 회계: 회계 문항만 (no >= 2001)
+    pool = allQuestions.filter(
+      (q) => q.tax_type === '회계' && (q.직급 === examTarget || q.직급 === '공통')
+    );
+  } else {
+    // 세법: 국세/지방세 필터 적용
+    pool = allQuestions.filter((q) => {
+      if (q.tax_type === '회계') return false;
+      if (q.직급 !== examTarget && q.직급 !== '공통') return false;
+      if (taxScope === 'national') return NATIONAL_LAWS.includes(q.대분류);
+      if (taxScope === 'local') return !NATIONAL_LAWS.includes(q.대분류);
+      return true;
+    });
+  }
 
   // 3. 풀이 기록 분석
   const solvedMap = new Map<number, { total: number; correct: number }>();

@@ -77,7 +77,7 @@ export default function FeedbackButton() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-20 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary-hover transition-colors"
+            className="fixed bottom-20 left-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground shadow-lg hover:bg-muted/80 transition-colors"
             aria-label="피드백 보내기"
           >
             <MessageSquarePlus className="h-5 w-5" />

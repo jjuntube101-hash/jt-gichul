@@ -171,20 +171,20 @@ export default function WrongAnswerDiagnosis({
             함정: {diagnosis.trapType}
           </span>
         </div>
-        <p className="text-sm leading-relaxed text-muted-foreground pl-5.5">
+        <p className="text-base leading-relaxed text-muted-foreground pl-5.5">
           {diagnosis.trapDescription}
         </p>
       </div>
 
       {/* 선지 비교 */}
       <div className="space-y-2">
-        <div className="rounded-lg bg-danger-light p-3 text-xs leading-relaxed">
+        <div className="rounded-lg bg-danger-light p-3 text-sm leading-relaxed">
           <span className="font-bold text-danger">
             {selectedChoice}번 (선택):
           </span>{" "}
           <span className="text-danger/80">{diagnosis.wrongExplanation}</span>
         </div>
-        <div className="rounded-lg bg-success-light p-3 text-xs leading-relaxed">
+        <div className="rounded-lg bg-success-light p-3 text-sm leading-relaxed">
           <span className="font-bold text-success">
             {diagnosis.correctAnswer}번 (정답):
           </span>{" "}
@@ -194,7 +194,7 @@ export default function WrongAnswerDiagnosis({
 
       {/* 근거 법령 */}
       {diagnosis.lawRef ? (
-        <div className="flex items-start gap-2 text-xs text-muted-foreground">
+        <div className="flex items-start gap-2 text-sm text-muted-foreground">
           <Scale className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
             <span className="font-medium">근거:</span> {diagnosis.lawRef}
@@ -204,7 +204,7 @@ export default function WrongAnswerDiagnosis({
 
       {/* 반복 패턴 경고 */}
       {diagnosis.patternAlert && (
-        <div className="flex items-center gap-2 rounded-lg bg-warning-light p-3 text-xs text-warning">
+        <div className="flex items-center gap-2 rounded-lg bg-warning-light p-3 text-sm text-warning">
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
           <span className="font-medium">{diagnosis.patternAlert}</span>
         </div>
@@ -212,11 +212,11 @@ export default function WrongAnswerDiagnosis({
 
       {/* 학습 포인트 */}
       <div className="rounded-lg bg-primary-light p-3 space-y-1">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
+        <div className="flex items-center gap-1.5 text-sm font-bold text-primary">
           <BookOpen className="h-3.5 w-3.5" />
           학습 포인트
         </div>
-        <p className="text-xs leading-relaxed text-primary/80 pl-5">
+        <p className="text-sm leading-relaxed text-primary/80 pl-5">
           {diagnosis.studyTip}
         </p>
       </div>
@@ -224,26 +224,26 @@ export default function WrongAnswerDiagnosis({
       {/* AI 심층 분석 (Claude 보강 시) */}
       {aiGenerated && diagnosis.ai ? (
         <div className="rounded-lg border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-3 space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
+          <div className="flex items-center gap-1.5 text-sm font-bold text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             AI 심층 분석
           </div>
           <div className="space-y-2 pl-5">
             {diagnosis.ai.diagnosis ? (
-              <p className="text-xs leading-relaxed text-card-foreground">{diagnosis.ai.diagnosis}</p>
+              <p className="text-sm leading-relaxed text-card-foreground">{diagnosis.ai.diagnosis}</p>
             ) : null}
             {diagnosis.ai.key_point ? (
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 <span className="font-medium text-card-foreground">핵심:</span> {diagnosis.ai.key_point}
               </p>
             ) : null}
             {diagnosis.ai.trap_warning ? (
-              <p className="text-xs leading-relaxed text-warning">
+              <p className="text-sm leading-relaxed text-warning">
                 <span className="font-medium">주의:</span> {diagnosis.ai.trap_warning}
               </p>
             ) : null}
             {diagnosis.ai.study_tip ? (
-              <p className="text-xs leading-relaxed text-primary/80">
+              <p className="text-sm leading-relaxed text-primary/80">
                 <span className="font-medium">팁:</span> {diagnosis.ai.study_tip}
               </p>
             ) : null}

@@ -54,7 +54,7 @@ export interface WeeklyReport {
 
 function getServiceSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) throw new Error('Supabase 환경변수 미설정');
   return createClient(url, key);
 }

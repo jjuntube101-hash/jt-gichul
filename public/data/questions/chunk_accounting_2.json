@@ -171,8 +171,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "어음할인을 양도거래로 보고 회계처리하였다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 복식부기"
+        },
+        {
+          "ox_text": "이 거래는 회사의 주거래인 재화의 판매나 용역의 제공거래에 해당한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 복식부기"
+        },
+        {
+          "ox_text": "은행에 받을어음을 맡기고 돈을 차입한 경우에 해당한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 복식부기"
+        },
+        {
+          "ox_text": "결산 시에 결산조정분개가 필요한 거래이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 복식부기"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -311,8 +332,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "수익은 자산의 유입이나 증가 또는 부채의 감소에 따라 자본의 증가를 초래하는 특정 회계기간 동안에 발생한 경제적 효익의 증가로서, 지분참여자에 의한 출연과 관련된 것을 포함한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부채는 과거 사건에 의하여 발생하였으며 경제적 효익을 갖는 자원이 기업으로부터 유출됨으로써 이행될 것으로 예상되는 현재의무이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산은 과거 사건의 결과로 기업이 통제하고 있고 미래경제적 효익이 기업에 유입될 것으로 기대되는 자원이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자본은 기업의 자산에서 모든 부채를 차감한 후의 잔여지분이다. 자본총액은 그 기업이 발행한 주식의 시가총액 또는 기업순자산을 나누어서 처분하거나 기업 전체로 처분할 때 받을 수 있는 대가와 일치하지 않는 것이 일반적이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -500,8 +542,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "20×2년 말의 기계 장부금액은 ￦420억이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년의 감가상각비는 ￦40억이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년 말 현재 손상차손을 인식하지 않았다고 가정했을 경우, 기계의 장부금액은 ￦400억이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년에는 손상차손 환입으로 ￦80억을 계상해야 한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -822,8 +885,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "공정의 자동화로 인한 제조간접원가의 비중이 커지고 합리적인 원가배부기준을 마련하기 위한 필요에 의해 도입되었다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > ABC"
+        },
+        {
+          "ox_text": "발생하는 원가의 대부분이 하나의 원가동인에 의해 설명이 되는 경우에는 ABC의 도입효과가 크게 나타날 수 없다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > ABC"
+        },
+        {
+          "ox_text": "활동별로 원가를 계산하는 ABC를 활용함으로써 재무제표정보의 정확성과 신속한 작성이 가능해지게 되었다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > ABC"
+        },
+        {
+          "ox_text": "ABC의 원가정보를 활용함으로써 보다 적정한 가격결정을 할 수 있다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > ABC"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -916,8 +1000,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "「국가회계기준에 관한 규칙」및 「지방자치단체 회계기준에 관한 규칙」에서는 재무제표 작성원칙에 따라 재무제표의 과목은 해당 항목의 중요성에 따라 별도의 과목으로 표시하거나 다른 과목으로 통합하여 표시가능하다고 명시적으로 규정하고 있다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "「지방자치단체 회계기준에 관한 규칙」에서는 「국가회계기준에 관한 규칙」과 달리 자산의 분류에 주민편의시설이 포함된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "「지방자치단체 회계기준에 관한 규칙」에서는 「국가회계기준에 관한 규칙」과 달리 현금흐름표가 재무제표에 포함된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "「국가회계기준에 관한 규칙」에서 순자산은 기본순자산, 적립금 및 잉여금, 순자산조정으로 구분되나, 「지방자치단체 회계기준에 관한 규칙」에서는 고정순자산, 특정순자산 및 일반순자산으로 분류하고 있다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",

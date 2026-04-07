@@ -10,6 +10,7 @@ export interface OXItemWithDifficulty {
   ox_text: string;
   answer: "O" | "X";
   law_ref: string;
+  explanation?: string; // 선지 해설 (choices_analysis.analysis)
   questionNo: number;
   law: string;
   difficulty: number; // 1~5

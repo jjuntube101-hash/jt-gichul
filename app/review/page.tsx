@@ -46,6 +46,7 @@ interface WrongRecord {
 type SortKey = "recent" | "count" | "law";
 type FilterMode = "all" | "practice" | "ox";
 type TabKey = "wrong" | "spaced";
+type LawFilter = "all" | string;
 
 // ---------------------------------------------------------------------------
 // 오답 바로 풀기 버튼
@@ -230,6 +231,8 @@ function ReviewPage() {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<SortKey>("recent");
   const [filter, setFilter] = useState<FilterMode>("all");
+  const [lawFilter, setLawFilter] = useState<LawFilter>("all");
+  const [showLawFilter, setShowLawFilter] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -246,14 +249,35 @@ function ReviewPage() {
       }
 
       try {
-        const { data } = await supabase
-          .from("solve_records")
-          .select("question_no, selected_choice, is_correct, created_at, mode")
-          .eq("user_id", user.id)
-          .eq("is_correct", false)
-          .order("created_at", { ascending: false });
+        // solve_records (연습/타이머 모드) + ox_records (OX/1분퀴즈 모드) 병합
+        const [solveRes, oxRes] = await Promise.all([
+          supabase
+            .from("solve_records")
+            .select("question_no, selected_choice, is_correct, created_at, mode")
+            .eq("user_id", user.id)
+            .eq("is_correct", false)
+            .order("created_at", { ascending: false }),
+          supabase
+            .from("ox_records")
+            .select("question_no, ox_index, is_correct, created_at")
+            .eq("user_id", user.id)
+            .eq("is_correct", false)
+            .order("created_at", { ascending: false }),
+        ]);
 
-        const wrongRecords = data ?? [];
+        const solveWrong: WrongRecord[] = solveRes.data ?? [];
+        const oxWrong: WrongRecord[] = (oxRes.data ?? []).map((r: { question_no: number; ox_index: number; is_correct: boolean; created_at: string }) => ({
+          question_no: r.question_no,
+          selected_choice: r.ox_index,
+          is_correct: r.is_correct,
+          created_at: r.created_at,
+          mode: "ox",
+        }));
+
+        // 병합 후 최신순 정렬
+        const wrongRecords = [...solveWrong, ...oxWrong].sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
         setRecords(wrongRecords);
 
         // 문항 데이터는 양쪽 탭 모두 필요
@@ -326,6 +350,19 @@ function ReviewPage() {
       .slice(0, 8);
   }, [uniqueWrong, questions]);
 
+  // 오답에 포함된 법(과목) 목록
+  const wrongLaws = useMemo(() => {
+    const lawCount = new Map<string, number>();
+    for (const r of Array.from(uniqueWrong.values())) {
+      const q = questions.get(r.question_no);
+      if (!q) continue;
+      lawCount.set(q.대분류, (lawCount.get(q.대분류) ?? 0) + 1);
+    }
+    return Array.from(lawCount.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([law, count]) => ({ law, count }));
+  }, [uniqueWrong, questions]);
+
   // 필터 + 정렬
   const filtered = useMemo(() => {
     let arr = Array.from(uniqueWrong.values());
@@ -333,6 +370,14 @@ function ReviewPage() {
       arr = arr.filter((r) => r.mode === "practice");
     } else if (filter === "ox") {
       arr = arr.filter((r) => r.mode === "ox" || r.mode === "quick");
+    }
+
+    // 법별 필터
+    if (lawFilter !== "all") {
+      arr = arr.filter((r) => {
+        const q = questions.get(r.question_no);
+        return q?.대분류 === lawFilter;
+      });
     }
 
     if (sort === "recent") {
@@ -347,7 +392,7 @@ function ReviewPage() {
       });
     }
     return arr;
-  }, [uniqueWrong, filter, sort, wrongCountMap, questions]);
+  }, [uniqueWrong, filter, lawFilter, sort, wrongCountMap, questions]);
 
   if (authLoading) {
     return (
@@ -450,29 +495,85 @@ function ReviewPage() {
               <QuickPracticeButton questionNos={filtered.map((r) => r.question_no)} />
 
               {/* Sort & Filter Bar */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
-                  {(
-                    [
-                      { key: "recent", label: "최신순", icon: Clock },
-                      { key: "count", label: "오답횟수순", icon: BarChart3 },
-                      { key: "law", label: "과목별", icon: Filter },
-                    ] as const
-                  ).map(({ key, label, icon: Icon }) => (
+              <div className="space-y-2">
+                {/* 정렬 */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
+                    {(
+                      [
+                        { key: "recent", label: "최신순", icon: Clock },
+                        { key: "count", label: "오답횟수순", icon: BarChart3 },
+                        { key: "law", label: "과목별", icon: Filter },
+                      ] as const
+                    ).map(({ key, label, icon: Icon }) => (
+                      <button
+                        key={key}
+                        onClick={() => setSort(key)}
+                        className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[10px] font-medium transition-colors ${
+                          sort === key
+                            ? "bg-card text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="h-3 w-3" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 모드 필터 */}
+                  <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
+                    {(
+                      [
+                        { key: "all", label: "전체" },
+                        { key: "practice", label: "연습" },
+                        { key: "ox", label: "OX/퀴즈" },
+                      ] as const
+                    ).map(({ key, label }) => (
+                      <button
+                        key={key}
+                        onClick={() => setFilter(key)}
+                        className={`rounded-md px-2.5 py-1.5 text-[10px] font-medium transition-colors ${
+                          filter === key
+                            ? "bg-card text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 법별 필터 */}
+                {wrongLaws.length > 1 && (
+                  <div>
                     <button
-                      key={key}
-                      onClick={() => setSort(key)}
-                      className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[10px] font-medium transition-colors ${
-                        sort === key
-                          ? "bg-card text-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
+                      onClick={() => { setShowLawFilter((p) => !p); if (lawFilter !== "all") { setLawFilter("all"); setShowLawFilter(false); } }}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-medium transition-colors ${
+                        lawFilter !== "all" || showLawFilter
+                          ? "bg-primary text-white"
+                          : "bg-muted text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      <Icon className="h-3 w-3" />
-                      {label}
+                      <Filter className="h-3 w-3" />
+                      {lawFilter !== "all" ? lawFilter : "과목 필터"}
                     </button>
-                  ))}
-                </div>
+                    {showLawFilter && lawFilter === "all" && (
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {wrongLaws.map(({ law, count }) => (
+                          <button
+                            key={law}
+                            onClick={() => { setLawFilter(law); setShowLawFilter(false); }}
+                            className="rounded-lg px-2.5 py-1 text-[10px] font-medium bg-muted text-muted-foreground hover:bg-primary hover:text-white transition-colors"
+                          >
+                            {law} ({count})
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Stats */}
@@ -564,7 +665,7 @@ function ReviewPage() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-card-foreground line-clamp-2 leading-relaxed">
+                              <p className="text-base font-medium text-card-foreground line-clamp-2 leading-relaxed">
                                 {q.문제_내용.slice(0, 80)}
                                 {q.문제_내용.length > 80 ? "..." : ""}
                               </p>

@@ -171,8 +171,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "전통적원가계산이 활동기준원가계산보다 ￦1,000,000 더 많이 배부",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "화물선과 LNG선에 모두 ￦2,000,000 배부",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "활동기준원가계산이 전통적원가계산보다 ￦1,000,000 더 많이 배부",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "전통적원가계산에 의한 LNG선의 배부액은 ￦2,000,000이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -495,8 +516,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "1/3 현금 ￦1,000,000을 출자하여 영업을 개시하다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "1/10 상품 ￦200,000을 매입하고 대금을 현금으로 지급하였다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "1/15 거래처의 외상매출금 ￦200,000을 현금 회수하였다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "1/25 차입금 ￦500,000을 3개월 후에 갚기로 하고 차입하였다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -727,8 +769,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산과 부채가 증가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "부채와 자본이 감소한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자산과 자본이 감소한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자산은 증가하고 부채는 감소한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -865,8 +928,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재고자산의 취득원가는 매입원가 또는 제조원가를 말한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "고정제조간접비는 생산설비의 정상조업도와 유사한 경우에는 실제조업도를 사용할 수 있다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "표준원가제도를 채택하고 있는 경우에도 재고자산의 대차대조표가액은 실제원가로 보고한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "저가기준을 적용하여 매출가격환원법을 적용하는 경우에는 원가율을 계산할 때 가격인하를 매출가격에 의한 판매가능액에서 차감한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 재고자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -1141,8 +1225,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "유동성 순서에 따른 표시방법을 적용할 경우 모든 자산과 부채는 유동성의 순서에 따라 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "금융회사와 같은 일부 기업의 경우에는 오름차순이나 내림차순의 유동성 순서에 따른 표시방법으로 자산과 부채를 표시하는 것이 유동/비유동 구분법보다 신뢰성 있고 더욱 목적적합한 정보를 제공한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업이 명확히 식별 가능한 영업주기 내에서 재화나 용역을 제공하는 경우, 재무상태표에 유동자산과 비유동자산 및 유동부채와 비유동부채를 구분하여 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업이 기존의 대출계약조건에 따라 보고기간 후 적어도 12개월 이상 부채를 차환하거나 연장할 것으로 기대하고 있고, 그런 재량권이 있더라도, 보고기간 후 12개월 이내에 만기가 도래한다면 유동부채로 분류한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -1235,8 +1340,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "부채는 유동부채, 장기차입부채, 장기충당부채 및 기타 비유동부채로 구분하여 재정상태표에 표시한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "특정순자산은 주민편의시설, 사회기반시설 및 무형자산의 투자액에서 그 시설의 투자재원을 마련할 목적으로 조달한 장기차입금 및 지방채증권 등을 뺀 금액으로 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "부채의 가액은 회계실체가 지급의무를 지는 채무액을 말하며, 채무액은 이 규칙에서 정하는 것을 제외하고는 만기상환가액으로 함을 원칙으로 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "교환거래에 의한 비용은 가치의 이전에 대한 의무가 존재하고 그 금액을 합리적으로 측정할 수 있을 때에 인식한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -1373,8 +1499,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "희석주당이익을 계산할 때 희석효과가 있는 옵션이나 주식매입권은 행사된 것으로 가정한다. 이 경우 권리행사에서 예상되는 현금유입액은 보통주를 직전 회계기간의 기말종가 기준으로 발행하여 유입된 것으로 가정한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "보유자의 선택에 따라 보통주나 현금으로 결제하게 되는 계약의 경우에는 주식결제와 현금결제 중 희석효과가 더 큰 방법으로 결제된다고 가정하여 희석주당이익을 계산한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "유통되는 보통주식수나 잠재적보통주식수가 자본금전입, 무상증자, 주식분할로 증가하였거나 주식병합으로 감소하더라도, 비교표시하는 기본주당이익과 희석주당이익을 소급하여 수정하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "중단영업에 대해 보고하는 기업은 중단영업에 대한 기본주당이익과 희석주당이익을 포괄손익계산서에 표시하지 않으며, 주석으로도 공시하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -1605,8 +1752,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "적격자산이 물리적으로 완성된 경우라면 일상적인 건설 관련 후속 관리업무 등이 진행되고 있더라도 일반적으로 당해 자산을 의도된 용도로 사용(또는 판매) 가능한 것으로 본다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산을 의도된 용도로 사용(또는 판매) 가능하게 하는 데 필요한 활동은 당해 자산의 물리적인 제작활동을 포함하나 그 이전단계에서 이루어진 기술 및 관리상의 활동은 포함하지 않는다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산의 건설활동을 여러 부분으로 나누어 완성하고, 남아있는 부분의 건설활동을 계속 진행하고 있더라도 이미 완성된 부분이 사용 가능하다면, 당해 부분을 의도된 용도로 사용(또는 판매) 가능하게 하는 데 필요한 대부분의 활동을 완료한 시점에 차입원가의 자본화를 종료한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산에 대한 지출은 현금의 지급, 다른 자산의 제공 또는 이자부 부채의 발생 등에 따른 지출액을 의미한다. 적격자산과 관련하여 수취하는 정부보조금과 건설 등의 진행에 따라 수취하는 금액은 적격자산에 대한 지출액에서 차감한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -1697,8 +1865,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "투입변수나 측정기법의 변경이 회계추정치에 미치는 영향은 전기오류수정에서 비롯되지 않는 한 회계추정치 변경이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업의 재무상태, 재무성과 또는 현금흐름을 특정한 의도대로 표시하기 위하여 중요하거나 중요하지 않은 오류를 포함하여 작성된 재무제표는 한국채택국제회계기준에 따라 작성되었다고 할 수 없다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "회계추정의 변경효과가 변경이 발생한 기간과 미래기간에 모두 영향을 미치는 경우 발생한 기간에는 회계추정 변경 효과를 당기손익에 포함하여 전진적으로 인식하고, 미래기간에는 회계추정 변경 효과를 기타포괄손익으로 하여 전진적으로 인식한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "당기 중에 발견한 당기의 잠재적 오류는 재무제표의 발행승인일 전에 수정한다. 그러나 중요한 오류를 후속기간에 발견하는 경우, 이러한 전기오류는 해당 후속기간의 재무제표에 비교표시된 재무정보를 재작성하여 수정한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2203,8 +2392,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "보고기간말 이전에 장기차입약정을 위반했을 때 대여자가 즉시 상환을 요구할 수 있는 채무는 보고기간 후 재무제표 발행승인일 전에 채권자가 약정위반을 이유로 상환을 요구하지 않기로 합의하더라도 유동부채로 분류한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기타포괄손익의 항목(재분류조정 포함)과 관련한 법인세비용 금액은 포괄손익계산서나 주석에 공시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "비용의 성격별 분류는 기능별 분류보다 재무제표이용자에게 더욱 목적적합한 정보를 제공할 수 있지만 비용을 성격별로 배분하는데 자의적인 배분과 상당한 정도의 판단이 개입될 수 있다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재분류조정은 포괄손익계산서나 주석에 표시할 수 있으며, 재분류조정을 주석에 표시하는 경우에는 관련 재분류조정을 반영한 후에 기타포괄손익의 항목을 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2295,8 +2505,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "회계정책 또는 회계추정을 변경한 경우에는 그 변경내용, 변경사유 및 변경이 해당 회계연도의 재무제표에 미치는 영향을 주석으로 표시한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "회계추정의 변경에 따른 영향은 비교표시되는 직전 회계연도의 기초순자산 및 그 밖의 대응금액을 회계추정의 변경 이전 처음부터 적용된 것으로 조정한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "오류의 수정은 전년도 이전에 발생한 회계기준적용의 오류, 추정의 오류, 계정분류의 오류, 계산상의 오류, 사실의 누락 및 사실의 오용 등을 수정하는 것이다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "중대한 오류를 수정한 경우에는 중대한 오류로 판단한 근거, 비교재무제표에 표시된 과거회계기간에 대한 수정금액, 비교재무제표가 다시 작성되었다는 사실을 주석으로 포함한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2435,8 +2666,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "기업은 분배를 선언하고 소유주에게 관련 자산을 분배할 의무를 부담할 때, 미지급배당을 부채로 인식하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "소유주에게 배당으로 비현금자산을 분배해야하는 부채는 분배될 자산의 공정가치로 측정한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "각 보고기간말과 결제일에, 기업은 미지급배당의 장부금액을 검토하고 조정하며, 이 경우 미지급배당의 장부금액 변동은 분배금액에 대한 조정으로 자본에서 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "기업이 미지급배당을 결제할 때, 분배된 자산의 장부금액과 미지급배당의 장부금액이 차이가 있다면 이를 당기손익으로 인식하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2573,8 +2825,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "생물자산에서 수확된 수확물은 수확시점에 공정가치에서 처분부대원가를 뺀 금액으로 측정하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "생물자산의 공정가치에서 처분부대원가를 뺀 금액을 산정할 때에 추정 매각부대원가를 차감하기 때문에 생물자산의 최초 인식시점에 손실이 발생할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "생물자산을 최초에 원가에서 감가상각누계액과 손상차손누계액을 차감한 금액으로 측정하고, 그 이후 그러한 생물자산의 공정가치를 신뢰성 있게 측정할 수 있더라도 최초 적용한 측정방법을 변경하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "공정가치에서 처분부대원가를 뺀 금액으로 측정하는 생물자산과 관련된 정부보조금에 다른 조건이 없는 경우에는 이를 수취할 수 있게 되는 시점에만 당기손익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2667,8 +2940,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "중앙관서 내 국가회계실체가 발행한 국채(공채)를 동일 중앙관서 내 다른 국가회계실체가 취득하는 경우 중앙관서 재무제표 작성 시 해당 투자증권(국채(공채))을 국채(공채)의 차감계정인 자기국채(공채)로 대체한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "중앙관서 내 국가회계실체 간 거래를 통해 재정운영표에 수익ㆍ비용을 인식한 경우 해당 내부거래로 인하여 상호 발생한 수익과 비용을 제거하지 않는다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "국가 재무제표 작성 시에는 중앙관서 간 내부거래를 통한 일반유형자산의 취득, 처분, 관리전환 등의 거래는 상호 채권ㆍ채무를 보유하지 않으므로 내부거래 제거대상에서 제외하지 않는다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "중앙관서 순자산변동표에 표시되는 재원의 조달 및 이전거래는 국가 재정운영표 작성 시에는 재정운영표상 “재정운영순원가”에 반영한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2761,8 +3055,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "현행가치와 달리 역사적 원가는 자산의 손상이나 손실부담에 따른 부채와 관련되는 변동을 제외하고는 가치의 변동을 반영하지 않는다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "현행가치 측정기준은 공정가치, 자산의 사용가치 및 부채의 이행가치, 현행원가를 포함한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "공정가치로 자산과 부채를 측정하여 제공하는 정보는 예측가치를 가질 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "사용가치와 이행가치는 기업이 자산을 궁극적으로 처분하거나 부채를 이행할 때 발생할 것으로 기대되는 거래원가의 현재가치를 포함하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2807,8 +3122,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무정보에 예측가치, 확인가치 또는 이 둘 모두가 있다면 그 재무정보는 목적적합성을 가진다고 할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "보강적 질적 특성은 근본적 특성을 보강시키는 특성으로 비교가능성, 검증가능성, 적시성, 이해가능성이 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "동일한 경제현상에 대해 대체적인 회계처리방법을 허용하면 비교가능성은 증가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "적시성은 의사결정에 영향을 미칠 수 있도록 의사결정자가 정보를 제때에 이용가능하게 하는 것을 의미한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2853,8 +3189,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "특정 자산과 부채를 인식하기 위해서는 측정을 해야 하며 많은 경우 그러한 측정은 추정될 수 없다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산, 부채 또는 자본의 정의를 충족하는 항목만이 재무상태표에 인식되며 그러한 요소 중 하나의 정의를 충족하는 항목이라고 할지라도 항상 인식되는 것은 아니다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "거래나 그 밖의 사건에서 발생된 자산이나 부채의 최초 인식에 따라 수익과 관련된 비용을 동시에 인식할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "경제적효익의 유입가능성이나 유출가능성이 낮더라도 자산이나 부채가 존재할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -2991,8 +3348,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "외환손익 또는 단기매매 금융상품에서 발생하는 손익과 같이 유사한 거래의 집합에서 발생하는 차익과 차손은 중요성을 고려하지 않고 순액으로 표시한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "확정급여제도의 초과적립액을 다른 제도의 확정급여채무를 결제하는 데 사용할 수 있는 법적으로 집행가능한 권리가 있고, 순액기준으로 확정급여채무를 결제할 의도가 있거나, 동시에 제도의 초과적립액을 실현하고 다른 제도의 확정급여채무를 결제할 의도가 있다면, 확정급여제도와 관련한 자산은 다른 확정급여제도와 관련된 부채와 상계한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "투자자산 및 영업용자산을 포함한 비유동자산의 처분손익은 처분대가에서 그 자산의 장부금액과 관련처분비용을 차감하여 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "충당부채와 관련하여 포괄손익계산서에 인식한 비용은 제삼자의 변제와 관련하여 인식한 금액과 상계하여 표시할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3175,8 +3553,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "제조간접원가 배부차이는 회계기간 중에 배분된 제조간접원가 예정배부액과 회계기말에 집계된 제조간접원가 실제발생액의 차이로 발생한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 개별원가계산"
+        },
+        {
+          "ox_text": "원가요소별 비례배분법은 기말의 재공품, 제품 및 매출원가에 포함되어 있는 제조간접원가 실제배부액의 비율에 따라 제조간접원가 배부차이를 조정한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 개별원가계산"
+        },
+        {
+          "ox_text": "제조간접원가 배부시 실제배부율은 사후적으로 계산되지만, 예정배부율은 기초에 사전적으로 계산된다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 개별원가계산"
+        },
+        {
+          "ox_text": "제조간접원가 과대배부액을 매출원가조정법에 의해 회계처리하는 경우, 매출원가가 감소하게 되므로 이익이 증가하는 효과가 있다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 개별원가계산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3267,8 +3666,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "무상증자로 자본금은 변동하지 않는다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "주식배당은 발행주식수를 증가시킨다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "주식분할은 발행주식수를 증가시킨다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "주식병합으로 자본금은 변동하지 않는다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3405,8 +3825,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "지방자치단체의 회계는 신뢰할 수 있도록 객관적인 자료와 증명서류에 의하여 공정하게 처리되어야 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방재정활동에 따라 발생하는 경제적 거래 등을 발생사실에 따라 복식부기 방식으로 회계처리 하는데 필요한 기준은 행정안전부령으로 정한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방자치단체의 회계는 재정활동의 내용과 그 성과를 쉽게 파악할 수 있도록 충분한 정보를 제공하고, 간단ㆍ명료하게 처리되어야 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재무제표는 지방회계기준에 따라 작성하여야 하고, 「공인회계사법」에 따른 공인회계사의 감사의견을 첨부하여야 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3451,8 +3892,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재정상태표에 표시하는 자산의 가액은 해당 자산의 취득원가를 기초로 하여 계상한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "국채는 국채발행수수료 및 발행과 관련하여 직접 발생한 비용을 뺀 발행가액으로 평가한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "일반유형자산은 해당 자산의 건설원가 또는 매입가액에 부대비용을 더한 금액을 취득원가로 하고, 객관적이고 합리적인 방법으로 추정한 기간에 정액법 등을 적용하여 감가상각한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "국가회계실체 사이에 발생하는 관리전환은 무상거래일 경우에는 자산의 공정가액을 취득원가로 하고, 유상거래일 경우에는 자산의 장부가액을 취득원가로 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3635,8 +4097,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "법인세차감전순이익은 ￦20,000 과소 계상된다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "비용은 ￦30,000 과대 계상된다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "부채는 ￦10,000 과소 계상된다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자산은 ￦30,000 과소 계상된다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3727,8 +4210,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "경영진은 재무제표를 작성할 때, 계속기업으로서의 존속가능성을 평가하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "경영진이 기업을 청산하거나 경영활동을 중단할 의도를 가지고 있지 않거나, 청산 또는 경영활동의 중단 외에 다른 현실적 대안이 없는 경우가 아니면 계속기업을 전제로 재무제표를 작성한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "계속기업으로서의 존속능력에 유의적인 의문이 제기될 수 있는 사건이나 상황과 관련된 중요한 불확실성을 알게 된 경우, 경영진은 그러한 불확실성을 공시하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무제표가 계속기업의 기준하에 작성되지 않는 경우에는 그 사실과 함께 재무제표가 작성된 기준 및 그 기업을 계속기업으로 보지 않는 이유를 공시하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3773,8 +4277,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무정보가 유용하기 위해서는 목적적합해야 하고 나타내고자 하는 바를 충실하게 표현해야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "목적적합한 재무정보는 이용자들의 의사결정에 차이가 나도록 할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "이해가능성은 합리적인 판단력이 있고 독립적인 서로 다른 관찰자가 어떤 서술이 표현충실성에 있어, 비록 반드시 완전히 의견이 일치하지는 않더라도, 합의에 이를 수 있다는 것을 의미한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "비교가능성, 검증가능성, 적시성 및 이해가능성은 목적적합성과 나타내고자 하는 바를 충실하게 표현하는 것 모두를 충족하는 정보의 유용성을 보강시키는 질적특성이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3821,8 +4346,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "회계정책의 변경은 특정기간에 미치는 영향이나 누적효과를 실무적으로 결정할 수 없는 경우를 제외하고는 소급적용한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "회계정책의 변경과 회계추정의 변경을 구분하는 것이 어려운 경우에는 이를 회계정책의 변경으로 본다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "측정기준의 변경은 회계추정의 변경이 아니라 회계정책의 변경에 해당한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "전기오류는 특정기간에 미치는 오류의 영향이나 오류의 누적효과를 실무적으로 결정할 수 없는 경우를 제외하고는 소급재작성에 의하여 수정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3867,8 +4413,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "무형자산을 최초로 인식할 때에는 원가로 측정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "무형자산이란 물리적 실체는 없지만 식별할 수 있는 비화폐성자산이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출한 영업권은 자산으로 인식하지 아니한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "연구(또는 내부 프로젝트의 연구단계)에 대한 지출은 무형자산으로 인식한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 무형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -3915,8 +4482,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "20×1년 말 재평가잉여금은 ￦2,000이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×1년 말 항공기의 장부금액은 ￦16,000이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년에 인식하는 재평가손실은 ￦3,000이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년에 인식하는 재평가손실은 포괄손익계산서의 비용항목으로 당기순이익에 영향을 준다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4147,8 +4735,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "사채발행 시 차변에 현금 ￦92,416과 사채할인발행차금 ￦7,584을 기록하고, 대변에 사채 ￦100,000을 기록한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "20×1년 12월 31일 이자지급 시 차변에 사채이자비용 ￦9,242을 기록하고 대변에 현금 ￦8,000과 사채할인발행차금 ￦1,242을 기록한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "20×1년 12월 31일 사채의 장부금액은 ￦91,174이다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "사채만기까지 인식할 총 사채이자비용은 액면이자 합계액과 사채할인발행차금을 합한 금액이다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4193,8 +4802,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "월급제로 급여를 받는 경우, 작업자가 받는 급여는 노무시간에 비례하지 않지만, 총생산량에 따라 작업자의 인원을 조정할 수 있으면 총노무원가는 계단원가가 된다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "제품수준(유지)원가는 제품 생산량과 무관하게 제품의 종류 수 등 제품수준(유지)원가동인에 비례하여 발생한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "고정제조간접원가가 발생하는 기업에서 전부원가계산을 채택하면 생산량이 많아질수록 제품단위당 이익은 크게 보고된다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "초변동원가계산에서는 직접재료원가와 직접노무원가를 제품원가로 재고화하고 제조간접원가는 모두 기간비용으로 처리한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4239,8 +4869,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "현금흐름표는 회계연도 동안의 현금자원의 변동 즉, 자금의 원천과 사용결과를 표시하는 재무제표로서 영업활동, 투자활동, 재무활동으로 구분하여 표시한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "현금의 유입과 유출은 회계연도 중의 증가나 감소를 상계하지 아니하고 각각 총액으로 적는 것이 원칙이지만, 거래가 잦아 총 금액이 크고 단기간에 만기가 도래하는 경우에는 순증감액으로 적을 수 있다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "현물출자로 인한 유형자산 등의 취득, 유형자산의 교환 등 현금의 유입과 유출이 없는 거래 중 중요한 거래에 대하여는 주석으로 공시한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "투자활동은 자금의 융자와 회수, 장기투자증권ㆍ일반유형자산ㆍ주민편의시설ㆍ사회기반시설 및 무형자산의 취득과 처분 등을 말한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4288,8 +4939,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "국가의 도로는 관리, 유지 노력에 따라 취득 당시의 용역 잠재력을 그대로 유지할 수 있는 경우 감가상각 대상에서 제외할 수 있다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재정상태표에 기록하는 자산의 가액은 해당 자산의 취득원가를 기초로 하여 계상함을 원칙으로 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "부채의 가액은 따로 정한 경우를 제외하고는 원칙적으로 만기상환가액으로 평가한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가외 지방자치단체의 일반유형자산과 사회기반시설은 공정가액으로 재평가하여야 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4564,8 +5236,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "확정급여채무의 현재가치란 종업원이 당기와 미래 기간에 근무용역을 제공하여 생긴 채무를 결제하기 위해 필요한 예상 미래지급액의 현재가치를 의미한다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "퇴직급여채무를 할인하기 위해 사용하는 할인율은 보고기간 말 현재 우량회사채의 시장수익률을 참조하여 결정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "확정급여제도의 초과적립액이 있는 경우 순확정급여자산은 초과적립액과 자산인식상한 중에서 작은 금액으로 측정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        },
+        {
+          "ox_text": "기타포괄손익에 인식되는 순확정급여부채 또는 순확정급여자산의 재측정요소는 후속 기간에 당기손익으로 재분류하지 않는다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 사채"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4656,8 +5349,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "현재 및 잠재적 투자자, 대여자 및 기타 채권자는 기업의 경영진 및 이사회가 기업의 자원을 사용하는 그들의 책임을 얼마나 효율적이고 효과적으로 이행해 왔는지에 대한 정보를 필요로 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "일반목적재무보고의 목적은 현재 및 잠재적 투자자, 대여자 및 기타 채권자가 기업에 자원을 제공하는 것에 대한 의사결정을 할 때 유용한 보고기업 재무정보를 제공하는 것이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "외부 이해관계자들과 마찬가지로 보고기업의 경영진도 해당 기업의 경영의사결정을 위해 일반목적재무보고서에 가장 많이 의존한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무보고서는 정확한 서술보다는 상당 부분 추정, 판단 및 모형에 근거한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4702,8 +5416,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "정보가 누락되거나 잘못 기재된 경우 특정 보고기업의 재무정보에 근거한 정보이용자의 의사결정에 영향을 줄 수 있다면 그 정보는 중요한 것이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무정보에 예측가치, 확인가치 또는 이 둘 모두가 있다면 그 재무정보는 의사결정에 차이가 나도록 할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "검증가능성은 나타내고자 하는 현상을 충실하게 표현해야 한다는 표현충실성의 특성에 해당한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "이해가능성은 목적적합하고 충실하게 표현된 정보의 유용성을 보강시키는 질적 특성에 해당한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4748,8 +5483,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무제표를 작성할 때 기업이 가장 보편적으로 채택하고 있는 측정기준은 공정가치이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무제표는 일반적으로 기업이 계속기업이며 예상가능한 기간 동안 영업을 계속할 것이라는 가정 하에 작성된다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "역사적 원가를 측정기준으로 사용할 때, 자산은 취득의 대가로 취득 당시에 지급한 현금 또는 현금성자산이나 그 밖의 대가의 공정가치로 기록한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산은 미래경제적효익이 기업에 유입될 가능성이 높고 해당 항목의 원가 또는 가치를 신뢰성 있게 측정할 수 있을 때 재무상태표에 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4796,8 +5552,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무제표의 목적은 광범위한 정보이용자의 경제적 의사결정에 유용한 기업의 재무상태, 재무성과와 재무상태변동에 관한 정보를 제공하는 것이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "전체 재무제표는 적어도 1년마다 작성한다. 따라서 보고기간 종료일을 변경하는 경우라도 재무제표의 보고기간은 1년을 초과할 수 없다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무제표의 목적을 충족하기 위하여 자산, 부채, 자본, 차익과 차손을 포함한 광의의 수익과 비용, 소유주로서의 자격을 행사하는 소유주에 의한 출자와 소유주에 대한 배분 및 현금흐름 정보를 제공한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무제표는 위탁받은 자원에 대한 경영진의 수탁책임 결과도 보여준다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -4888,8 +5665,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산을 재평가하는 회계정책을 최초로 적용하는 경우의 회계정책 변경은 소급적용하지 않는다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "재평가모형에서 원가모형으로 변경할 때 비교표시되는 과거기간의 재무제표를 소급하여 재작성한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "자본에 계상된 재평가잉여금은 그 자산이 제거될 때 이익잉여금으로 직접 대체할 수 있다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "무형자산의 재평가모형에서 활성시장이 없는 경우 전문가의 감정가액을 재평가금액으로 할 수 있다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5120,8 +5918,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "고객에게 이전할 재화나 용역에 대하여 받을 권리를 갖게 될 대가의 회수 가능성이 높지 않더라도, 계약에 상업적 실질이 존재하고 이전할 재화나 용역의 지급조건을 식별할 수 있으면 고객과의 계약으로 회계처리한다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 수익인식"
+        },
+        {
+          "ox_text": "수익을 인식하기 위해서는 ‘고객과의 계약 식별’, ‘수행의무 식별’, ‘거래가격 산정’, ‘거래가격을 계약 내 수행의무에 배분’, ‘수행의무를 이행할 때 수익인식’의 단계를 적용한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 수익인식"
+        },
+        {
+          "ox_text": "거래가격 산정 시 제삼자를 대신해서 회수한 금액은 제외하며, 변동대가, 비현금 대가, 고객에게 지급할 대가 등이 미치는 영향을 고려한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 수익인식"
+        },
+        {
+          "ox_text": "고객에게 약속한 자산을 이전하여 수행의무를 이행할 때 수익을 인식하며, 자산은 고객이 그 자산을 통제할 때 이전된다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 수익인식"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5166,8 +5985,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "단기매매목적으로 보유하는 계약에서 발생하는 현금유입과 현금유출",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 리스"
+        },
+        {
+          "ox_text": "종업원과 관련하여 직ㆍ간접으로 발생하는 현금유출",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 리스"
+        },
+        {
+          "ox_text": "로열티, 수수료, 중개료 및 기타수익에 따른 현금유입",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 리스"
+        },
+        {
+          "ox_text": "리스이용자의 리스부채 상환에 따른 현금유출",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 리스"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5212,8 +6052,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "장기투자증권은 매입가격에 부대비용을 더하고 이에 종목별로 총평균법을 적용하여 산정한 취득원가로 기록한 후, 매년 말 공정가치와 장부금액을 비교하여 평가손익을 인식한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "도로, 도시철도, 하천부속시설 등 사회기반시설은 예외 없이 감가상각하여야 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재고자산은 구입가액에 부대비용을 더하고 이에 총평균법을 적용하여 산정한 가액을 취득원가로 할 수 있으나, 그 내용을 주석으로 공시할 필요는 없다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "미수세금은 합리적이고 객관적인 기준에 따라 평가하여 대손충당금을 설정하고 이를 미수세금 금액에서 차감하는 형식으로 표시하며, 대손충당금의 내역은 주석으로 공시한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5306,8 +6167,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "지방자치단체의 재무제표는 기금회계의 유형별 재무제표를 제외한 일반회계ㆍ기타특별회계 및 지방공기업특별회계의 유형별 재무제표를 통합하여 작성한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "유형별 회계실체의 재무제표를 작성할 때에는 해당 유형에 속한 개별 회계실체의 재무제표를 합산하여 작성한다. 이 경우 유형별 회계실체 안에서의 내부거래는 상계하고 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "개별 회계실체의 재무제표를 작성할 때에는 지방자치단체 안의 다른 개별 회계실체와의 내부거래를 상계하고 작성한다. 이 경우 내부거래는 해당 지방자치단체에 속하지 아니한 다른 회계실체 등과의 거래와 다르기 때문이다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재무제표는 당해 회계연도분과 직전 회계연도분을 비교하는 형식으로 작성되어야 한다. 이 경우 비교식으로 작성되는 양 회계연도의 재무제표는 계속성의 원칙에 따라 작성되어야 하며 회계변경은 허용되지 않는다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5674,8 +6556,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무제표는 재정상태표, 재정운영표, 현금흐름표, 순자산변동표, 주석으로 구성된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재무제표는 일반회계, 기타특별회계, 기금회계 및 지방공기업특별회계의 유형별 재무제표를 통합하여 작성한다. 이 경우 내부거래는 상계하지 않는다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재무제표는 당해 회계연도분과 직전 회계연도분을 비교하는 형식으로 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "회계실체는 그 활동의 성격에 따라 행정형 회계실체와 사업형 회계실체로 구분할 수 있다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5766,8 +6669,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "영업이익의 과소계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "매출원가의 과소계상",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기말재공품의 과소계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "이익잉여금의 과소계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5814,8 +6738,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재고자산의 취득 시 구매자가 인수운임, 하역비, 운송기간 동안의 보험료 등을 지불하였다면, 이는 구매자의 재고자산의 취득원가에 포함된다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "위탁상품은 수탁기업의 판매시점에서 위탁기업이 수익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "재고자산의 매입단가가 지속적으로 하락하는 경우, 선입선출법을 적용하였을 경우의 매출총이익이 평균법을 적용하였을 경우의 매출총이익보다 더 높게 보고된다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 재고자산"
+        },
+        {
+          "ox_text": "재고자산의 매입단가가 지속적으로 상승하는 경우, 계속기록법하에서 선입선출법을 사용할 경우와 실지재고조사법하에서 선입선출법을 사용할 경우의 매출원가는 동일하다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 재고자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5906,8 +6851,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "무형자산은 유형자산과 달리 재평가모형을 사용할 수 없다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "라이선스는 특정 기술이나 지식을 일정지역 내에서 이용하기로 한 권리를 말하며, 취득원가로 인식하고 일정기간 동안 상각한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출한 상호, 상표와 같은 브랜드 네임은 그 경제적 가치를 측정하여 재무제표에 자산으로 기록하여 상각한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "영업권은 내용연수가 비한정이므로 상각하지 않는다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -5952,8 +6918,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "신고ㆍ납부하는 방식의 국세는 납세의무자가 세액을 자진 신고하는 때 수익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "정부가 부과하는 방식의 국세는 국가가 고지하는 때 수익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "연부연납(年賦延納) 또는 분납이 가능한 국세는 세금이 징수되는 시점에 분납되는 세액을 수익으로 인식한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "원천징수하는 국세는 원천징수의무자가 원천징수한 금액을 신고ㆍ납부하는 때에 수익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6090,8 +7077,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "근본적 질적 특성인 표현충실성을 갖추기 위한 요소이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "인식을 위한 최소요건으로 정보이용자가 항목 간의 유사점과 차이점을 식별할 수 있게 한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "의사결정에 영향을 미칠 수 있도록 정보이용자가 정보를 적시에 이용 가능하게 하는 것을 의미한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업마다 다를 수 있기 때문에 기업 특유의 측면을 고려해야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6230,8 +7238,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "(주)대한의 순자산 공정가치는 ￦3,000,000이므로 (주)한국은 (주)대한의 주식 취득 시 ￦250,000의 영업권을 별도로 기록한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "(주)대한의 2016년 당기순이익은 (주)한국의 관계기업투자 장부금액을 ￦150,000만큼 증가시킨다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "(주)대한의 현금배당은 (주)한국의 당기순이익을 ￦50,000만큼 증가시킨다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "(주)한국의 관계기업투자 처분손실은 ￦70,000이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6368,8 +7397,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "주당순이익은 ￦5이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "유통주식수는 50,000주이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "평균총자산은 ￦3,000,000이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "총자산회전율은 3회이다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6508,8 +7558,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "수익은 자산의 유입이나 증가 또는 부채의 감소에 따라 자본의 증가를 초래하는 특정 회계기간 동안에 발생한 경제적효익의 증가로서, 지분참여자에 의한 출연과 관련된 것은 제외한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부채의 본질적 특성은 기업이 현재의무를 갖고 있다는 것이다. 여기서 의무란 특정 방법으로 실행하거나 수행할 책무 또는 책임을 말하고, 구속력 있는 계약이나 법규에 따라 법률적 강제력이 있을 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무보고를 위한 개념체계에서 재무상태변동표의 재무제표 요소는 재무상태표와 포괄손익계산서의 재무제표 요소와 달리 별도로 식별할 수 있다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무보고를 위한 개념체계에서 광의의 수익 정의에 차익을 포함하고 있으므로 본질적으로 수익과 차익을 별개의 요소로 보지 않는다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6554,8 +7625,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "무형자산의 회계정책으로 원가모형이나 재평가모형을 선택할 수 있으며, 재평가모형을 적용하는 경우 공정가치는 활성시장을 기초로 하여 결정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출한 영업권은 원가를 신뢰성 있게 측정할 수 없고 기업이 통제하고 있는 식별가능한 자원이 아니기 때문에 자산으로 인식하지 아니한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내부 프로젝트의 연구단계에서는 미래경제적효익을 창출할 무형자산이 존재한다는 것을 제시할 수 있기 때문에, 내부 프로젝트의 연구단계에서 발생한 지출은 무형자산으로 인식할 수 있다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내용연수가 유한한 무형자산의 상각은 자산을 사용할 수 있는 때부터 시작하며, 상각대상금액은 내용연수 동안 체계적인 방법으로 배분하여야 한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6738,8 +7830,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "일반목적재무보고서는 보고기업의 가치를 직접 보여주기 위해 고안되었기 때문에 정보이용자가 보고기업의 가치를 추정하는 데 도움이 되는 정보를 제공한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "충실하게 표현되었다는 사실만으로 해당 정보가 반드시 유용해지는 것은 아니며, 추정치라 하여도 충실한 표현이 될 수 있다. 즉, 충실히 표현된 자산이라도 목적적합성이 의문스러울 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부동산과 같이 등기로 소유권이 인정되는 자산은 소유권이 자산의 존재여부를 판단함에 있어 필수적이다. 따라서 부동산의 경제적효익에 대한 통제력은 법률적 권리의 결과이기 때문에 법률적 통제가 없다면 자산의 정의를 충족시킬 수 없다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자본을 불변구매력단위로 정의한 재무자본유지개념 하에서 이익은 해당 기간 중 투자된 구매력의 증가를 의미하게 된다. 따라서 일반물가수준에 따른 명목화폐자본의 증가액인 보유이익은 개념적으로 이익에 속한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6784,8 +7897,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무제표의 항목을 소급하여 재분류하고, 이러한 소급재분류가 전기 기초 재무상태표의 정보에 중요한 영향을 미치는 경우 전기 기초 재무상태표도 전체 재무제표에 포함된다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "한국채택국제회계기준은 오직 재무제표에만 적용하며, 재무제표는 동일한 문서에 포함되어 함께 공표되는 그 밖의 정보와 명확하게 구분되고 식별되어야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업이 재무상태표의 자산과 부채를 유동과 비유동으로 구분 표시하는 경우, 어떤 경우라도 이연법인세자산(부채)은 유동자산(부채)으로 분류하지 아니한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "일반적으로 수익과 비용은 포괄손익계산서에 특별손익 항목으로 표시할 수 없지만, 천재지변 등 예외적인 경우에 한하여 해당 수익과 비용을 특별손익 항목으로 주석에 표시할 수 있다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -6968,8 +8102,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "교환거래로 생긴 수익은 사용료, 수수료, 보조금 등을 포함한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "관리전환 등으로 생긴 순자산의 감소는 비용에 포함하지 아니한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "교환거래로 생긴 수익은 수익창출활동이 끝나고 그 금액을 합리적으로 측정할 수 있을 때에 인식한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "비교환거래에 의한 비용은 가치의 이전에 대한 의무가 존재하고 그 금액을 합리적으로 측정할 수 있을 때에 인식한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7154,8 +8309,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "㉠:￦10,000",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "㉡:￦110,000",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "㉢:￦285,000",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "㉣:￦115,000",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7200,8 +8376,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "세후이익은 ￦250이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "손익분기점 매출액은 ￦5,000이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "안전한계는 ￦5,000이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "영업레버리지도는 3이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > CVP분석"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7476,8 +8673,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산총계 ￦60,000 과대계상",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자본총계 ￦60,000 과소계상",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부채총계 ￦60,000 과소계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "비용총계 ￦60,000 과대계상",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7660,8 +8878,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "역사적 원가로 측정하는 경우, 부채는 부담하는 의무의 대가로 수취한 금액으로 기록한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "현행원가로 측정하는 경우, 부채는 현재시점에서 그 의무를 이행하는 데 필요한 현금이나 현금성자산의 할인하지 않은 금액으로 평가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "실현가능가치로 측정하는 경우, 자산은 동일하거나 또는 동등한 자산을 현재시점에서 취득할 경우에 그 대가로 지불하여야 할 현금이나 현금성자산의 금액으로 평가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "현재가치로 측정하는 경우, 자산은 정상적인 영업과정에서 그 자산이 창출할 것으로 기대되는 미래 순현금유입액의 현재할인가치로 평가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7706,8 +8945,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "기타포괄손익의 항목(재분류조정 포함)과 관련한 법인세비용 금액은 포괄손익계산서나 주석에 공시하지 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업의 재무성과를 이해하는 데 목적적합한 경우에는 당기손익과 기타포괄손익을 표시하는 보고서에 항목, 제목 및 중간합계를 추가하여 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "한 기간에 인식되는 모든 수익과 비용 항목은 한국채택국제회계기준이 달리 정하지 않는 한 당기손익으로 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "기업은 수익에서 매출원가 및 판매비와관리비(물류원가 등을 포함)를 차감한 영업이익(또는 영업손실)을 포괄손익계산서에 구분하여 표시한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7798,8 +9058,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산은 ￦30,000 증가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자본은 ￦20,000 감소한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "부채는 ￦40,000 증가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자본잉여금은 ￦10,000 증가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -7936,8 +9217,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "보조부문원가는 제조부문에 배부하지 않고 기간비용으로 처리하여야 한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "보조부문원가의 배부순서가 중요한 배부방법은 상호배부법이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "직접배부법은 보조부문의 배부순서에 관계없이 배부액이 일정하다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "상호배부법은 보조부상호 간의 용역수수관계가 중요하지 않을 때 적용하는 것이 타당하다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8122,8 +9424,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "국가의 일반유형자산과 사회기반시설을 취득한 후 재평가할 때에는 공정가액으로 계상하여야 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가와 지방자치단체의 금융리스는 리스료를 내재이자율로 할인한 가액과 리스자산의 공정가액 중 낮은 금액을 리스자산과 리스부채로 각각 계상하여 감가상각한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가의 유가증권은 매입가액에 부대비용을 더하고 종목별로 총평균법 등을 적용하여 산정한 가액을 취득원가로 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "기부채납 등으로 인한 지방자치단체의 순자산 증가는 수익에 포함한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8168,8 +9491,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "개별 회계실체의 재무제표를 작성할 때에는 지방자치단체 안의 다른 개별 회계실체와의 내부거래를 상계한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방자치단체의 재무제표는 일반회계ㆍ기타특별회계ㆍ기금회계 및 지방공기업특별회계의 유형별 재무제표를 통합하여 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "유형별 회계실체의 재무제표를 작성할 때에는 해당 유형에 속한 개별 회계실체의 재무제표를 합산하여 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재무제표는 당해 회계연도분과 직전 회계연도분을 비교하는 형식으로 작성되어야 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8260,8 +9604,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "우발자산은 경제적 효익의 유입가능성이 높지 않은 경우에 주석으로 공시한다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "의무를 이행하기 위하여 경제적 효익이 있는 자원을 유출할 가능성이 높지 않은 경우 우발부채를 주석으로 공시한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "우발부채와 우발자산은 재무제표에 인식하지 아니한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "현재의무를 이행하기 위하여 해당 금액을 신뢰성 있게 추정할 수 있고 경제적 효익이 있는 자원을 유출할 가능성이 높은 경우 충당부채로 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8354,8 +9719,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "충당부채는 지출의 시기 또는 금액이 불확실한 부채이다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "충당부채와 우발부채 모두 재무상태표에 인식하지 않고 주석으로 공시한다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "충당부채로 인식하기 위해서는 현재 의무가 존재하여야 할 뿐만아니라 당해 의무를 이행하기 위해 경제적 효익이 내재된 자원의 유출가능성이 높아야 한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        },
+        {
+          "ox_text": "현재 의무를 이행하기 위한 자원의 유출가능성은 높으나 신뢰성 있는 금액의 추정이 불가능한 경우에는 우발부채로 공시한다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 충당부채·우발부채"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8770,8 +10156,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "순자산은 특정순자산, 고정순자산, 일반순자산으로 분류되는데, 일반순자산은 고정순자산과 특정순자산을 제외한 나머지 금액을 의미한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "지방세, 보조금 등의 비교환거래로 생긴 수익은 비록 금액을 합리적으로 측정할 수 없더라도 해당 수익에 대한 청구권이 발생한 시점에 수익으로 인식한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "일반유형자산과 주민편의시설 중 상각대상 자산에 대한 감가상각은 정액법을 원칙으로 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "문화재, 예술작품, 역사적 문건 및 자연자원은 자산으로 인식하지 아니하고 필수보충정보의 관리책임자산으로 보고한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8816,8 +10223,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "ㄱ, ㄴ",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄱ, ㄷ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄴ, ㄷ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄴ, ㄹ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -8954,8 +10382,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "조업도와 관계없이 단위당 원가는 항상 일정하다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "일정 조업도 범위 내에서는 조업도의 변동에 정비례하여 총원가가 변동한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "일정 조업도 범위 내에서는 총원가가 일정하지만, 일정 조업도 범위를 초과하면 총원가가 일정액만큼 증가한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "일정 조업도 범위 내에서는 조업도의 변동에 관계없이 총원가가 일정하므로, 단위당 원가는 조업도의 증가에 따라 증가한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9094,8 +10543,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "국가회계기준의 재무제표에는 현금흐름표가 포함되나, 지방자치단체회계기준의 재무제표에는 현금흐름표가 포함되지 않는다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가회계기준의 자산 분류에는 주민편의시설이 포함되지 않으나, 지방자치단체회계기준의 자산 분류에는 주민편의시설이 포함된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가회계기준에서는 일반유형자산에 대하여 재평가모형을 적용할 수 있으나, 지방자치단체회계기준에서는 일반유형 자산에 대하여 재평가모형을 적용하지 않는다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "국가회계기준과 지방자치단체회계기준 모두 자산과 부채는 유동성이 높은 항목부터 배열하는 것을 원칙으로 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9324,8 +10794,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "신고⋅납부하는 방식의 국세:납세의무자가 세액을 자진신고하는 때에 수익으로 인식",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "정부가 부과하는 방식의 국세:국가가 고지하는 때에 수익으로 인식",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "연부연납 또는 분납이 가능한 국세:납세의무자가 납부한 때에 납부한 세액을 수익으로 인식",
+          "answer": "X",
+          "law_ref": "정부회계 > 국가재무제표"
+        },
+        {
+          "ox_text": "부담금수익: 청구권이 확정된 때에 그 확정된 금액을 수익으로 인식",
+          "answer": "O",
+          "law_ref": "정부회계 > 국가재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9462,8 +10953,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "기회원가는 여러 대안 중 최선안을 선택함으로써 포기된 차선의 대안에서 희생된 잠재적 효익을 의미하며, 실제로 지출되는 원가는 아니다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "매몰원가는 과거 의사결정의 결과에 의해 이미 발생한 원가로서 경영자가 더 이상 통제할 수 없는 과거의 원가로 미래의사결정에 영향을 미치지 못하는 원가이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "당기총제조원가는 특정 기간 동안 완성된 제품의 제조원가를 의미하며, 당기제품제조원가는 특정 기간 동안 재공품 계정에 가산되는 총금액으로 생산완료와는 상관없이 해당 기간 동안 투입된 제조원가가 모두 포함된다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "관련 범위 내에서 조업도 수준이 증가함에 따라 총변동원가는 증가하지만 단위당 변동원가는 일정하다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9508,8 +11020,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "유형자산의 감가상각방법은 적어도 매 회계연도 말에 재검토하고, 이를 변경할 경우 회계추정의 변경으로 보아 전진법으로 회계처리한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "유형자산에 대해 재평가모형을 적용하는 경우 최초 재평가로 인한 장부금액의 증가액은 당기손익이 아닌 기타포괄손익으로 회계처리한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "연구개발과 관련하여 연구단계에서 발생한 지출은 당기비용으로 회계처리하고, 개발단계에서 발생한 지출은 무형자산의 인식기준을 모두 충족할 경우 무형자산으로 인식하고 그 외에는 당기비용으로 회계처리한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "투자부동산에 대해 공정가치모형을 적용하는 경우 감가상각비와 공정가치변동으로 발생하는 손익은 모두 당기손익으로 회계처리한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9694,8 +11227,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "수정후잔액시산표의 대변합계는 ￦6,000만큼 증가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "당기순이익이 ￦3,000만큼 증가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자산총액이 ￦3,000만큼 감소한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "부채총액은 변동이 없다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9740,8 +11294,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "상호배부법은 연립방정식을 이용하여 보조부문 간의 용역제공비율을 정확하게 고려해서 배부하는 방법이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "단계배부법은 보조부문원가의 배부순서를 적절하게 결정할 경우 직접배부법보다 정확하게 원가를 배부할 수 있다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "단계배부법은 우선순위가 높은 보조부문의 원가를 우선순위가 낮은 보조부문에 먼저 배부하고, 배부를 끝낸 보조부문에는 다른 보조부문원가를 재배부하지 않는 방법이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "직접배부법은 보조부문 간의 용역수수관계를 정확하게 고려하면서 적용이 간편하다는 장점이 있어 실무에서 가장 많이 이용되는 방법이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9786,8 +11361,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "회사 차량으로 상품을 배송하던 중 접촉사고가 발생하여 차량이 파손되고 그 손해금액이 파악된 경우 이는 회계상의 거래에 해당한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "회사가 기말에 기간경과로 발생한 이자비용을 계상하기 위해 사용한 미지급비용계정은 영구계정에 해당한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "회사의 기초상품재고액이 기말상품재고액보다 큰 경우 회사의 당기상품매입액은 매출원가보다 크다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "제조원가명세서는 「한국채택국제회계기준」에서 규정하고 있는 전체 재무제표에 포함되지 않는다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9832,8 +11428,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "이자수익은 이자를 현금으로 수취하는 시점에 인식한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "로열티수익은 관련된 약정의 실질을 반영하여 발생기준에 따라 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "배당수익은 주주로서 배당을 받을 권리가 확정되는 시점에 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "용역의 제공으로 인한 수익은 용역제공거래의 결과를 신뢰성 있게 추정할 수 있을 때 진행기준에 따라 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -9970,8 +11587,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "비용은 자산의 감소나 부채의 증가를 초래하는 회계연도 동안의 거래로 생긴 순자산의 감소를 말하며, 관리전환 등으로 생긴 순자산의 감소도 비용에 포함한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "문화재, 예술작품, 역사적 문건 및 자연자원은 자산으로 인식하지 아니하고 필수보충정보의 관리책임자산으로 보고한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방자치단체의 재무제표는 재정상태표, 재정운영표, 현금흐름표, 순자산변동표, 주석, 필수보충정보 및 부속명세서로 구성된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "순자산의 감소사항은 전기오류수정손실, 회계기준변경으로 생긴 누적손실 등을 말한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10200,8 +11838,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "정보이용자가 항목 간의 유사점과 차이점을 식별하고 이해할 수 있어야 한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "합리적인 판단력이 있고 독립적인 서로 다른 관찰자가 어떤 서술이 충실한 표현이라는 데, 비록 반드시 완전히 일치하지는 못하더라도, 의견이 일치할 수 있다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "의사결정에 영향을 미칠 수 있도록 의사결정자가 정보를 제때에 이용 가능해야 한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "완벽하게 충실한 표현을 하기 위해서 서술은 완전하고, 중립적이며, 오류가 없어야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10248,8 +11907,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "20×1년에 당기순이익이 ￦20,000 증가한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년에 당기순이익이 ￦10,000 감소한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년말 현재 재평가잉여금 잔액은 ￦10,000이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "20×2년말 재무상태표에 보고되는 토지 금액은 ￦100,000이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10618,8 +12298,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산은 과거 사건의 결과로 기업이 통제하고 있고 미래경제적효익이 유입될 것으로 기대되는 자원이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부채는 과거 사건에 의하여 발생하였으며 경제적효익을 갖는 자원이 기업으로부터 유출됨으로써 이행될 것으로 기대되는 현재의무이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자본은 기업의 자산에서 모든 부채를 차감한 후의 잔여지분으로 자산과 부채 금액의 측정에 따라 결정되며, 자본 총액은 기업이 발행한 주식의 시가 총액과 같다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "수익은 자산의 유입이나 증가 또는 부채의 감소에 따라 자본의 증가를 초래하는 특정 회계기간 동안에 발생한 경제적효익의 증가로서, 지분참여자에 의한 출연과 관련된 것은 제외한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10664,8 +12365,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재무제표는 일반적으로 기업이 계속기업이며 예상가능한 기간동안 영업을 계속할 것이라는 가정하에 작성된다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "계속기업의 가정은 재무제표항목들을 역사적 원가로 보고하는 것에 정당성을 부여한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "유형자산에 대한 감가상각은 기업실체가 계속된다는 가정을 전제로 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "경영활동을 청산하거나 중요하게 축소할 의도나 필요성이 있다면 계속기업을 가정한 기준과는 다른 기준을 적용하여 작성하는 것이 타당할 수 있으며 이때 적용한 기준은 별도로 공시할 필요가 없다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10712,8 +12434,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "상업적 실질이 있는 경우 새로운 기계장치의 취득원가는 ￦250,000으로 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "상업적 실질이 있는 경우 제공한 기계장치의 처분이익은 ￦50,000으로 인식한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "상업적 실질이 결여된 경우 새로운 기계장치의 취득원가는 ￦150,000으로 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "상업적 실질이 결여된 경우 제공한 기계장치의 처분손익은 인식하지 않는다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -10852,8 +12595,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "2년간 이자비용으로 인식할 총금액은 ￦140이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "사채의 발행가액은 ￦948이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "20×4년 1월 1일에 사채를 ￦1,000에 조기상환할 경우 사채상환손실은 ￦27이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "사채의 이자비용은 매년 증가한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -11588,8 +13352,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "원가집적대상이 제공받는 수혜정도에 따라 원가를 배부해야 한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 의사결정"
+        },
+        {
+          "ox_text": "원가가 발생한 원인을 파악하여 인과관계에 의해 원가를 배부해야 한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 의사결정"
+        },
+        {
+          "ox_text": "원가집적대상이 부담할 수 있는 능력에 따라 원가를 배부해야 한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 의사결정"
+        },
+        {
+          "ox_text": "기업전체의 적정한 이익을 유지하기 위해 재량적으로 원가를 배부해야 한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 의사결정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -11634,8 +13419,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "단기적 성과지표와 장기적 성과지표에 대한 경영자의 균형적인 관심을 유도한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "조직의 성공요소로서 유형의 자원뿐 아니라 무형의 자원에 대한 구성원들의 관심을 증가시킨다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "비재무적 성과지표에 따른 전통적인 성과관리의 단점을 개선하기 위하여 재무적 성과지표에 집중하는 성과관리를 강조한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > CVP분석"
+        },
+        {
+          "ox_text": "조직의 전략을 포괄적인 성과지표로 전환하여 측정함으로써 전략경영 실행의 기본적인 틀을 제공한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > CVP분석"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -11818,8 +13624,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "평균법은 기초재공품의 제조가 당기 이전에 착수되었음에도 불구하고 당기에 착수된 것으로 가정한다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 종합원가계산"
+        },
+        {
+          "ox_text": "선입선출법 또는 평균법을 사용할 수 있으며, 평균법이 실제 물량흐름에 보다 충실한 원가흐름이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 종합원가계산"
+        },
+        {
+          "ox_text": "평균법은 기초재공품원가와 당기발생원가를 구분하지 않기 때문에 선입선출법보다 원가계산이 정확하다는 장점이 있다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 종합원가계산"
+        },
+        {
+          "ox_text": "선입선출법은 당기투입분을 우선적으로 가공하여 완성시킨 후 기초재공품을 완성한다고 가정한다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 종합원가계산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -12002,8 +13829,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "차변: 제조간접비 8,000, 대변: 매출원가 8,000",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "차변: 매출원가 8,000, 대변: 제조간접비 8,000",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "차변: 매출원가 17,000, 대변: 제조간접비 17,000",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "차변: 제조간접비 17,000, 대변: 매출원가 17,000",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -12094,8 +13942,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "보고기업에 대한 정보는 다른 기업에 대한 유사한 정보와 비교할 수 있어야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무보고서는 나타내고자 하는 현상을 완전하고, 중립적이며, 오류가 없이 서술하여야 한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "의사결정에 영향을 미칠 수 있도록 의사결정자가 정보를 제때에 이용가능하게 하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "정보는 의사결정자가 이해가능하도록 명확하고 간결하게 분류하고, 특징지으며, 표시하여야 한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -12186,8 +14055,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "대여금:타인에게 현금을 대여했을 때 사용하는 계정으로, 자산계정이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 수취채권"
+        },
+        {
+          "ox_text": "대손충당금:기말 매출채권으로부터의 현금유입액의 현재가치를 나타내기 위해 사용하는 매출채권총액의 차감계정으로, 자산의 차감계정이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 수취채권"
+        },
+        {
+          "ox_text": "선급비용:비용으로 인식하기 전에 미리 대금을 지급한 경우에 사용하는 계정으로, 부채계정이다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 수취채권"
+        },
+        {
+          "ox_text": "선수수익:수익으로 인식하기 전에 미리 대금을 수취한 경우에 사용하는 계정으로, 부채계정이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 수취채권"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -12232,8 +14122,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "①",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "②",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "③",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "④",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -12508,8 +14419,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "연구단계에서 발생한 지출은 자산의 요건을 충족하는지를 합리적으로 판단하여 무형자산으로 인식 또는 발생한 기간의 비용으로 처리한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출한 브랜드와 이와 실질이 유사한 항목은 무형자산으로 인식하지 아니한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "무형자산의 상각방법은 자산의 미래경제적 효익이 소비되는 형태를 반영한 합리적인 방법을 적용한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "무형자산은 물리적 실체는 없지만 식별가능한 비화폐성자산이다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -13106,8 +15038,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재고자산 과소계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "매출 과대계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "매출채권 과대계상",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "매출원가 과소계상",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -13430,8 +15383,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "공헌이익률은 60%이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "단위당 공헌이익은 ￦40이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "손익분기점 매출액은 ￦5,000이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        },
+        {
+          "ox_text": "매출이 ￦8,000이라면 이익은 ￦1,200이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가회계총론"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -13616,8 +15590,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "재평가이익 ￦50,000만큼의 이익잉여금이 증가한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "재평가이익 ￦50,000은 포괄손익계산서에 보고되지 않는다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "재평가이익 ￦50,000만큼의 당기순이익이 증가한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "재평가이익 ￦50,000만큼의 자본이 증가한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -14306,8 +16301,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "ㄱ, ㄴ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄱ, ㄷ",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄴ, ㄷ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "ㄱ, ㄴ, ㄷ",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -14490,8 +16506,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "프로젝트의 개발단계에서 발생한 지출은 모두 무형자산으로 인식한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "프로젝트의 연구단계에서 발생한 지출은 모두 발생한 기간의 비용으로 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "프로젝트를 연구단계와 개발단계로 구분할 수 없는 경우에는 그 프로젝트에서 발생한 지출은 모두 연구단계에서 발생한 것으로 본다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출된 무형자산의 취득원가는 그 자산의 창출, 제조, 사용 준비에 직접 관련된 지출과 합리적이고 일관성있게 배분된 간접 지출을 모두 포함한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 무형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -14858,8 +16895,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "적격자산에 대한 적극적인 개발활동을 중단한 기간에는 차입원가의 자본화를 중단한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산의 취득, 건설 또는 생산과 직접 관련된 차입원가는 당해 자산 원가의 일부로 자본화하여야 한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산을 취득하기 위한 목적으로 특정하여 차입한 자금에 한하여, 회계기간 동안 그 차입금으로부터 실제 발생한 차입원가에서 당해 차입금의 일시적 운용에서 생긴 투자수익을 차감한 금액을 자본화가능차입 원가로 결정한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "적격자산이란 의도된 용도로 사용(또는 판매) 가능하게 하는데 상당한 기간을 필요로 하는 자산으로, 재고자산·금융자산· 유형자산 등이 해당된다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -15548,8 +17606,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "내용연수가 비한정인 무형자산은 손상검사를 수행하지 않는다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "내부적으로 창출한 영업권은 자산으로 인식하지 아니한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "무형자산의 회계정책으로 원가모형이나 재평가모형을 선택할 수 있다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "내용연수가 유한한 무형자산의 상각기간과 상각방법은 적어도 매 회계연도 말에 검토한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -15640,8 +17719,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "비교가능성은 한 보고기업 내에서 기간 간 또는 같은 기간 동안에 기업 간, 동일한 항목에 대해 동일한 방법을 적용하는 것을 의미하므로 일관성과 동일한 의미로 사용된다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "표현충실성을 위해서 서술은 완전하고 중립적이며, 오류가 없어야 한다. 여기서, 오류가 없다는 것은 모든 면에서 완벽하게 정확하다는 것을 의미하지는 않는다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "정보가 누락되거나 잘못 기재된 경우 특정 보고기업의 재무정보에 근거한 정보이용자의 의사결정에 영향을 줄 수 있다면 그 정보는 중요한 것이다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "재무정보에 예측가치, 확인가치 또는 이 둘 모두가 있다면 그 재무정보는 의사결정에 차이가 나도록 할 수 있다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -15870,8 +17970,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "총변동예산 차이는 ￦600(불리한 차이)이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "가격 차이는 ￦400(유리한 차이)이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "능률 차이는 ￦1,000(불리한 차이)이다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "총변동예산 차이는 ￦600(유리한 차이)이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 표준원가"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -15962,8 +18083,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "인식이란 재무제표 요소의 정의에 부합하고 인식기준을 충족하는 항목을 재무상태표나 포괄손익계산서에 반영하는 과정을 말한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산의 현행원가는 동일하거나 또는 동등한 자산을 현재 시점에서 취득할 경우 그 대가로 지불하여야 할 현금이나 현금성자산의 금액을 말한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "부채의 이행가치는 정상적인 영업과정에서 부채를 상환하기 위해 지급될 것으로 예상되는 현금이나 현금성자산의 할인하지 아니한 금액을 말한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "측정이란 재무상태표와 포괄손익계산서에 인식되고 평가되어야 할 재무제표 요소의 화폐금액을 결정하는 과정이며 특정 측정기준의 선택과정을 포함하지는 않는다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16008,8 +18150,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "원칙적으로 공정가치모형과 원가모형 중 하나를 선택할 수 있으므로 투자부동산인 토지는 공정가치모형을 적용하고, 투자부동산인 건물은 원가모형을 적용할 수도 있다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "공정가치모형을 선택한 경우에는 공정가치 변동으로 발생하는 손익은 발생한 기간의 기타포괄손익에 반영한다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "자가사용부동산을 공정가치로 평가하는 투자부동산으로 대체하는 경우, 대체하는 시점까지 그 부동산을 감가상각하고, 발생한 손상차손을 인식한다.",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 유형자산"
+        },
+        {
+          "ox_text": "공정가치모형을 최초 적용할 경우에는 유형자산의 경우와 같이 예외 규정에 따라 비교 표시되는 과거 기간의 재무제표를 소급하여 재작성하지 않는다.",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 유형자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16194,8 +18357,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산이 ￦180,000만큼 증가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "부채가 ￦100,000만큼 감소한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "비용이 ￦180,000만큼 증가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "당기순이익이 ￦80,000만큼 감소한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16424,8 +18608,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "지방자치단체의 재무제표는 일반회계⋅기타특별회계⋅기금회계 및 지방공기업특별회계의 유형별 재무제표를 통합하여 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "현금흐름표는 회계연도 동안의 현금자원의 변동에 관한 정보로서 자금의 원천과 사용결과를 표시하는 재무제표로서 경상활동, 투자활동 및 재무활동으로 구성된다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재정운영표의 수익과 비용은 그 발생원천에 따라 명확하게 분류하여야 하며, 해당 항목의 중요성에 따라 별도의 과목으로 표시하거나 다른 과목과 통합하여 표시할 수 있다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재정상태표의 순자산은 지방자치단체의 기능과 용도를 기준으로 고정순자산과 일반순자산의 2가지로 분류한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16562,8 +18767,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "상호배부법은 보조부문 상호 간의 용역수수관계를 완전히 무시하고, 보조부문원가를 제조부문에만 배부하는 방법이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "단계배부법은 보조부문 간의 용역수수관계를 부분적으로 고려하는 방법으로 보조부문의 배부순서가 달라지면 배부 후의 결과가 달라진다.",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "이중배부율법은 보조부문원가를 변동원가와 고정원가로 구분하지 않고, 하나의 배부기준을 이용하여 총원가를 배부하는 방법이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        },
+        {
+          "ox_text": "직접배부법은 보조부문 상호 간의 용역수수관계를 완전히 고려하여 각 보조부문원가를 제조부문과 다른 보조부문에도 배부하는 방법으로, 가장 논리적이고 정확한 정보를 제공해 주는 방법이다.",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 원가배분"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16746,8 +18972,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "보고기간 말마다 자산손상 징후가 있는지를 검토하고, 그러한 징후가 있다면 해당 자산의 회수가능액을 추정한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "자산의 회수가능액이 장부금액에 못 미치는 경우에 자산의 장부금액을 회수가능액으로 감액하고 손상차손을 인식한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "내용연수가 한정되어 있는 무형자산은 자산손상 징후가 있는지에 관계없이 일 년에 한 번은 손상검사를 한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 회계순환과정"
+        },
+        {
+          "ox_text": "재평가모형에 따라 재평가금액을 장부금액으로 하는 경우에는 재평가자산의 손상차손은 재평가감소액으로 처리한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 회계순환과정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -16792,8 +19039,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "￦1,000 증가",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "￦1,000 감소",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "￦11,000 증가",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        },
+        {
+          "ox_text": "￦11,000 감소",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 회계변경과오류수정"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -17528,8 +19796,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "사회기반시설 중 유지보수를 통하여 현상이 유지되는 도로, 도시철도, 하천부속시설 등도 감가상각하여야 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방채증권은 발행가액으로 평가하되, 발행가액은 지방채증권 발행수수료 및 발행과 관련하여 직접 발생한 비용을 가산한 가액으로 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "일반유형자산과 주민편의시설에 대한 사용수익권은 해당 자산의 차감항목으로 표시한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "퇴직급여충당부채는 회계연도말 현재 ｢공무원연금법｣을 적용받는 지방공무원이 일시에 퇴직할 경우 지방자치단체가 지급하여야 할 퇴직금에 상당한 금액으로 한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -17758,8 +20047,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "무상으로 취득한 자산의 가액은 공정가액을 취득원가로 한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "재정운영순원가는 사업순원가에서 관리운영비 및 비배분비용은 더하고, 비배분수익을 빼서 표시한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "자산은 공공서비스의 잠재력을 창출하거나 미래의 경제적 효익이 회계실체에 유입될 가능성이 높고 그 금액을 신뢰성 있게 측정할 수 있을 때에 인식한다.",
+          "answer": "X",
+          "law_ref": "정부회계 > 지방재무제표"
+        },
+        {
+          "ox_text": "지방자치단체의 재무제표는 일반회계⋅기타특별회계⋅기금회계 및 지방공기업특별회계의 유형별 재무제표를 통합하여 작성한다. 이 경우 내부거래는 상계하고 작성한다.",
+          "answer": "O",
+          "law_ref": "정부회계 > 지방재무제표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -17804,8 +20114,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "직접재료가격차이: ￦3,000(유리한 차이)직접재료수량차이: ￦4,000(불리한 차이)",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "직접재료가격차이: ￦3,000(불리한 차이)직접재료수량차이: ￦4,000(유리한 차이)",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "직접재료가격차이: ￦3,600(유리한 차이)직접재료수량차이: ￦4,600(불리한 차이)",
+          "answer": "O",
+          "law_ref": "원가관리회계 > 표준원가"
+        },
+        {
+          "ox_text": "직접재료가격차이: ￦3,600(불리한 차이)직접재료수량차이: ￦4,600(유리한 차이)",
+          "answer": "X",
+          "law_ref": "원가관리회계 > 표준원가"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -17850,8 +20181,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "자산은 동일하거나 동등한 자산을 미래시점에서 취득할 경우에 그 대가로 지불해야 할 현금이나 현금성자산의 금액으로 평가한다. 부채는 미래시점에서 그 의무를 이행하는 데 필요한 현금이나 현금성자산의 할인한 금액으로 평가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산은 동일하거나 동등한 자산을 현재시점에서 취득할 경우에 그 대가로 지불해야 할 현금이나 현금성자산의 금액으로 평가한다. 부채는 현재시점에서 그 의무를 이행하는 데 필요한 현금이나 현금성자산의 할인하지 않은 금액으로 평가한다.",
+          "answer": "O",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산은 정상적으로 처분하는 경우 수취할 것으로 예상되는 현금이나 현금성자산의 금액으로 평가한다. 부채는 정상적인 영업과정에서 부채를 상환하기 위해 지급될 것으로 예상되는 현금이나 현금성자산의 할인하지 않은 금액으로 평가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        },
+        {
+          "ox_text": "자산은 정상적으로 처분하는 경우 수취할 것으로 예상되는 현금이나 현금성자산의 금액으로 평가한다. 부채는 정상적인 영업과정에서 부채를 상환하기 위해 지급될 것으로 예상되는 현금이나 현금성자산의 할인한 금액으로 평가한다.",
+          "answer": "X",
+          "law_ref": "회계원리 > 개념체계"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -17896,8 +20248,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "당기손익인식금융자산: ￦10,000매도가능금융자산: ￦10,000",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 금융자산"
+        },
+        {
+          "ox_text": "당기손익인식금융자산: ￦10,000매도가능금융자산: ￦20,000",
+          "answer": "O",
+          "law_ref": "재무회계-자산 > 금융자산"
+        },
+        {
+          "ox_text": "당기손익인식금융자산: ￦20,000매도가능금융자산: ￦10,000",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 금융자산"
+        },
+        {
+          "ox_text": "당기손익인식금융자산: ￦20,000매도가능금융자산: ￦20,000",
+          "answer": "X",
+          "law_ref": "재무회계-자산 > 금융자산"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -18080,8 +20453,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "임차료비용: ￦225,000, 이자비용: ￦250,000",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 현금흐름표"
+        },
+        {
+          "ox_text": "임차료비용: ￦225,000, 이자비용: ￦650,000",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 현금흐름표"
+        },
+        {
+          "ox_text": "임차료비용: ￦375,000, 이자비용: ￦250,000",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 현금흐름표"
+        },
+        {
+          "ox_text": "임차료비용: ￦375,000, 이자비용: ￦650,000",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 현금흐름표"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
@@ -18128,8 +20522,29 @@
       "keywords": [],
       "related_questions": [],
       "struct_note_section": "",
-      "ox_convertible": false,
-      "ox_items": [],
+      "ox_convertible": true,
+      "ox_items": [
+        {
+          "ox_text": "누적적이고 비참가적 우선주의 경우, 보통주 배당금은 ￦160,000이고 우선주 배당금은 ￦80,000이다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "비누적적이고 완전참가적 우선주의 경우, 보통주 배당금은 ￦160,000이고 우선주 배당금은 ￦80,000이다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "비누적적이고 비참가적 우선주의 경우, 보통주 배당금은 ￦216,000이고 우선주 배당금은 ￦24,000이다.",
+          "answer": "X",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        },
+        {
+          "ox_text": "비누적적이고 부분참가적(배당률 11%까지) 우선주의 경우, 보통주 배당금은 ￦196,000이고 우선주 배당금은 ￦44,000이다.",
+          "answer": "O",
+          "law_ref": "재무회계-부채자본재무보고 > 자본"
+        }
+      ],
       "study_guide": {
         "what_examiner_tests": "",
         "how_to_study": "",
