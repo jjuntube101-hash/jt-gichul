@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useAskAI } from "@/hooks/useAskAI";
 import Link from "next/link";
+import Image from "next/image";
 
 const SUGGESTED_QUESTIONS = [
   "양도소득세 과세대상이 뭔가요?",
@@ -92,9 +93,13 @@ export default function AskChat({
             <div className="flex items-center justify-between px-4 pb-3 border-b border-border">
               <div className="flex items-center gap-3">
                 {/* 세무사 아바타 */}
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-white text-sm font-bold shadow-sm">
-                  JT
-                </div>
+                <Image
+                  src="/logo-jt-small.png"
+                  alt="JT"
+                  width={40}
+                  height={40}
+                  className="rounded-full shadow-sm"
+                />
                 <div>
                   <h2 className="text-sm font-bold text-card-foreground">
                     JT 튜터
@@ -126,9 +131,13 @@ export default function AskChat({
             {/* 비로그인 */}
             {!user ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8 gap-3">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-white text-xl font-bold">
-                  JT
-                </div>
+                <Image
+                  src="/logo-jt-small.png"
+                  alt="JT"
+                  width={64}
+                  height={64}
+                  className="rounded-full"
+                />
                 <p className="text-sm font-medium text-foreground">
                   JT 튜터에게 질문하기
                 </p>
@@ -157,9 +166,13 @@ export default function AskChat({
                     <div className="space-y-4 pt-2">
                       {/* 세무사 인사 메시지 */}
                       <div className="flex items-start gap-2">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-white text-[10px] font-bold mt-0.5">
-                          JT
-                        </div>
+                        <Image
+                          src="/logo-jt-small.png"
+                          alt="JT"
+                          width={28}
+                          height={28}
+                          className="shrink-0 rounded-full mt-0.5"
+                        />
                         <div className="rounded-2xl rounded-tl-sm bg-muted px-3.5 py-2.5 max-w-[85%]">
                           <p className="text-xs text-foreground leading-relaxed">
                             안녕하세요! JT 튜터입니다.<br />
@@ -246,7 +259,7 @@ export default function AskChat({
                 </div>
 
                 {/* 입력 영역 */}
-                <div className="border-t border-border p-3 pb-safe">
+                <div className="border-t border-border p-3 pb-20">
                   <div className="flex items-end gap-2">
                     <textarea
                       ref={inputRef}
