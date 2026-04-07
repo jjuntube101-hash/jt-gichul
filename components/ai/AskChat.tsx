@@ -81,8 +81,8 @@ export default function AskChat({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-x-0 bottom-0 z-50 flex flex-col bg-card rounded-t-2xl shadow-2xl"
-            style={{ maxHeight: "85vh" }}
+            className="fixed inset-x-0 z-50 flex flex-col bg-card rounded-t-2xl shadow-2xl"
+            style={{ maxHeight: "80vh", bottom: "64px" }}
           >
             {/* 드래그 핸들 */}
             <div className="flex justify-center pt-2 pb-1">
@@ -259,7 +259,7 @@ export default function AskChat({
                 </div>
 
                 {/* 입력 영역 */}
-                <div className="border-t border-border p-3 pb-20">
+                <div className="border-t border-border p-3">
                   <div className="flex items-end gap-2">
                     <textarea
                       ref={inputRef}
