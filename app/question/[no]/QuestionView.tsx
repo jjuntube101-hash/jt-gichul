@@ -13,6 +13,7 @@ import BadgeToast from "@/components/engagement/BadgeToast";
 import { isCorrectAnswer, formatAnswer } from "@/lib/answer";
 import { trackSolve } from "@/lib/questTracker";
 import WrongAnswerDiagnosis from "@/components/question/WrongAnswerDiagnosis";
+import ContentProtection from "@/components/ui/ContentProtection";
 
 interface Props {
   question: Question;
@@ -158,7 +159,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
   }
 
   return (
-    <div className="space-y-4 pb-8">
+    <ContentProtection className="space-y-4 pb-8">
       <BadgeToast badgeIds={newBadges} onDismiss={dismissNewBadges} />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -643,7 +644,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
           <div />
         )}
       </div>
-    </div>
+    </ContentProtection>
   );
 }
 
@@ -696,33 +697,37 @@ function ShareButton({ question, isCorrect }: { question: Question; isCorrect: b
 function SmartNextSection({ question }: { question: Question }) {
   const a = question.analysis;
   const related = a.related_questions ?? [];
-  // 추천 우선순위: ①관련 문항 중 랜덤 ②같은 과목 미풀이
-  const suggestedNo = related.length > 0
-    ? related[Math.floor(Math.random() * related.length)]
-    : null;
 
-  if (!suggestedNo) return null;
+  if (related.length === 0) return null;
 
   return (
-    <section className="rounded-xl bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 p-4">
-      <p className="text-xs font-bold text-foreground mb-2">
+    <section className="rounded-xl bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 p-4 space-y-2">
+      <p className="text-xs font-bold text-foreground">
         <Zap className="inline h-3.5 w-3.5 text-primary mr-1" />
-        한 문제 더?
+        관련 문항 ({related.length}개)
       </p>
-      <Link
-        href={`/question/${suggestedNo}`}
-        className="flex items-center justify-between rounded-lg bg-card border border-border p-3 hover:border-primary/40 transition-colors"
-      >
-        <div>
-          <p className="text-xs font-medium text-card-foreground">
-            관련 문항 #{suggestedNo}
-          </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">
-            같은 주제의 문항을 풀어보세요
-          </p>
-        </div>
-        <ChevronRight className="h-4 w-4 text-primary shrink-0" />
-      </Link>
+      <div className="space-y-1.5">
+        {related.slice(0, 5).map((no) => (
+          <Link
+            key={no}
+            href={`/question/${no}`}
+            className="flex items-center justify-between rounded-lg bg-card border border-border p-2.5 hover:border-primary/40 transition-colors"
+          >
+            <p className="text-xs font-medium text-card-foreground">
+              #{no} — 같은 주제 문항
+            </p>
+            <ChevronRight className="h-3.5 w-3.5 text-primary shrink-0" />
+          </Link>
+        ))}
+        {related.length > 5 && (
+          <Link
+            href={`/practice?nos=${related.join(",")}`}
+            className="block text-center text-[10px] text-primary font-medium hover:underline py-1"
+          >
+            전체 {related.length}문항 모아 풀기
+          </Link>
+        )}
+      </div>
     </section>
   );
 }

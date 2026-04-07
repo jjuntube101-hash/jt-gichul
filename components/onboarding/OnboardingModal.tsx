@@ -22,7 +22,7 @@ interface OnboardingModalProps {
   onSkip: () => void;
 }
 
-type ExamTarget = '9급' | '7급';
+type ExamTarget = '9급' | '7급' | '회계';
 
 interface ExamDate {
   name: string;
@@ -45,7 +45,17 @@ const TAX_CATEGORIES = [
   '지방세법',
 ] as const;
 
+const ACCOUNTING_CATEGORIES = [
+  '회계원리',
+  '재무회계',
+  '원가회계',
+  '관리회계',
+  '정부회계',
+] as const;
+
 type TaxCategory = (typeof TAX_CATEGORIES)[number];
+type AccountingCategory = (typeof ACCOUNTING_CATEGORIES)[number];
+type SubjectCategory = TaxCategory | AccountingCategory;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -58,6 +68,11 @@ const EXAM_SCHEDULE: Record<ExamTarget, ExamDate[]> = {
   ],
   '7급': [
     { name: '국가직 7급', month: 8, day: 23 },
+  ],
+  '회계': [
+    { name: '국가직 9급(회계)', month: 3, day: 22 },
+    { name: '지방직 9급(회계)', month: 6, day: 14 },
+    { name: '국가직 7급(회계)', month: 8, day: 23 },
   ],
 };
 
@@ -192,7 +207,7 @@ function Step1({
         <p className="mb-2 text-sm font-medium text-card-foreground">
           시험 목표
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {/* 9급 Card */}
           <button
             type="button"
@@ -247,6 +262,36 @@ function Step1({
               7급 세법
             </span>
             {examTarget === '7급' && (
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                <Check className="h-3 w-3 text-white" />
+              </div>
+            )}
+          </button>
+
+          {/* 회계 Card */}
+          <button
+            type="button"
+            onClick={() => setExamTarget('회계')}
+            className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-5 transition-all ${
+              examTarget === '회계'
+                ? 'border-primary bg-primary/5 shadow-sm'
+                : 'border-border bg-card hover:border-primary/40'
+            }`}
+          >
+            <BookOpen
+              className={`h-8 w-8 ${
+                examTarget === '회계'
+                  ? 'text-primary'
+                  : 'text-muted-foreground'
+              }`}
+            />
+            <span className="text-lg font-bold text-card-foreground">회계</span>
+            <span className="text-center text-xs text-muted-foreground leading-relaxed">
+              공무원
+              <br />
+              회계학
+            </span>
+            {examTarget === '회계' && (
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
                 <Check className="h-3 w-3 text-white" />
               </div>
@@ -390,10 +435,16 @@ function Step2({
 function Step3({
   weakSubjects,
   toggleSubject,
+  examTarget,
 }: {
-  weakSubjects: Set<TaxCategory>;
-  toggleSubject: (s: TaxCategory) => void;
+  weakSubjects: Set<SubjectCategory>;
+  toggleSubject: (s: SubjectCategory) => void;
+  examTarget: ExamTarget;
 }) {
+  const categories: readonly SubjectCategory[] = examTarget === '회계'
+    ? ACCOUNTING_CATEGORIES
+    : TAX_CATEGORIES;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center">
@@ -406,7 +457,7 @@ function Step3({
       </div>
 
       <div className="flex flex-wrap justify-center gap-2">
-        {TAX_CATEGORIES.map((cat) => {
+        {categories.map((cat) => {
           const selected = weakSubjects.has(cat);
           return (
             <button
@@ -461,11 +512,11 @@ export default function OnboardingModal({
   const [showCustom, setShowCustom] = useState(false);
 
   // Step 3 state
-  const [weakSubjects, setWeakSubjects] = useState<Set<TaxCategory>>(
+  const [weakSubjects, setWeakSubjects] = useState<Set<SubjectCategory>>(
     new Set(),
   );
 
-  const toggleSubject = useCallback((s: TaxCategory) => {
+  const toggleSubject = useCallback((s: SubjectCategory) => {
     setWeakSubjects((prev) => {
       const next = new Set(prev);
       if (next.has(s)) {
@@ -484,6 +535,7 @@ export default function OnboardingModal({
     setSelectedExamName(dates.length > 0 ? dates[0].name : null);
     setShowCustom(false);
     setCustomDate('');
+    setWeakSubjects(new Set()); // 시험 목표 변경 시 약점 과목 초기화
   }, []);
 
   // Resolve the final exam date for saving
@@ -635,6 +687,7 @@ export default function OnboardingModal({
                   <Step3
                     weakSubjects={weakSubjects}
                     toggleSubject={toggleSubject}
+                    examTarget={examTarget}
                   />
                 )}
               </motion.div>

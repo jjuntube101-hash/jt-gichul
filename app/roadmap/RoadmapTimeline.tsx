@@ -20,6 +20,7 @@ import {
   getWeekPracticeHref,
   type RoadmapConfig,
   type WeekProgress,
+  type SubjectType,
 } from "@/lib/roadmap";
 
 // ---------------------------------------------------------------------------
@@ -40,7 +41,7 @@ export default function RoadmapTimeline() {
   const [roadmap, setRoadmap] = useState<RoadmapConfig | null>(null);
   const [weekStates, setWeekStates] = useState<WeekState[]>([]);
   const [currentWeek, setCurrentWeek] = useState(0);
-  const [examTarget, setExamTarget] = useState<"9급" | "7급" | null>(null);
+  const [examTarget, setExamTarget] = useState<"9급" | "7급" | "회계" | null>(null);
   const [expandedWeek, setExpandedWeek] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +59,7 @@ export default function RoadmapTimeline() {
 
         const { data: profile } = await supabase
           .from("user_study_profiles")
-          .select("exam_target, onboarding_completed, updated_at")
+          .select("exam_target, exam_date, onboarding_completed, updated_at")
           .eq("user_id", user!.id)
           .single();
 
@@ -66,13 +67,17 @@ export default function RoadmapTimeline() {
           return;
         }
 
-        const target = profile.exam_target as "9급" | "7급";
+        const target = profile.exam_target as "9급" | "7급" | "회계";
         setExamTarget(target);
 
-        const rm = getRoadmap(target);
+        // 회계는 accounting subject, 세법은 exam_target으로 분기
+        const isAccounting = target === "회계";
+        const roadmapTarget = isAccounting ? "9급" : target; // getRoadmap의 첫 인자
+        const subject: SubjectType = isAccounting ? "accounting" : "tax";
+        const rm = getRoadmap(roadmapTarget, subject);
         setRoadmap(rm);
 
-        const cw = getCurrentWeek(profile.updated_at, rm.totalWeeks);
+        const cw = getCurrentWeek(profile.updated_at, rm.totalWeeks, profile.exam_date);
         setCurrentWeek(cw);
         setExpandedWeek(cw >= 1 && cw <= rm.totalWeeks ? cw : null);
 
@@ -97,7 +102,7 @@ export default function RoadmapTimeline() {
         }));
 
         const states: WeekState[] = rm.weeks.map((week) => {
-          const progress = getWeekProgress(week, target, solvedNos, mapped);
+          const progress = getWeekProgress(week, roadmapTarget, solvedNos, mapped);
           let status: "done" | "current" | "future";
           if (week.week < cw) {
             status = "done";

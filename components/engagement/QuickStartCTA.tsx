@@ -3,19 +3,21 @@
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Zap } from "lucide-react";
-import { loadAllQuestions } from "@/lib/questions";
+import { loadQuestionsBySubject } from "@/lib/questions";
+import { useAppStore } from "@/stores/appStore";
 
 export default function QuickStartCTA() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
+  const subject = useAppStore((s) => s.subject);
 
   const handleClick = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
     setLoading(true);
     try {
-      const all = await loadAllQuestions();
+      const all = await loadQuestionsBySubject(subject);
       const idx = Math.floor(Math.random() * all.length);
       const q = all[idx];
       router.push(`/question/${q.no}`);
@@ -25,7 +27,7 @@ export default function QuickStartCTA() {
       loadingRef.current = false;
       setLoading(false);
     }
-  }, [router]);
+  }, [router, subject]);
 
   return (
     <button

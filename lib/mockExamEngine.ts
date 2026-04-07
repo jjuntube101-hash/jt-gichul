@@ -14,7 +14,7 @@ import type { Question, ChunkMeta } from '@/types/question';
 
 export interface MockExamConfig {
   userId: string;
-  examTarget: '9급' | '7급';
+  examTarget: '9급' | '7급' | '회계';
   questionCount: number; // 기본 20문항
 }
 
@@ -94,9 +94,12 @@ export async function generateMockExam(
 
   const solveRecords: SolveRecord[] = records ?? [];
 
-  // 2. 전체 문항 로드 + 직급 필터 (세법 문항만 — 회계는 no >= 2001)
+  // 2. 전체 문항 로드 + 직급/과목 필터
   const allQuestions = loadAllQuestionsServer();
-  const pool = allQuestions.filter((q) => q.no < 2001 && q.직급 === examTarget);
+  const isAccounting = examTarget === "회계";
+  const pool = isAccounting
+    ? allQuestions.filter((q) => q.no >= 2001) // 회계 문항
+    : allQuestions.filter((q) => q.no < 2001 && q.직급 === examTarget); // 세법 문항
 
   // 3. 풀이 기록 분석
   const solvedMap = new Map<number, { total: number; correct: number }>();
@@ -107,12 +110,16 @@ export async function generateMockExam(
     solvedMap.set(r.question_no, prev);
   }
 
+  // 풀 인덱스 맵 (O(1) 조회용)
+  const poolMap = new Map<number, Question>();
+  for (const q of pool) poolMap.set(q.no, q);
+
   // 틀린 문항의 소분류 토픽 수집 (약점 토픽)
   const wrongTopics = new Map<string, number>(); // 소분류 → 틀린 횟수
   for (const [qNo, stats] of solvedMap) {
     const wrongCount = stats.total - stats.correct;
     if (wrongCount > 0) {
-      const q = pool.find((p) => p.no === qNo);
+      const q = poolMap.get(qNo);
       if (q) {
         const key = q.소분류;
         wrongTopics.set(key, (wrongTopics.get(key) ?? 0) + wrongCount);
@@ -122,12 +129,15 @@ export async function generateMockExam(
 
   // 4. 문항 분류
   const solvedNos = new Set(solvedMap.keys());
+  const hasHistory = solvedNos.size >= 5; // 최소 5문항 풀어야 약점 분석 의미 있음
 
-  // weak: 틀린 문항의 같은 소분류 토픽에서 선택 (본인이 틀린 문항 자체 + 같은 토픽 미풀이)
+  // weak: 틀린 문항의 같은 소분류 토픽에서 선택
   const weakTopicSet = new Set(wrongTopics.keys());
-  const weakPool = pool.filter(
-    (q) => weakTopicSet.has(q.소분류) && !(solvedMap.get(q.no)?.correct === solvedMap.get(q.no)?.total && (solvedMap.get(q.no)?.total ?? 0) > 1)
-  );
+  const weakPool = hasHistory
+    ? pool.filter(
+        (q) => weakTopicSet.has(q.소분류) && !(solvedMap.get(q.no)?.correct === solvedMap.get(q.no)?.total && (solvedMap.get(q.no)?.total ?? 0) > 1)
+      )
+    : [];
 
   // unseen: 한 번도 안 푼 문항
   const unseenPool = pool.filter((q) => !solvedNos.has(q.no));
@@ -141,11 +151,21 @@ export async function generateMockExam(
   // challenge: difficulty >= 4
   const challengePool = pool.filter((q) => q.analysis.difficulty >= 4);
 
-  // 5. 비율에 맞게 배분
-  const weakCount = Math.round(questionCount * 0.4);
-  const unseenCount = Math.round(questionCount * 0.3);
-  const verifyCount = Math.round(questionCount * 0.2);
-  const challengeCount = questionCount - weakCount - unseenCount - verifyCount;
+  // 5. 비율에 맞게 배분 — 풀이 기록이 적으면 미풀이+도전 비중 확대
+  let weakCount: number, unseenCount: number, verifyCount: number, challengeCount: number;
+
+  if (!hasHistory) {
+    // 풀이 기록 부족: 미풀이 60% + 도전 30% + 랜덤 10%
+    weakCount = 0;
+    unseenCount = Math.round(questionCount * 0.6);
+    verifyCount = 0;
+    challengeCount = Math.round(questionCount * 0.3);
+  } else {
+    weakCount = Math.round(questionCount * 0.4);
+    unseenCount = Math.round(questionCount * 0.3);
+    verifyCount = Math.round(questionCount * 0.2);
+    challengeCount = questionCount - weakCount - unseenCount - verifyCount;
+  }
 
   const selectedNos = new Set<number>();
 
@@ -184,7 +204,7 @@ export async function generateMockExam(
   // 8. 주요 출제 영역 추출
   const areaCount = new Map<string, number>();
   for (const no of allNos) {
-    const q = pool.find((p) => p.no === no);
+    const q = poolMap.get(no);
     if (q) {
       const area = q.대분류;
       areaCount.set(area, (areaCount.get(area) ?? 0) + 1);

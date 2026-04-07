@@ -4,7 +4,10 @@
  *
  * feature: briefing | wrong_answer | mock_exam | weekly_report | dday_strategy
  *
- * Sprint 21에서 실제 Claude API 연동 예정 — 현재는 placeholder 응답 반환
+ * 2-tier 구조:
+ * - Tier 1: 로컬 엔진 (항상 실행, 비용 $0)
+ * - Tier 2: Claude API 보강 (ANTHROPIC_API_KEY 설정 시 활성, 자연어 분석)
+ * - Tier 2 비활성 시: 로컬 엔진 결과만 반환 (기존과 동일)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -17,6 +20,19 @@ import { collectBriefingData, generateBriefing } from '@/lib/briefingEngine';
 import { generateMockExam } from '@/lib/mockExamEngine';
 import { generateWeeklyReport } from '@/lib/weeklyReportEngine';
 import { generateDdayStrategy } from '@/lib/ddayStrategyEngine';
+import { callClaudeJSON, logAIUsage } from '@/lib/claude';
+import {
+  BRIEFING_SYSTEM,
+  buildBriefingMessage,
+  WRONG_ANSWER_SYSTEM,
+  buildWrongAnswerMessage,
+  WEEKLY_REPORT_SYSTEM,
+  buildWeeklyReportMessage,
+  DDAY_STRATEGY_SYSTEM,
+  buildDdayStrategyMessage,
+  MOCK_EXAM_REVIEW_SYSTEM,
+  buildMockExamReviewMessage,
+} from '@/lib/aiPrompts';
 
 // --- 서버사이드 Supabase ---
 
@@ -96,46 +112,131 @@ async function setServerCache(
   }
 }
 
-// --- Placeholder 응답 생성 (Sprint 21에서 Claude API로 교체) ---
+// --- Claude API 활성화 여부 ---
 
-function generatePlaceholder(feature: AIFeature, params: Record<string, unknown>): unknown {
-  switch (feature) {
-    case 'briefing':
-      return {
-        title: '오늘의 브리핑',
-        message: '[Sprint 21] Claude API 연동 후 실제 브리핑이 생성됩니다.',
-        generatedAt: new Date().toISOString(),
-      };
-    case 'wrong_answer':
-      return {
-        diagnosis: '[Sprint 21] 오답 진단 AI가 연동될 예정입니다.',
-        questionId: params.questionId ?? null,
-        tips: [],
-        generatedAt: new Date().toISOString(),
-      };
-    case 'mock_exam':
-      return {
-        title: 'AI 모의고사',
-        questions: [],
-        message: '[Sprint 21] Claude API 연동 후 맞춤 모의고사가 생성됩니다.',
-        generatedAt: new Date().toISOString(),
-      };
-    case 'weekly_report':
-      return {
-        title: '약점 해부 보고서',
-        message: '[Sprint 21] Claude API 연동 후 주간 분석 보고서가 생성됩니다.',
-        weakPoints: [],
-        generatedAt: new Date().toISOString(),
-      };
-    case 'dday_strategy':
-      return {
-        title: 'D-day 전략',
-        message: '[Sprint 21] Claude API 연동 후 맞춤 전략이 생성됩니다.',
-        strategy: [],
-        generatedAt: new Date().toISOString(),
-      };
-    default:
-      return { message: '지원하지 않는 기능입니다.' };
+function isClaudeEnabled(): boolean {
+  return !!process.env.ANTHROPIC_API_KEY;
+}
+
+// --- Claude API 보강 함수 (Tier 2) ---
+
+async function enhanceWithClaude(
+  feature: AIFeature,
+  localResult: unknown,
+  body: Record<string, unknown>,
+  userId: string,
+): Promise<{ enhanced: unknown; aiMeta?: { model: string; inputTokens: number; outputTokens: number; durationMs: number } }> {
+  if (!isClaudeEnabled()) {
+    return { enhanced: localResult };
+  }
+
+  try {
+    switch (feature) {
+      case 'briefing': {
+        const lr = localResult as Record<string, unknown>;
+        const result = await callClaudeJSON({
+          feature,
+          systemPrompt: BRIEFING_SYSTEM,
+          userMessage: buildBriefingMessage({
+            displayName: (lr.displayName as string) ?? '학습자',
+            examTarget: (lr.examTarget as string) ?? '9급',
+            streak: (lr.streak as number) ?? 0,
+            yesterdaySolved: (lr.yesterdaySolved as number) ?? 0,
+            yesterdayCorrectRate: (lr.yesterdayCorrectRate as number) ?? 0,
+            weakTopics: (lr.weakTopics as string[]) ?? [],
+            totalSolved: (lr.totalSolved as number) ?? 0,
+            daysUntilExam: (lr.daysUntilExam as number | null) ?? null,
+          }),
+          maxTokens: 512,
+        });
+        return {
+          enhanced: { ...lr, ai: result.data, aiGenerated: true },
+          aiMeta: result.meta,
+        };
+      }
+
+      case 'wrong_answer': {
+        const lr = localResult as Record<string, unknown>;
+        const result = await callClaudeJSON({
+          feature,
+          systemPrompt: WRONG_ANSWER_SYSTEM,
+          userMessage: buildWrongAnswerMessage({
+            questionText: (lr.questionText as string) ?? '',
+            choices: (lr.choices as string[]) ?? [],
+            correctAnswer: (lr.correctAnswer as number) ?? 0,
+            selectedChoice: (body.selectedChoice as number) ?? 0,
+            correctAnalysis: (lr.correctAnalysis as string) ?? '',
+            selectedAnalysis: (lr.selectedAnalysis as string) ?? '',
+            trapType: (lr.trapType as string | null) ?? null,
+            lawRef: (lr.lawRef as string) ?? '',
+            topic: (lr.topic as string) ?? '',
+          }),
+          maxTokens: 512,
+        });
+        return {
+          enhanced: { ...lr, ai: result.data, aiGenerated: true },
+          aiMeta: result.meta,
+        };
+      }
+
+      case 'weekly_report': {
+        const lr = localResult as Record<string, unknown>;
+        const result = await callClaudeJSON({
+          feature,
+          systemPrompt: WEEKLY_REPORT_SYSTEM,
+          userMessage: buildWeeklyReportMessage({
+            examTarget: (lr.examTarget as string) ?? '9급',
+            totalSolvedThisWeek: (lr.totalSolvedThisWeek as number) ?? 0,
+            avgAccuracy: (lr.avgAccuracy as number) ?? 0,
+            topicAccuracies: (lr.topicAccuracies as { topic: string; law: string; accuracy: number; solved: number }[]) ?? [],
+            trapFrequencies: (lr.trapFrequencies as { name: string; count: number }[]) ?? [],
+            streakDays: (lr.streakDays as number) ?? 0,
+            comparedToLastWeek: (lr.comparedToLastWeek as { solvedDiff: number; accuracyDiff: number }) ?? { solvedDiff: 0, accuracyDiff: 0 },
+          }),
+          maxTokens: 1024,
+        });
+        return {
+          enhanced: { ...lr, ai: result.data, aiGenerated: true },
+          aiMeta: result.meta,
+        };
+      }
+
+      case 'dday_strategy': {
+        const lr = localResult as Record<string, unknown>;
+        const result = await callClaudeJSON({
+          feature,
+          systemPrompt: DDAY_STRATEGY_SYSTEM,
+          userMessage: buildDdayStrategyMessage({
+            examTarget: (lr.examTarget as string) ?? '9급',
+            daysUntilExam: (lr.daysUntilExam as number) ?? 0,
+            totalSolved: (lr.totalSolved as number) ?? 0,
+            totalQuestions: (lr.totalQuestions as number) ?? 0,
+            overallAccuracy: (lr.overallAccuracy as number) ?? 0,
+            weakTopics: (lr.weakTopics as { topic: string; law: string; accuracy: number }[]) ?? [],
+            strongTopics: (lr.strongTopics as { topic: string; law: string; accuracy: number }[]) ?? [],
+            currentStreak: (lr.currentStreak as number) ?? 0,
+          }),
+          maxTokens: 1024,
+        });
+        return {
+          enhanced: { ...lr, ai: result.data, aiGenerated: true },
+          aiMeta: result.meta,
+        };
+      }
+
+      case 'mock_exam': {
+        // 모의고사는 로컬 엔진 결과를 그대로 반환 (문항 생성은 로컬)
+        // Claude는 결과 분석 시에만 사용 (mock_exam_review feature로 별도)
+        return { enhanced: localResult };
+      }
+
+      default:
+        return { enhanced: localResult };
+    }
+  } catch (err) {
+    console.error(`[AI API] Claude 보강 실패 (${feature}):`, err);
+    // Claude 실패 시 로컬 결과로 폴백
+    return { enhanced: localResult };
   }
 }
 
@@ -174,7 +275,25 @@ export async function POST(
       // body가 없어도 진행 가능한 기능이 있음
     }
 
-    // 4. 레이트리밋 확인
+    // 4. 공유캐시 확인 (캐시 히트 시 레이트리밋 소비 안 함)
+    const skipCache = feature === 'mock_exam';
+    const cacheKeyParts = Object.values(body)
+      .filter((v): v is string => typeof v === 'string')
+      .sort();
+    const cacheKey = await makeCacheKey(feature, ...cacheKeyParts);
+
+    if (!skipCache) {
+      const cached = await getServerCache(cacheKey);
+      if (cached) {
+        return NextResponse.json({
+          data: cached,
+          cached: true,
+          remaining: -1, // 캐시 히트이므로 잔여 횟수 미차감
+        });
+      }
+    }
+
+    // 5. 레이트리밋 확인 (캐시 미스 시에만)
     const limit = getLimitForFeature(feature);
     const { allowed, remaining } = await checkAndIncrement(
       auth.userId,
@@ -192,24 +311,6 @@ export async function POST(
         },
         { status: 429 }
       );
-    }
-
-    // 5. 공유캐시 확인 (mock_exam은 매번 새로 생성하므로 캐시 스킵)
-    const skipCache = feature === 'mock_exam';
-    const cacheKeyParts = Object.values(body)
-      .filter((v): v is string => typeof v === 'string')
-      .sort();
-    const cacheKey = await makeCacheKey(feature, ...cacheKeyParts);
-
-    if (!skipCache) {
-      const cached = await getServerCache(cacheKey);
-      if (cached) {
-        return NextResponse.json({
-          data: cached,
-          cached: true,
-          remaining,
-        });
-      }
     }
 
     // 6. AI 응답 생성
@@ -298,20 +399,40 @@ export async function POST(
         );
       }
     } else {
-      // 나머지 기능은 placeholder (Sprint 21에서 Claude API로 교체)
-      aiResponse = generatePlaceholder(feature, body);
+      return NextResponse.json(
+        { error: '지원하지 않는 AI 기능입니다.', code: 'UNSUPPORTED_FEATURE' },
+        { status: 400 }
+      );
     }
 
-    // 7. 캐시 저장 (mock_exam은 스킵)
+    // 7. Claude API 보강 (Tier 2) — ANTHROPIC_API_KEY 설정 시 활성
+    const { enhanced, aiMeta } = await enhanceWithClaude(feature, aiResponse, body, auth.userId);
+    const finalResponse = enhanced;
+
+    // 8. AI 사용량 로깅 (Claude 보강 시에만)
+    if (aiMeta) {
+      logAIUsage({
+        userId: auth.userId,
+        feature,
+        model: aiMeta.model,
+        inputTokens: aiMeta.inputTokens,
+        outputTokens: aiMeta.outputTokens,
+        durationMs: aiMeta.durationMs,
+        cached: false,
+      }).catch(() => {}); // fire-and-forget
+    }
+
+    // 9. 캐시 저장 (mock_exam은 스킵)
     if (!skipCache) {
-      await setServerCache(cacheKey, feature, aiResponse);
+      await setServerCache(cacheKey, feature, finalResponse);
     }
 
-    // 8. 응답 반환
+    // 10. 응답 반환
     return NextResponse.json({
-      data: aiResponse,
+      data: finalResponse,
       cached: false,
       remaining,
+      aiGenerated: !!aiMeta,
     });
   } catch (error) {
     console.error('[AI API] 처리 오류:', error);

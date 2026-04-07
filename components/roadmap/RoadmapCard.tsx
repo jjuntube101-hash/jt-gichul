@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronRight, ChevronDown, Settings2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
 import { loadAllQuestions } from "@/lib/questions";
@@ -13,22 +13,54 @@ import {
   getWeekPracticeHref,
   type WeekProgress,
   type RoadmapWeek,
+  type RoadmapConfig,
 } from "@/lib/roadmap";
+
+const SELECTED_WEEK_KEY = "jt_selected_week";
 
 interface StudyProfile {
   exam_target: "9급" | "7급";
+  exam_date: string | null;
   onboarding_completed: boolean;
-  updated_at: string; // onboarding 완료 시점을 startDate로 사용
+  updated_at: string;
+}
+
+/** localStorage에서 사용자가 선택한 주차 불러오기 */
+function getSavedWeek(): number | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(SELECTED_WEEK_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // 만료 체크: 같은 주인지 (월요일 기준)
+    if (parsed.savedAt) {
+      const saved = new Date(parsed.savedAt);
+      const now = new Date();
+      const dayDiff = Math.floor((now.getTime() - saved.getTime()) / (1000 * 60 * 60 * 24));
+      if (dayDiff > 7) return null; // 1주 지나면 리셋
+    }
+    return typeof parsed.week === "number" ? parsed.week : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSelectedWeek(week: number): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(
+    SELECTED_WEEK_KEY,
+    JSON.stringify({ week, savedAt: new Date().toISOString() }),
+  );
 }
 
 export default function RoadmapCard() {
   const { user } = useAuth();
-  const [weekData, setWeekData] = useState<{
-    week: RoadmapWeek;
-    weekNum: number;
-    totalWeeks: number;
-    progress: WeekProgress;
-  } | null>(null);
+  const [roadmap, setRoadmap] = useState<RoadmapConfig | null>(null);
+  const [examTarget, setExamTarget] = useState<"9급" | "7급">("9급");
+  const [suggestedWeek, setSuggestedWeek] = useState(1);
+  const [selectedWeek, setSelectedWeek] = useState<number>(1);
+  const [weekProgress, setWeekProgress] = useState<WeekProgress | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,27 +74,28 @@ export default function RoadmapCard() {
         const supabase = getSupabase();
         if (!supabase) return;
 
-        // 온보딩 프로필 가져오기
         const { data: profile } = await supabase
           .from("user_study_profiles")
-          .select("exam_target, onboarding_completed, updated_at")
+          .select("exam_target, exam_date, onboarding_completed, updated_at")
           .eq("user_id", user!.id)
           .single();
 
-        if (!profile || !profile.onboarding_completed || !profile.exam_target) {
-          return;
-        }
+        if (!profile?.onboarding_completed || !profile.exam_target) return;
 
         const sp = profile as StudyProfile;
-        const roadmap = getRoadmap(sp.exam_target);
-        const currentWeek = getCurrentWeek(sp.updated_at, roadmap.totalWeeks);
+        const rm = getRoadmap(sp.exam_target);
+        const suggested = getCurrentWeek(sp.updated_at, rm.totalWeeks, sp.exam_date);
 
-        // 범위 밖이면 표시하지 않음
-        if (currentWeek < 1 || currentWeek > roadmap.totalWeeks) return;
+        setRoadmap(rm);
+        setExamTarget(sp.exam_target);
+        setSuggestedWeek(suggested);
 
-        const week = roadmap.weeks[currentWeek - 1];
+        // 사용자 선택 주차 or 자동 추천 주차
+        const saved = getSavedWeek();
+        const weekNum = saved && saved >= 1 && saved <= rm.totalWeeks ? saved : suggested;
+        setSelectedWeek(weekNum);
 
-        // 풀이 기록 가져오기
+        // 풀이 기록 + 진행률
         const { data: solveRecords } = await supabase
           .from("solve_records")
           .select("question_no")
@@ -72,7 +105,6 @@ export default function RoadmapCard() {
           (solveRecords ?? []).map((r: { question_no: number }) => r.question_no),
         );
 
-        // 전체 문제 로드
         const allQ = await loadAllQuestions();
         const mapped = allQ.map((q) => ({
           no: q.no,
@@ -81,14 +113,10 @@ export default function RoadmapCard() {
           직급: q.직급,
         }));
 
-        const progress = getWeekProgress(week, sp.exam_target, solvedNos, mapped);
-
-        setWeekData({
-          week,
-          weekNum: currentWeek,
-          totalWeeks: roadmap.totalWeeks,
-          progress,
-        });
+        const week = rm.weeks[weekNum - 1];
+        if (week) {
+          setWeekProgress(getWeekProgress(week, sp.exam_target, solvedNos, mapped));
+        }
       } catch (err) {
         console.error("[RoadmapCard] load error:", err);
       } finally {
@@ -99,11 +127,53 @@ export default function RoadmapCard() {
     load();
   }, [user]);
 
-  // 로그인 안 했거나 데이터 없으면 렌더링 안 함
-  if (!user || loading || !weekData) return null;
+  // 주차 변경 핸들러
+  const handleWeekChange = async (weekNum: number) => {
+    if (!roadmap) return;
+    setSelectedWeek(weekNum);
+    saveSelectedWeek(weekNum);
+    setShowPicker(false);
 
-  const { week, weekNum, totalWeeks, progress } = weekData;
-  const pct = progress.rate;
+    // 진행률 재계산 (간단히 — 이미 로드된 데이터 없으므로 null로 표시)
+    setWeekProgress(null);
+
+    try {
+      const supabase = getSupabase();
+      if (!supabase || !user) return;
+
+      const { data: solveRecords } = await supabase
+        .from("solve_records")
+        .select("question_no")
+        .eq("user_id", user.id);
+
+      const solvedNos = new Set(
+        (solveRecords ?? []).map((r: { question_no: number }) => r.question_no),
+      );
+
+      const allQ = await loadAllQuestions();
+      const mapped = allQ.map((q) => ({
+        no: q.no,
+        대분류: q.대분류,
+        소분류: q.소분류,
+        직급: q.직급,
+      }));
+
+      const week = roadmap.weeks[weekNum - 1];
+      if (week) {
+        setWeekProgress(getWeekProgress(week, examTarget, solvedNos, mapped));
+      }
+    } catch {
+      // 진행률 계산 실패 무시
+    }
+  };
+
+  if (!user || loading || !roadmap) return null;
+
+  const week = roadmap.weeks[selectedWeek - 1];
+  if (!week) return null;
+
+  const pct = weekProgress?.rate ?? 0;
+  const isUserSelected = selectedWeek !== suggestedWeek;
 
   return (
     <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
@@ -113,33 +183,79 @@ export default function RoadmapCard() {
           <BookOpen className="h-4 w-4 text-primary" />
           이번 주 학습
         </h3>
-        <span className="text-[10px] font-medium text-muted-foreground">
-          {weekNum}/{totalWeeks}주차
-        </span>
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted transition-colors"
+        >
+          <Settings2 className="h-3 w-3" />
+          {selectedWeek}/{roadmap.totalWeeks}주차
+          <ChevronDown className={`h-3 w-3 transition-transform ${showPicker ? "rotate-180" : ""}`} />
+        </button>
       </div>
+
+      {/* 주차 선택 패널 */}
+      {showPicker && (
+        <div className="rounded-xl border border-border bg-muted/50 p-3 space-y-2">
+          <p className="text-[10px] font-medium text-muted-foreground">
+            학습 범위를 직접 선택하세요
+          </p>
+          <div className="grid grid-cols-4 gap-1.5 max-h-40 overflow-y-auto">
+            {roadmap.weeks.map((w) => (
+              <button
+                key={w.week}
+                onClick={() => handleWeekChange(w.week)}
+                className={`rounded-lg px-2 py-1.5 text-[10px] font-medium transition-colors ${
+                  w.week === selectedWeek
+                    ? "bg-primary text-white"
+                    : w.week === suggestedWeek
+                    ? "bg-primary/10 text-primary border border-primary/30"
+                    : "bg-card text-muted-foreground hover:text-foreground border border-border"
+                }`}
+              >
+                {w.week}주
+              </button>
+            ))}
+          </div>
+          {isUserSelected && (
+            <button
+              onClick={() => handleWeekChange(suggestedWeek)}
+              className="text-[10px] text-primary hover:underline"
+            >
+              추천 주차({suggestedWeek}주차)로 돌아가기
+            </button>
+          )}
+        </div>
+      )}
 
       {/* 주차 제목 */}
       <p className="text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground">{weekNum}주차</span>
+        <span className="font-semibold text-foreground">{selectedWeek}주차</span>
         {" — "}
         {week.title}
+        {isUserSelected && (
+          <span className="ml-1.5 inline-flex items-center rounded-md bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">
+            직접 선택
+          </span>
+        )}
       </p>
 
       {/* 프로그레스 바 */}
-      <div className="space-y-1.5">
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
-            style={{ width: `${pct}%` }}
-          />
+      {weekProgress && (
+        <div className="space-y-1.5">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all duration-500"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-muted-foreground">
+              {weekProgress.solved}/{weekProgress.total} 문항 완료
+            </span>
+            <span className="font-bold text-primary">{pct}%</span>
+          </div>
         </div>
-        <div className="flex items-center justify-between text-[11px]">
-          <span className="text-muted-foreground">
-            {progress.solved}/{progress.total} 문항 완료
-          </span>
-          <span className="font-bold text-primary">{pct}%</span>
-        </div>
-      </div>
+      )}
 
       {/* 핵심 포인트 */}
       <p className="text-[11px] text-muted-foreground leading-relaxed">

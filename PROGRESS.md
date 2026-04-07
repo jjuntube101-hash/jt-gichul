@@ -1,12 +1,130 @@
 # JT기출 진행기록
 
 ## 현재 상태
-- **완료**: Sprint 18 — 주간 리포트 + 간격 복습 + 휴식 권유 + 에러 바운더리 + 베타 페이지
+- **완료**: DESIGN.md + JourneyMap + 사전생성 AI 4종 + FeatureTooltip + AI 허브 홈 링크 + **Claude API 인프라**
 - 배포 URL: https://gichul.jttax.co.kr (커스텀 도메인) / https://jt-gichul.vercel.app
-- Supabase: xddaqkymeactyfqqfcuv, **6테이블** + streak_freezes 컬럼 추가 완료
-- Vercel 환경변수: VAPID, PUSH_API_KEY, CRON_SECRET, SUPABASE_SERVICE_KEY 모두 설정 완료
-- **Lighthouse** (모바일): Performance 98 / Accessibility 96 / Best Practices 100 / SEO 100
-- **피드백 시스템**: 앱→Supabase→Claude CLI 전체 파이프라인 검증 완료
+- Supabase: xddaqkymeactyfqqfcuv, **11테이블** (기존 6 + Sprint 19 추가 5)
+- 총 문항: 2,065 (세법 1,245 + 회계 820)
+- 빌드: 2,095 페이지 정상 생성
+- 9급 커리큘럼: 12주 → **13주** (지방세 분할)
+- 7급 커리큘럼: 16주 → **17주** (지방세 분할)
+
+### DESIGN.md + JourneyMap + 마이페이지 리프레시 (260407)
+- [x] **DESIGN.md 작성** — awesome-design-md 9-섹션 포맷, 기존 디자인 시스템 문서화 (Visual Theme/Colors/Typography/Components/Layout/Depth/Don'ts/Responsive/Agent Prompt Guide)
+- [x] **design-preview.html** — DESIGN.md HTML 프리뷰 (라이트/다크 전환 가능, 참고용 보관)
+- [x] **JourneyMap 컴포넌트** — `components/progress/JourneyMap.tsx` 신규 (풀이진도 프로그레스바 + 마스터토픽 수 + 로드맵 주차 + D-day 카운트다운 + 복습 대기 배너)
+- [x] **마이페이지 리프레시** — JourneyMap "학습 여정" 섹션 추가, 통계 카드 2×2→정답률 2카드로 간소화(풀이+OX 각각 정답/총수 서브텍스트), 시험일 프로필 표시, 스트릭 아이콘 orange→warning 토큰, MenuLink ChevronRight 아이콘 통일, roadmap 주차 역산 로직
+- 빌드 검증: 2,090페이지, 에러 0
+
+### 사전 생성 AI 4종 (260407)
+- [x] **생성 스크립트** — `scripts/generate-ai-data.ts` (2,065문항 전수 분석)
+- [x] **출제자의 눈** — `public/data/ai/exam_patterns.json` (120개 토픽: 출제빈도/함정비율/연도추이/시험별)
+- [x] **유사 문항 비교** — `public/data/ai/similar_questions.json` (443개 그룹: related_questions 기반 연결)
+- [x] **함정 패턴 훈련소** — `public/data/ai/trap_patterns.json` (10가지 유형: 설명+빈도+법별분포+실제예시5건)
+- [x] **조문 암기 카드** — `public/data/ai/law_flashcards.json` (2,783개 조문: OX 플래시카드)
+- [x] **AI 허브 페이지** — `/ai` (4종 기능 진입점)
+- [x] **출제자의 눈 UI** — `/ai/exam-patterns` (법별 필터, 토픽 아코디언, 연도 바차트, 함정 비율 바)
+- [x] **함정 훈련소 UI** — `/ai/traps` (전체 빈도 차트, 유형별 설명+법분포+실제예시 링크)
+- [x] **유사 문항 UI** — `/ai/similar` (법별 필터, 연도 범위, 모아풀기 링크)
+- [x] **조문 암기 카드 UI** — `/ai/flashcards` (목록/학습 모드, 플립 애니메이션, 셔플/이전/다음)
+- 빌드 검증: 2,095페이지 (+5 AI), 에러 0
+- API 비용: $0 (정적 JSON, 클라이언트 사이드)
+
+### FeatureTooltip + 홈 AI 링크 (260407)
+- [x] **FeatureTooltip** — `components/ui/FeatureTooltip.tsx` (localStorage 기반 첫 방문 1회 표시, 5초 자동 닫힘, top/bottom 위치)
+- [x] **HomeCards 적용** — 신규 유저: "1문제만!" CTA 안내 / 일반 유저: 브리핑 안내
+- [x] **홈 AI 링크** — `/ai` 진입점 배너 (Sparkles 아이콘 + NEW 뱃지)
+- 빌드 검증: 2,095페이지, 에러 0
+
+### P2 신규 기능 (260407)
+- [x] P2-1: 마이페이지 프로필 편집 (이름 변경 + 시험 목표 변경, DB upsert)
+- [x] P2-2: 1분 퀴즈 해설 표시 (답변 후 law_ref 즉시 표시 + 결과 화면 오답 해설 섹션)
+- [x] P2-3: 오답 패턴 분석 (오답노트에 함정유형별 바 차트 — trap_type/trap_patterns 기반)
+- [x] P2-4: 연도별 기출 모아보기 (practice?year=YYYY 파라미터 + 검색 페이지 연도 그리드)
+- [x] P2-5: 관련 문항 연결 (문항 상세 페이지에 related_questions 전체 목록 + 모아풀기 링크)
+- [x] P2-6: 지방세 로드맵 2주 분할 (9급 11주→11·12주+13주 복습, 7급 14주→14·15주+16·17주)
+- [x] 공통 유틸 모듈 생성 (lib/utils/dateUtils.ts, arrayUtils.ts)
+
+### CEO 총괄 — 4인 전문가 리뷰 반영 (260407)
+수험생·디자이너·개발자·강사 4인 전문가가 전체 기능을 점검, CEO가 종합하여 P0~P2 분류 후 수정.
+
+**P0 수정 (즉시)**:
+- [x] P0-1: RoadmapTimeline — 회계 examTarget 캐스팅 버그 수정 (as "9급"|"7급" → "회계" 분기 추가)
+- [x] P0-2: SM-2 간격복습 — 초반 고정 간격 1→3→7→14→30 적용 (기존: 1→2→6→15→38)
+- [x] P0-3: useSolveRecord — 전체 테이블 풀스캔 → count 쿼리 최적화 (2×select 제거)
+- [x] P0-4: roadmap.ts LAW 매핑 검증 — 현행 유지 (exam_index에 조세법총론·종합부동산세법 실존 확인)
+- [x] P0-5: StudyTimer — 하드코딩 색상 20+개 → 디자인 토큰(primary/success/muted 등) 전환
+- [x] P0-6: mockExamEngine — O(n) pool.find → poolMap O(1) 조회 최적화
+
+**P1 수정 (이번 스프린트)**:
+- [x] P1-1: mock-exam/result — bg-white/80 → bg-card/80 다크모드 수정
+- [x] P1-2: 공통 유틸 추출 (lib/utils/dateUtils.ts, arrayUtils.ts) — 중복 코드 기반 마련
+
+**P2 (모두 구현 완료)**:
+- [x] 마이페이지 프로필 편집 기능
+- [x] 1분 퀴즈 해설 표시
+- [x] 오답 패턴 분석 (함정유형별)
+- [x] 연도별 기출 모아보기
+- [x] 관련 문항 연결 (유사문항 비교)
+- [x] 지방세 로드맵 2주 분할 (11주차 과부하)
+
+### 사용자 보고 버그 수정 (260407)
+- [x] 1. 회계 문제풀이 불가 → CategoryTree에 subject 파라미터 추가
+- [x] 2. 모의고사 미생성 → 풀이기록 <5일 때 unseen 60%/challenge 30% 비율 적용
+- [x] 3. 브리핑 안 보임 → StageHome 외부로 독립 (1문항부터 표시)
+- [x] 4. 이번주 학습 기준 불명 → 자유 선택형 RoadmapCard 전면 개편 (주차 그리드 피커)
+- [x] 5. 약점과목 고정 → useTopicMastery 기반 자동 재평가 (정답률 70%↓ + 5문항↑ 감지, DB 자동 갱신)
+
+### 500명 시뮬레이션 기반 핫픽스 (260407)
+- [x] P0-1: 모의고사 엔진 회계 문항 포함 (mockExamEngine.ts L99 필터 수정)
+- [x] P0-2: 모의고사 UI에 "회계" 선택지 추가
+- [x] P0-3: 온보딩에 "회계" 시험 목표 + 회계 카테고리 약점 선택 추가
+- [x] P1-1: D-day 전략 examTarget 동적화 (사용자 프로필 조회)
+- [x] P1-2: 주간 보고서 examTarget 동적화
+- [x] P1-3: 1분 퀴즈 subject dependency 추가 (과목 전환 시 문항 갱신)
+- [x] P1-4: QuickStartCTA 현재 과목 기반 랜덤 문항 선택
+- [x] P2-1: 검색 MAX_YEAR 동적화 (하드코딩 2025 → 현재 연도)
+- [x] P2-2: 오답노트 OX 필터 수정 (mode === "ox" || "quick"로 정확 매칭)
+
+### 보안/저작권 강화 (260407)
+- [x] **middleware.ts** — IP 기반 속도제한 (/data/ 분당30회, /api/ 분당60회, /question/ 분당60회), 악성 봇 UA 차단 (20+ 패턴), 보안 헤더 자동 추가
+- [x] **robots.ts** — `/data/`, `/api/` Disallow + 악성 크롤러 6종 전면 차단
+- [x] **문항 메타태그** — noarchive + max-snippet:80 (검색엔진 캐시/스니펫 제한)
+- [x] **ContentProtection 컴포넌트** — QuestionView에 적용 (select-none, 우클릭 차단, Ctrl+U/S 차단)
+- [x] **인쇄 워터마크** — @media print에 "JT기출 - 무단 복제 금지" 대각선 워터마크
+- [x] **next.config.ts 보안 헤더** — X-Frame-Options DENY, X-Content-Type-Options nosniff, /data/ X-Robots-Tag noindex
+- [x] **프롬프트 인젝션 방지** — sanitizeInput() 함수 (줄바꿈/JSON구조/명령어키워드 제거, 100자 제한)
+- [x] **RLS 마이그레이션 SQL** — ai_usage UPDATE/INSERT 정책 제거 (레이트리밋 우회 방지), ai_cache 읽기 정책 제거
+- [x] **오답진단 AI 표시** — Claude 보강 시 "AI 심층 분석" 섹션 자동 표시 (Sparkles 아이콘)
+- 빌드 검증: 정상 (에러 0, Middleware 활성)
+
+### Claude API 인프라 구축 (260407)
+- [x] **@anthropic-ai/sdk 설치** — Anthropic 공식 Node.js SDK
+- [x] **lib/claude.ts** — 싱글턴 클라이언트, callClaude/callClaudeJSON 래퍼, logAIUsage, 모델 라우팅 (haiku→sonnet-4, sonnet→sonnet-4)
+- [x] **lib/aiPrompts.ts** — 5종 프롬프트 템플릿 (브리핑/오답진단/주간보고서/D-day전략/모의고사리뷰), 각각 system prompt + user message 빌더
+- [x] **route.ts 업그레이드** — generatePlaceholder 제거 → 2-tier 구조 (Tier 1 로컬 엔진 + Tier 2 enhanceWithClaude), isClaudeEnabled() 체크, AI 사용량 로깅, aiGenerated 플래그 반환
+- [x] **.env.local에 ANTHROPIC_API_KEY 설정** — Tier 2 활성화 준비 완료
+- 빌드 검증: 정상 (에러 0)
+- 현재 상태: **인프라만 구축, Claude API 실제 호출 안 함** (사용자 지시)
+
+### Sprint 19~22 주요 구현
+- [x] DB 5테이블 (user_study_profiles, daily_study_logs, spaced_repetition_cards, ai_cache, ai_usage)
+- [x] 3단계 온보딩 (이름+시험목표 → 시험일 → 약점과목)
+- [x] Write-through 동기화 엔진 (localStorage + Supabase 병행)
+- [x] AI 인프라 (/api/ai/[feature], 캐시, 레이트리밋)
+- [x] 브리핑/오답진단/모의고사/주간보고서/D-day전략 엔진
+- [x] 학습 로드맵 (9급 12주 / 7급 16주 / 회계 8주)
+- [x] 유저 단계별 홈 (anonymous/new/regular/power)
+- [x] ㄱㄴㄷㄹ 조합 문제 O/X 배지 + 계산문제 숫자 하이라이트
+- [x] 회계 820문항 통합 (2001~2820 번호 체계)
+- [x] 500명 가상 수험생 12개월 시뮬레이션 → P0/P1 도출
+
+### 시뮬레이션 기반 개선 (260407)
+- [x] P0-1: 비로그인 풀이 기록 마이그레이션 (anonSolveBuffer → Supabase on login)
+- [x] P0-2: 신규 유저 경험 강화 (로드맵 미리보기 + 해금 안내)
+- [x] P0-3: 로드맵 시험일 기반 역산 (examDate에서 totalWeeks 역산)
+- [x] P1-1: 회계 로드맵 8주 커리큘럼 추가
+- [x] P1-2: 주간 보고서 cache-first 순서 변경 (캐시 히트 시 레이트리밋 미소비)
 
 ### MVP 오픈 조건 체크리스트
 - [x] 1,245문항 데이터 무결성 (1,260페이지 빌드 성공, TypeScript 오류 0)
@@ -26,10 +144,17 @@
 - [x] **Vercel 환경변수** — VAPID_PRIVATE_KEY, PUSH_API_KEY, CRON_SECRET, SUPABASE_SERVICE_KEY 설정
 - [ ] 모바일/PC 크로스 브라우저 — **다양한 기기 추가 테스트 필요**
 
+### Sprint 2 — 4대 기능 추가 (260407)
+- [x] 1. 홈 화면 리팩토링 — 유저 단계별 카드 축소 (HomeCards.tsx, 12→3~7개)
+- [x] 2. "틀린 문제 바로 풀기" — 오답노트에서 원터치로 오답 세트 연습 세션 생성
+- [x] 3. 간격 복습 탭 — 오답노트에 "간격 복습" 탭 추가 (오늘 복습/예정/마스터 통계)
+- [x] 4. 모의고사 결과 분석 — /mock-exam/result 페이지 (점수/등급/과목별/난이도별 분석)
+
 ### 다음 할 일
-1. 베타 피드백 수집 + 반영
-2. 과목 확장 준비 (회계)
-3. 해커스 수강생 10~20명 초대 → 피드백 수집
+1. **AI API 실연동** — `/api/ai/[feature]` → Claude API 호출 실구현 (비용 발생, API 키 필요)
+4. 회계 기출 데이터 보강 (추가 수집, 텍스트 100% 정확성 보장)
+5. 베타 피드백 수집 + 반영
+6. 모바일/PC 크로스 브라우저 테스트
 
 ## 작업 이력
 

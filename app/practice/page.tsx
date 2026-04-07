@@ -26,6 +26,7 @@ function PracticeContent() {
   const scopeParam = searchParams.get("scope");
   const nosParam = searchParams.get("nos");
   const subjectParam = searchParams.get("subject");
+  const yearParam = searchParams.get("year");
 
   const storeSubject = useAppStore((s) => s.subject);
   // URL의 subject 파라미터가 있으면 우선, 없으면 스토어 값 사용
@@ -78,6 +79,13 @@ function PracticeContent() {
             else if (taxScope === "local") pool = pool.filter(q => !isNationalLaw(q.대분류));
           }
           filtered = pool.sort((a, b) => b.시행년도 - a.시행년도 || b.no - a.no).slice(0, 20);
+        } else if (yearParam) {
+          const year = Number(yearParam);
+          filtered = all.filter(q => q.시행년도 === year);
+          if (!isAccounting) {
+            if (taxScope === "national") filtered = filtered.filter(q => isNationalLaw(q.대분류));
+            else if (taxScope === "local") filtered = filtered.filter(q => !isNationalLaw(q.대분류));
+          }
         } else if (law && topic) {
           filtered = all.filter(q => q.대분류 === law && q.중분류 === topic);
         } else if (law) {
@@ -98,7 +106,7 @@ function PracticeContent() {
       }
     }
     load();
-  }, [law, topic, filter, taxScope, nosParam, subject, isAccounting]);
+  }, [law, topic, filter, taxScope, nosParam, yearParam, subject, isAccounting]);
 
   // 함정유형 목록 추출
   const trapTypes = useMemo(() => {

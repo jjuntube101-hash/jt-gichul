@@ -179,8 +179,8 @@ const ROADMAP_9: RoadmapWeek[] = [
   },
   {
     week: 11,
-    title: "지방세",
-    laws: [LAW.지방세법, LAW.지방세기본법, LAW.지방세특례제한법, LAW.지방세징수법],
+    title: "지방세 (1) — 세목",
+    laws: [LAW.지방세법],
     topics: [
       "취득세",
       "등록면허세",
@@ -193,6 +193,15 @@ const ROADMAP_9: RoadmapWeek[] = [
       "지방소비세",
       "지역자원시설세",
       "레저세",
+    ],
+    focus: "지방세법 각 세목 — 취득세·재산세 비중 높음",
+    targetQuestions: 35,
+  },
+  {
+    week: 12,
+    title: "지방세 (2) — 절차법",
+    laws: [LAW.지방세기본법, LAW.지방세특례제한법, LAW.지방세징수법],
+    topics: [
       "총칙",
       "납세의무",
       "부과징수",
@@ -208,11 +217,11 @@ const ROADMAP_9: RoadmapWeek[] = [
       "징수",
       "체납처분",
     ],
-    focus: "지방세 전 범위 집중 — 취득세·재산세 비중 높음",
-    targetQuestions: 60,
+    focus: "지방세 기본법·특례·징수법 — 절차·감면 집중",
+    targetQuestions: 25,
   },
   {
-    week: 12,
+    week: 13,
     title: "종합 복습 + 약점 보충",
     laws: [],
     topics: [],
@@ -367,8 +376,8 @@ const ROADMAP_7: RoadmapWeek[] = [
   },
   {
     week: 14,
-    title: "지방세",
-    laws: [LAW.지방세법, LAW.지방세기본법, LAW.지방세특례제한법, LAW.지방세징수법],
+    title: "지방세 (1) — 세목",
+    laws: [LAW.지방세법],
     topics: [
       "취득세",
       "등록면허세",
@@ -381,6 +390,15 @@ const ROADMAP_7: RoadmapWeek[] = [
       "지방소비세",
       "지역자원시설세",
       "레저세",
+    ],
+    focus: "지방세법 각 세목 — 취득세·재산세 비중 높음",
+    targetQuestions: 35,
+  },
+  {
+    week: 15,
+    title: "지방세 (2) — 절차법",
+    laws: [LAW.지방세기본법, LAW.지방세특례제한법, LAW.지방세징수법],
+    topics: [
       "총칙",
       "납세의무",
       "부과징수",
@@ -396,11 +414,11 @@ const ROADMAP_7: RoadmapWeek[] = [
       "징수",
       "체납처분",
     ],
-    focus: "지방세 전 범위 — 취득세·재산세 집중",
-    targetQuestions: 60,
+    focus: "지방세 기본법·특례·징수법 — 절차·감면 심화",
+    targetQuestions: 25,
   },
   {
-    week: 15,
+    week: 16,
     title: "종합 복습 (1)",
     laws: [],
     topics: [],
@@ -408,7 +426,7 @@ const ROADMAP_7: RoadmapWeek[] = [
     targetQuestions: 50,
   },
   {
-    week: 16,
+    week: 17,
     title: "종합 복습 (2)",
     laws: [],
     topics: [],
@@ -418,13 +436,103 @@ const ROADMAP_7: RoadmapWeek[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// 회계 커리큘럼 (8주, 9급 전용)
+// ---------------------------------------------------------------------------
+
+const ACC = {
+  회계원리: "회계원리",
+  재무회계자산: "재무회계-자산",
+  재무회계부채자본: "재무회계-부채자본재무보고",
+  원가관리회계: "원가관리회계",
+  정부회계: "정부회계",
+} as const;
+
+const ROADMAP_ACCOUNTING: RoadmapWeek[] = [
+  {
+    week: 1,
+    title: "회계원리",
+    laws: [ACC.회계원리],
+    topics: ["회계의기초", "복식부기", "개념체계", "회계순환과정"],
+    focus: "복식부기·분개·시산표 — 회계의 뼈대",
+    targetQuestions: 50,
+  },
+  {
+    week: 2,
+    title: "재무회계 — 자산 (1)",
+    laws: [ACC.재무회계자산],
+    topics: ["현금및현금성자산", "수취채권", "재고자산"],
+    focus: "현금·채권·재고 — 유동자산 핵심",
+    targetQuestions: 50,
+  },
+  {
+    week: 3,
+    title: "재무회계 — 자산 (2)",
+    laws: [ACC.재무회계자산],
+    topics: ["유형자산", "무형자산", "투자부동산", "금융자산"],
+    focus: "유형·무형·금융자산 — 비유동자산 집중",
+    targetQuestions: 50,
+  },
+  {
+    week: 4,
+    title: "재무회계 — 부채·자본",
+    laws: [ACC.재무회계부채자본],
+    topics: ["유동부채", "사채", "충당부채·우발부채", "자본", "리스"],
+    focus: "사채·충당부채·자본 — 대차대조표 우측",
+    targetQuestions: 45,
+  },
+  {
+    week: 5,
+    title: "재무회계 — 수익·재무보고",
+    laws: [ACC.재무회계부채자본],
+    topics: ["수익인식", "현금흐름표", "회계변경과오류수정", "재무제표분석", "주당이익", "법인세회계·특수"],
+    focus: "수익인식·현금흐름표 — 고빈출 영역",
+    targetQuestions: 45,
+  },
+  {
+    week: 6,
+    title: "원가관리회계 (1)",
+    laws: [ACC.원가관리회계],
+    topics: ["원가회계총론", "개별원가계산", "종합원가계산", "결합원가", "원가배분"],
+    focus: "원가 계산 체계 — 개별·종합·결합",
+    targetQuestions: 40,
+  },
+  {
+    week: 7,
+    title: "원가관리회계 (2) + 정부회계",
+    laws: [ACC.원가관리회계, ACC.정부회계],
+    topics: ["ABC", "CVP분석", "표준원가", "전부vs변동원가", "의사결정", "지방재무제표", "국가재무제표", "종합비교", "총론"],
+    focus: "관리회계 의사결정 + 정부회계 전 범위",
+    targetQuestions: 40,
+  },
+  {
+    week: 8,
+    title: "종합 복습 + 모의고사",
+    laws: [],
+    topics: [],
+    focus: "전 범위 모의고사 + 약점 집중 복습",
+    targetQuestions: 50,
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
+export type SubjectType = "tax" | "accounting";
+
 /**
- * 시험 목표에 맞는 로드맵 반환
+ * 시험 목표 + 과목에 맞는 로드맵 반환
  */
-export function getRoadmap(examTarget: "9급" | "7급"): RoadmapConfig {
+export function getRoadmap(
+  examTarget: "9급" | "7급",
+  subject: SubjectType = "tax",
+): RoadmapConfig {
+  if (subject === "accounting") {
+    return {
+      totalWeeks: ROADMAP_ACCOUNTING.length,
+      weeks: ROADMAP_ACCOUNTING,
+    };
+  }
   const weeks = examTarget === "9급" ? ROADMAP_9 : ROADMAP_7;
   return {
     totalWeeks: weeks.length,
@@ -433,25 +541,50 @@ export function getRoadmap(examTarget: "9급" | "7급"): RoadmapConfig {
 }
 
 /**
- * onboarding 완료일 기준 현재 주차 계산 (1-based).
- * 아직 시작 전이면 0, 마지막 주 이후면 totalWeeks+1.
+ * 현재 주차 계산 (1-based).
+ *
+ * 시험일(examDate)이 있으면 시험일 역산:
+ *   학습 시작일 = examDate - (totalWeeks * 7)일
+ *   현재 주차 = (오늘 - 시작일) / 7 + 1
+ *
+ * 시험일이 없으면 startDate(온보딩 완료일)부터 순차 계산.
+ *
+ * 아직 시작 전이면 1(첫 주 표시), 마지막 주 이후면 totalWeeks.
  */
 export function getCurrentWeek(
   startDate: string,
   totalWeeks: number,
+  examDate?: string | null,
 ): number {
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
+  let start: Date;
+
+  if (examDate && examDate.trim()) {
+    const exam = new Date(examDate + "T00:00:00");
+    // 유효한 날짜인지 확인
+    if (isNaN(exam.getTime())) {
+      start = new Date(startDate);
+    } else {
+      // 시험일 역산: 시험일에서 totalWeeks만큼 뒤로
+      start = new Date(exam.getTime() - totalWeeks * 7 * 24 * 60 * 60 * 1000);
+    }
+  } else {
+    start = new Date(startDate);
+  }
+
+  // startDate도 유효하지 않으면 1주차 반환
+  if (isNaN(start.getTime())) return 1;
+  start.setHours(0, 0, 0, 0);
+
   const diffMs = now.getTime() - start.getTime();
-  if (diffMs < 0) return 0;
+  if (diffMs < 0) return 1; // 시작 전이면 1주차 표시
 
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const week = Math.floor(diffDays / 7) + 1;
 
-  return Math.min(week, totalWeeks + 1);
+  return Math.min(Math.max(week, 1), totalWeeks);
 }
 
 /**

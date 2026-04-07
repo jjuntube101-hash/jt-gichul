@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, TrendingUp, BarChart3, ListChecks, Loader2, AlertCircle, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +48,22 @@ export default function DdayStrategyPage() {
   const [data, setData] = useState<DdayStrategyData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [examTarget, setExamTarget] = useState<string>("9급");
+
+  // 사용자 프로필에서 exam_target 조회
+  useEffect(() => {
+    if (!user) return;
+    const supabase = getSupabase();
+    if (!supabase) return;
+    supabase
+      .from("user_study_profiles")
+      .select("exam_target")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data: p }) => {
+        if (p?.exam_target) setExamTarget(p.exam_target);
+      });
+  }, [user]);
 
   const handleGenerate = async () => {
     if (!user) return;
@@ -70,7 +86,7 @@ export default function DdayStrategyPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ examTarget: "9급" }),
+        body: JSON.stringify({ examTarget }),
       });
 
       if (res.status === 429) {

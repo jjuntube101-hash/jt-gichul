@@ -60,6 +60,12 @@ export async function generateMetadata({ params }: { params: Promise<{ no: strin
   return {
     title,
     description,
+    robots: {
+      index: true,
+      follow: true,
+      noarchive: true,
+      'max-snippet': 80,
+    },
     openGraph: {
       title: `${q.대분류} — 이 문제 맞힐 수 있어? | JT기출`,
       description,

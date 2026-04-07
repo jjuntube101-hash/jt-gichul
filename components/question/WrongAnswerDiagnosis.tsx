@@ -1,10 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, AlertTriangle, BookOpen, Scale, LogIn } from "lucide-react";
+import { Search, AlertTriangle, BookOpen, Scale, LogIn, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
-import type { WrongAnswerDiagnosis as DiagnosisType } from "@/lib/wrongAnswerEngine";
+// 로컬 타입 정의 (서버 모듈 의존성 제거)
+interface DiagnosisType {
+  trapType: string;
+  trapDescription: string;
+  correctAnswer: number;
+  correctExplanation: string;
+  wrongExplanation: string;
+  lawRef: string;
+  patternAlert: string | null;
+  studyTip: string;
+  generatedAt: string;
+  ai?: Record<string, string>;
+  aiGenerated?: boolean;
+}
 
 interface WrongAnswerDiagnosisProps {
   questionNo: number;
@@ -20,6 +33,7 @@ export default function WrongAnswerDiagnosis({
   const { user, loading: authLoading } = useAuth();
   const [status, setStatus] = useState<Status>("idle");
   const [diagnosis, setDiagnosis] = useState<DiagnosisType | null>(null);
+  const [aiGenerated, setAiGenerated] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -68,6 +82,7 @@ export default function WrongAnswerDiagnosis({
 
         const json = await res.json();
         setDiagnosis(json.data as DiagnosisType);
+        setAiGenerated(json.aiGenerated === true);
         setStatus("done");
       } catch {
         if (!cancelled) setStatus("error");
@@ -178,14 +193,14 @@ export default function WrongAnswerDiagnosis({
       </div>
 
       {/* 근거 법령 */}
-      {diagnosis.lawRef && (
+      {diagnosis.lawRef ? (
         <div className="flex items-start gap-2 text-xs text-muted-foreground">
           <Scale className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
             <span className="font-medium">근거:</span> {diagnosis.lawRef}
           </span>
         </div>
-      )}
+      ) : null}
 
       {/* 반복 패턴 경고 */}
       {diagnosis.patternAlert && (
@@ -205,6 +220,36 @@ export default function WrongAnswerDiagnosis({
           {diagnosis.studyTip}
         </p>
       </div>
+
+      {/* AI 심층 분석 (Claude 보강 시) */}
+      {aiGenerated && diagnosis.ai ? (
+        <div className="rounded-lg border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-3 space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            AI 심층 분석
+          </div>
+          <div className="space-y-2 pl-5">
+            {diagnosis.ai.diagnosis ? (
+              <p className="text-xs leading-relaxed text-card-foreground">{diagnosis.ai.diagnosis}</p>
+            ) : null}
+            {diagnosis.ai.key_point ? (
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                <span className="font-medium text-card-foreground">핵심:</span> {diagnosis.ai.key_point}
+              </p>
+            ) : null}
+            {diagnosis.ai.trap_warning ? (
+              <p className="text-xs leading-relaxed text-warning">
+                <span className="font-medium">주의:</span> {diagnosis.ai.trap_warning}
+              </p>
+            ) : null}
+            {diagnosis.ai.study_tip ? (
+              <p className="text-xs leading-relaxed text-primary/80">
+                <span className="font-medium">팁:</span> {diagnosis.ai.study_tip}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

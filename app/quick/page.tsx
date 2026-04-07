@@ -67,7 +67,7 @@ export default function QuickQuizPage() {
       setPhase("playing");
     }
     load();
-  }, []);
+  }, [subject]);
 
   // Timer countdown
   useEffect(() => {
@@ -170,7 +170,7 @@ export default function QuickQuizPage() {
       setItems(allOX.slice(0, TOTAL_ITEMS));
       setPhase("playing");
     })();
-  }, []);
+  }, [subject]);
 
   // --- Loading ---
   if (phase === "loading") {
@@ -234,6 +234,28 @@ export default function QuickQuizPage() {
             </div>
           ))}
         </div>
+
+        {/* 오답 해설 */}
+        {items.some((_, i) => results[i] === "wrong") && (
+          <div className="space-y-2">
+            <p className="text-xs font-bold text-foreground">오답 해설</p>
+            {items.map((item, i) =>
+              results[i] === "wrong" ? (
+                <div key={i} className="rounded-xl border border-danger/20 bg-card p-3">
+                  <p className="text-xs text-foreground leading-relaxed">{item.ox_text}</p>
+                  <p className="mt-1 text-[10px] font-semibold text-danger">
+                    정답: {item.answer}
+                  </p>
+                  {item.law_ref && (
+                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-relaxed">
+                      {item.law_ref}
+                    </p>
+                  )}
+                </div>
+              ) : null
+            )}
+          </div>
+        )}
 
         <div className="space-y-3">
           <motion.button
@@ -374,15 +396,24 @@ export default function QuickQuizPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`rounded-xl p-2.5 text-center text-sm font-bold ${
+            className={`rounded-xl p-3 ${
               selected === current.answer
-                ? "bg-success-light text-success"
-                : "bg-danger-light text-danger"
+                ? "bg-success-light"
+                : "bg-danger-light"
             }`}
           >
-            {selected === current.answer
-              ? "정답!"
-              : `오답 (정답: ${current.answer})`}
+            <p className={`text-sm font-bold text-center ${
+              selected === current.answer ? "text-success" : "text-danger"
+            }`}>
+              {selected === current.answer
+                ? "정답!"
+                : `오답 (정답: ${current.answer})`}
+            </p>
+            {current.law_ref && (
+              <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground text-center">
+                {current.law_ref}
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

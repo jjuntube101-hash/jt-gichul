@@ -113,9 +113,14 @@ export function markReviewed(questionNo: number, isCorrect: boolean): void {
   card.lastReviewDate = today;
 
   if (isCorrect) {
-    // 정답: 간격 확대, 난이도 상승
-    card.intervalDays = Math.round(card.intervalDays * card.easeFactor);
+    // 정답: 초반은 고정 간격, 이후 easeFactor 적용
+    const FIXED_INTERVALS = [1, 3, 7, 14, 30];
     card.repetitionCount += 1;
+    if (card.repetitionCount <= FIXED_INTERVALS.length) {
+      card.intervalDays = FIXED_INTERVALS[card.repetitionCount - 1];
+    } else {
+      card.intervalDays = Math.round(card.intervalDays * card.easeFactor);
+    }
     card.easeFactor = Math.min(3.0, card.easeFactor + 0.1);
   } else {
     // 오답: 리셋

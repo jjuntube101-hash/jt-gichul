@@ -17,7 +17,7 @@ const MAX_RECENT = 8;
 const PAGE_SIZE = 20;
 const FUSE_LIMIT = 100;
 const MIN_YEAR = 2015;
-const MAX_YEAR = 2025;
+const MAX_YEAR = new Date().getFullYear();
 
 const SUGGESTED_KEYWORDS_TAX = ["양도소득세", "부가가치세", "세율", "납세의무", "가산세", "소득공제"];
 const SUGGESTED_KEYWORDS_ACC = ["감가상각", "재고자산", "유형자산", "수익인식", "원가계산", "재무제표"];
@@ -458,6 +458,22 @@ export default function SearchPage() {
                 >
                   {kw}
                 </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 연도별 기출 */}
+          <div className="space-y-2">
+            <span className="text-xs font-medium text-muted-foreground">연도별 기출 모아보기</span>
+            <div className="grid grid-cols-4 gap-2">
+              {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, i) => MAX_YEAR - i).map((y) => (
+                <Link
+                  key={y}
+                  href={`/practice?year=${y}`}
+                  className="rounded-lg border border-border bg-card px-2 py-2 text-center text-xs font-medium text-card-foreground hover:border-primary/30 hover:shadow-sm transition-all"
+                >
+                  {y}
+                </Link>
               ))}
             </div>
           </div>

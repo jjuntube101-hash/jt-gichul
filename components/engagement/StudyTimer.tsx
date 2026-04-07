@@ -43,7 +43,7 @@ function CircularProgress({
         fill="none"
         stroke="currentColor"
         strokeWidth={strokeWidth}
-        className="text-gray-200 dark:text-gray-700"
+        className="text-muted"
       />
       <circle
         cx={size / 2}
@@ -54,7 +54,7 @@ function CircularProgress({
         strokeLinecap="round"
         strokeDasharray={circumference}
         strokeDashoffset={offset}
-        className={isFocus ? 'text-blue-500' : 'text-green-500'}
+        className={isFocus ? 'text-primary' : 'text-success'}
         stroke="currentColor"
         style={{ transition: 'stroke-dashoffset 0.3s ease' }}
       />
@@ -143,12 +143,12 @@ export default function StudyTimer() {
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             className={`
-              w-64 rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border
+              w-64 rounded-2xl bg-card shadow-2xl border
               ${flash
                 ? isFocus
-                  ? 'border-blue-400 ring-2 ring-blue-300'
-                  : 'border-green-400 ring-2 ring-green-300'
-                : 'border-gray-200 dark:border-gray-700'
+                  ? 'border-primary ring-2 ring-primary/30'
+                  : 'border-success ring-2 ring-success/30'
+                : 'border-border'
               }
               p-4 flex flex-col items-center gap-3
             `}
@@ -158,18 +158,18 @@ export default function StudyTimer() {
               <span
                 className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                   isFocus
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-                    : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                    ? 'bg-primary-light text-primary'
+                    : 'bg-success-light text-success'
                 }`}
               >
                 {isFocus ? '집중 시간' : '휴식 시간'}
               </span>
               <button
                 onClick={() => setExpanded(false)}
-                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-1 rounded-full hover:bg-muted transition-colors"
                 aria-label="접기"
               >
-                <X size={16} className="text-gray-400" />
+                <X size={16} className="text-muted-foreground" />
               </button>
             </div>
 
@@ -182,7 +182,7 @@ export default function StudyTimer() {
                 isFocus={isFocus}
               />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-mono font-bold text-gray-900 dark:text-white">
+                <span className="text-2xl font-mono font-bold text-foreground">
                   {formatTime(secondsLeft)}
                 </span>
               </div>
@@ -193,7 +193,7 @@ export default function StudyTimer() {
               {!isActive ? (
                 <button
                   onClick={handleStart}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
                 >
                   <Play size={16} />
                   시작
@@ -204,8 +204,8 @@ export default function StudyTimer() {
                     onClick={handleToggle}
                     className={`p-2.5 rounded-full transition-colors ${
                       isPaused
-                        ? 'bg-blue-500 text-white hover:bg-blue-600'
-                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'
+                        ? 'bg-primary text-white hover:bg-primary/90'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }`}
                     aria-label={isPaused ? '재개' : '일시정지'}
                   >
@@ -213,7 +213,7 @@ export default function StudyTimer() {
                   </button>
                   <button
                     onClick={handleStop}
-                    className="p-2.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                    className="p-2.5 rounded-full bg-danger-light text-danger hover:bg-danger/20 transition-colors"
                     aria-label="정지"
                   >
                     <Square size={18} />
@@ -223,11 +223,11 @@ export default function StudyTimer() {
             </div>
 
             {/* Stats */}
-            <div className="w-full border-t border-gray-100 dark:border-gray-800 pt-2 flex flex-col gap-1">
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                오늘 총 <span className="font-semibold text-gray-700 dark:text-gray-200">{formatTotalTime(totalStudySeconds)}</span> 학습
+            <div className="w-full border-t border-border pt-2 flex flex-col gap-1">
+              <p className="text-xs text-muted-foreground text-center">
+                오늘 총 <span className="font-semibold text-foreground">{formatTotalTime(totalStudySeconds)}</span> 학습
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 {sessionsCompleted}회 완료
               </p>
             </div>
@@ -245,9 +245,9 @@ export default function StudyTimer() {
               transition-colors
               ${isActive
                 ? isFocus
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-green-500 text-white'
-                : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
+                  ? 'bg-primary text-white'
+                  : 'bg-success text-white'
+                : 'bg-card border border-border text-muted-foreground'
               }
             `}
             aria-label="학습 타이머"
@@ -273,12 +273,12 @@ export default function StudyTimer() {
               <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
                 <span
                   className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                    isFocus ? 'bg-blue-300' : 'bg-green-300'
+                    isFocus ? 'bg-primary/60' : 'bg-success/60'
                   }`}
                 />
                 <span
                   className={`relative inline-flex rounded-full h-3 w-3 ${
-                    isFocus ? 'bg-blue-400' : 'bg-green-400'
+                    isFocus ? 'bg-primary' : 'bg-success'
                   }`}
                 />
               </span>

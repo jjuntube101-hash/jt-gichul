@@ -87,13 +87,21 @@ export default function WeeklyReportPage() {
           return;
         }
 
+        // 사용자 프로필에서 exam_target 조회
+        const { data: profile } = await supabase
+          .from("user_study_profiles")
+          .select("exam_target")
+          .eq("user_id", user!.id)
+          .single();
+        const userExamTarget = profile?.exam_target ?? "9급";
+
         const res = await fetch("/api/ai/weekly_report", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({ examTarget: "9급" }),
+          body: JSON.stringify({ examTarget: userExamTarget }),
         });
 
         if (res.status === 429) {

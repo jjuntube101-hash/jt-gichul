@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { getSupabase } from "@/lib/supabase";
-import { loadUserDataFromDB } from "@/lib/syncEngine";
+import { loadUserDataFromDB, migrateAnonRecords } from "@/lib/syncEngine";
 import type { ReviewCard, ReviewSchedule } from "@/lib/spacedRepetition";
 
 const STORAGE_KEY = "jt_review_schedule";
@@ -71,12 +71,17 @@ export default function AuthListener() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
-          // 로그인 시 DB에서 복습 카드 로드 -> localStorage 동기화
-          loadUserDataFromDB(session.user.id).then((syncData) => {
+          const uid = session.user.id;
+
+          // 1. DB에서 복습 카드 로드 -> localStorage 동기화
+          loadUserDataFromDB(uid).then((syncData) => {
             if (syncData && syncData.reviewCards.length > 0) {
               syncCardsToLocalStorage(syncData.reviewCards);
             }
           });
+
+          // 2. 비로그인 풀이 기록 -> DB 마이그레이션
+          migrateAnonRecords(uid);
         }
       },
     );

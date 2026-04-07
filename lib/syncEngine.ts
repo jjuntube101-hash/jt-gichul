@@ -1,4 +1,10 @@
 import { getSupabase } from "@/lib/supabase";
+import {
+  loadAnonSolves,
+  loadAnonOX,
+  clearAnonBuffer,
+  hasAnonRecords,
+} from "@/lib/anonSolveBuffer";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -217,4 +223,91 @@ export async function loadUserDataFromDB(
     console.warn("[loadUserDataFromDB] unexpected error:", err);
     return null;
   }
+}
+
+// ---------------------------------------------------------------------------
+// migrateAnonRecords — 비로그인 풀이 기록을 DB로 마이그레이션
+// ---------------------------------------------------------------------------
+
+// 중복 마이그레이션 방지 플래그
+let migrationInProgress = false;
+
+export async function migrateAnonRecords(userId: string): Promise<number> {
+  if (!hasAnonRecords()) return 0;
+  if (migrationInProgress) return 0; // 동시 호출 방지
+
+  const supabase = getSupabase();
+  if (!supabase) return 0;
+
+  migrationInProgress = true;
+  let solvesFailed = false;
+  let oxFailed = false;
+  let migratedCount = 0;
+
+  try {
+    // 1. solve_records 마이그레이션
+    const anonSolves = loadAnonSolves();
+    if (anonSolves.length > 0) {
+      const rows = anonSolves.map((s) => ({
+        user_id: userId,
+        question_no: s.questionNo,
+        is_correct: s.isCorrect,
+        selected_choice: s.selectedChoice,
+        time_spent_ms: s.timeSpentMs,
+        mode: s.mode,
+        created_at: s.createdAt,
+      }));
+
+      // 50개씩 배치 insert
+      for (let i = 0; i < rows.length; i += 50) {
+        const batch = rows.slice(i, i + 50);
+        const { error } = await supabase.from("solve_records").insert(batch);
+        if (error) {
+          console.warn("[migrateAnonRecords] solve batch insert failed:", error.message);
+          solvesFailed = true;
+          break; // 실패 시 남은 배치 중단 (부분 삭제 방지)
+        } else {
+          migratedCount += batch.length;
+        }
+      }
+    }
+
+    // 2. ox_records 마이그레이션
+    const anonOX = loadAnonOX();
+    if (anonOX.length > 0) {
+      const rows = anonOX.map((o) => ({
+        user_id: userId,
+        question_no: o.questionNo,
+        ox_index: o.oxIndex,
+        is_correct: o.isCorrect,
+        created_at: o.createdAt,
+      }));
+
+      for (let i = 0; i < rows.length; i += 50) {
+        const batch = rows.slice(i, i + 50);
+        const { error } = await supabase.from("ox_records").insert(batch);
+        if (error) {
+          console.warn("[migrateAnonRecords] ox batch insert failed:", error.message);
+          oxFailed = true;
+          break;
+        } else {
+          migratedCount += batch.length;
+        }
+      }
+    }
+
+    // 3. 전부 성공한 경우에만 버퍼 비우기 (부분 실패 시 보존)
+    if (!solvesFailed && !oxFailed && migratedCount > 0) {
+      clearAnonBuffer();
+      console.log(`[migrateAnonRecords] ${migratedCount}건 마이그레이션 완료`);
+    } else if (migratedCount > 0) {
+      console.warn(`[migrateAnonRecords] 부분 성공 ${migratedCount}건 — 버퍼 보존 (재시도 대기)`);
+    }
+  } catch (err) {
+    console.warn("[migrateAnonRecords] unexpected error:", err);
+  } finally {
+    migrationInProgress = false;
+  }
+
+  return migratedCount;
 }

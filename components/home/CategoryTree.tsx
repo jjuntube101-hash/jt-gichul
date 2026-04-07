@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, BookOpen } from "lucide-react";
-import type { TopicEntry } from "@/types/question";
+import type { TopicEntry, SubjectType } from "@/types/question";
 
 type Categories = {
   [taxType: string]: {
@@ -15,13 +15,15 @@ type Categories = {
 
 interface Props {
   categories: Categories;
+  subject?: SubjectType;
 }
 
-export default function CategoryTree({ categories }: Props) {
+export default function CategoryTree({ categories, subject }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [expandedLaw, setExpandedLaw] = useState<string | null>(null);
 
   const entries = Object.entries(categories);
+  const subjectQuery = subject === "accounting" ? "&subject=accounting" : "";
 
   return (
     <section className="space-y-3">
@@ -70,7 +72,7 @@ export default function CategoryTree({ categories }: Props) {
 
                     {isExpanded && (
                       <div className="mt-1.5 space-y-1">
-                        <Link href={`/practice?law=${encodeURIComponent(lawName)}`}>
+                        <Link href={`/practice?law=${encodeURIComponent(lawName)}${subjectQuery}`}>
                           <div className="rounded-lg bg-primary-light px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/15">
                             {lawName} 전체 {totalCount}문항 풀기 →
                           </div>
@@ -79,7 +81,7 @@ export default function CategoryTree({ categories }: Props) {
                           {topicEntries.map(([topicName, t]) => (
                             <Link
                               key={topicName}
-                              href={`/practice?law=${encodeURIComponent(lawName)}&topic=${encodeURIComponent(topicName)}`}
+                              href={`/practice?law=${encodeURIComponent(lawName)}&topic=${encodeURIComponent(topicName)}${subjectQuery}`}
                             >
                               <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-primary-light hover:text-primary">
                                 {topicName}

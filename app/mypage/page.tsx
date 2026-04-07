@@ -1,13 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { getSupabase } from "@/lib/supabase";
-import { BookOpen, CircleDot, Shuffle, LogOut, Target, Trophy, TrendingUp, Flame, Award, Bell, BellOff, Clock, FileX, Search, BarChart3, ClipboardList, Calendar } from "lucide-react";
+import {
+  BookOpen,
+  CircleDot,
+  Shuffle,
+  LogOut,
+  Target,
+  Trophy,
+  TrendingUp,
+  Flame,
+  Award,
+  Bell,
+  BellOff,
+  Clock,
+  FileX,
+  Search,
+  BarChart3,
+  ClipboardList,
+  Calendar,
+  Pencil,
+  Check,
+  X,
+  ChevronRight,
+} from "lucide-react";
 import { useStreak } from "@/hooks/useStreak";
 import { useBadges } from "@/hooks/useBadges";
 import { usePush } from "@/hooks/usePush";
@@ -16,6 +38,9 @@ import BadgeGrid from "@/components/engagement/BadgeGrid";
 import LawAccuracyChart from "@/components/stats/LawAccuracyChart";
 import TopicMasteryMap from "@/components/stats/TopicMasteryMap";
 import PeerBenchmark from "@/components/engagement/PeerBenchmark";
+import JourneyMap from "@/components/progress/JourneyMap";
+import { getRoadmap } from "@/lib/roadmap";
+import type { SubjectType } from "@/lib/roadmap";
 
 interface Stats {
   totalSolved: number;
@@ -31,7 +56,23 @@ export default function MyPage() {
   const [statsLoading, setStatsLoading] = useState(true);
   const { streak, loading: streakLoading } = useStreak();
   const { earnedIds } = useBadges();
-  const { permission, isSubscribed, loading: pushLoading, subscribe, unsubscribe } = usePush();
+  const {
+    permission,
+    isSubscribed,
+    loading: pushLoading,
+    subscribe,
+    unsubscribe,
+  } = usePush();
+
+  // 프로필 편집 상태
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editExamTarget, setEditExamTarget] = useState<
+    "9급" | "7급" | "회계"
+  >("9급");
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [examDate, setExamDate] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -48,9 +89,14 @@ export default function MyPage() {
       }
 
       try {
-        const [solveRes, oxRes] = await Promise.all([
+        const [solveRes, oxRes, profileRes] = await Promise.all([
           supabase.from("solve_records").select("is_correct").eq("user_id", user.id),
           supabase.from("ox_records").select("is_correct").eq("user_id", user.id),
+          supabase
+            .from("user_study_profiles")
+            .select("exam_target, display_name, exam_date")
+            .eq("user_id", user.id)
+            .single(),
         ]);
 
         const solves = solveRes.data ?? [];
@@ -62,6 +108,20 @@ export default function MyPage() {
           oxTotal: oxes.length,
           oxCorrect: oxes.filter((o) => o.is_correct).length,
         });
+
+        // 프로필 초기값 설정
+        if (profileRes.data) {
+          setEditExamTarget(
+            (profileRes.data.exam_target as "9급" | "7급" | "회계") ?? "9급"
+          );
+          setEditName(
+            profileRes.data.display_name ?? user.user_metadata?.name ?? ""
+          );
+          setExamDate(profileRes.data.exam_date ?? null);
+        } else {
+          setEditName(user.user_metadata?.name ?? "");
+        }
+        setProfileLoaded(true);
       } catch {
         // ignore
       } finally {
@@ -71,6 +131,37 @@ export default function MyPage() {
 
     loadStats();
   }, [user, authLoading, router]);
+
+  // 로드맵 주차 계산
+  const roadmapInfo = useMemo(() => {
+    if (!profileLoaded) return null;
+    const isAccounting = editExamTarget === "회계";
+    const target = isAccounting ? "9급" : editExamTarget;
+    const subject: SubjectType = isAccounting ? "accounting" : "tax";
+    const rm = getRoadmap(target as "9급" | "7급", subject);
+    if (!rm) return null;
+
+    // 현재 주차 추정: examDate 기반 역산 또는 단순 표시
+    let currentWeek: number | undefined;
+    if (examDate) {
+      const now = new Date();
+      const exam = new Date(examDate + "T00:00:00");
+      const weeksLeft = Math.ceil(
+        (exam.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 7)
+      );
+      currentWeek = Math.max(1, rm.totalWeeks - weeksLeft + 1);
+      if (currentWeek > rm.totalWeeks) currentWeek = rm.totalWeeks;
+    }
+
+    return { currentWeek, totalWeeks: rm.totalWeeks };
+  }, [profileLoaded, editExamTarget, examDate]);
+
+  // 총 문항 수 (시험 목표별)
+  const totalQuestions = useMemo(() => {
+    if (editExamTarget === "회계") return 820;
+    if (editExamTarget === "7급") return 1245; // 7급은 세법만
+    return 1245; // 9급도 세법 기준
+  }, [editExamTarget]);
 
   if (authLoading) {
     return (
@@ -82,6 +173,29 @@ export default function MyPage() {
   }
 
   if (!user) return null;
+
+  const handleProfileSave = async () => {
+    if (!user) return;
+    setProfileSaving(true);
+    try {
+      const supabase = getSupabase();
+      if (!supabase) return;
+      await supabase.from("user_study_profiles").upsert(
+        {
+          user_id: user.id,
+          display_name: editName.trim() || null,
+          exam_target: editExamTarget,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+      setIsEditingProfile(false);
+    } catch {
+      // ignore
+    } finally {
+      setProfileSaving(false);
+    }
+  };
 
   const accuracy =
     stats && stats.totalSolved > 0
@@ -100,29 +214,122 @@ export default function MyPage() {
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-card border border-border p-5 shadow-sm"
       >
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-xl font-bold text-primary">
-            {user.user_metadata?.name?.[0] ??
-              user.email?.[0]?.toUpperCase() ??
-              "U"}
+        {isEditingProfile ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-foreground">프로필 편집</p>
+              <button
+                onClick={() => setIsEditingProfile(false)}
+                className="p-1 rounded-full hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground block mb-1">
+                이름
+              </label>
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="이름을 입력하세요"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground block mb-1.5">
+                시험 목표
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(["9급", "7급", "회계"] as const).map((target) => (
+                  <button
+                    key={target}
+                    onClick={() => setEditExamTarget(target)}
+                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
+                      editExamTarget === target
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:border-primary/30"
+                    }`}
+                  >
+                    {target}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              onClick={handleProfileSave}
+              disabled={profileSaving}
+              className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              <Check className="h-4 w-4" />
+              {profileSaving ? "저장 중..." : "저장"}
+            </button>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-base font-bold truncate text-card-foreground">
-              {user.user_metadata?.name ?? user.email ?? "사용자"}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-xl font-bold text-primary">
+              {(
+                editName ||
+                user.user_metadata?.name ||
+                user.email ||
+                "U"
+              )[0]?.toUpperCase() ?? "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold truncate text-card-foreground">
+                {editName ||
+                  user.user_metadata?.name ||
+                  user.email ||
+                  "사용자"}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user.email}
+              </p>
+              {profileLoaded && (
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  목표: {editExamTarget}
+                  {examDate && ` · 시험일: ${examDate.slice(5).replace("-", "/")}`}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => setIsEditingProfile(true)}
+              className="shrink-0 flex items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+            >
+              <Pencil className="h-3 w-3" />
+              편집
+            </button>
           </div>
-        </div>
+        )}
       </motion.div>
+
+      {/* Journey Map — 핵심 대시보드 */}
+      {!statsLoading && stats && (
+        <section>
+          <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            학습 여정
+          </h2>
+          <JourneyMap
+            totalSolved={stats.totalSolved + stats.oxTotal}
+            totalQuestions={totalQuestions}
+            examTarget={editExamTarget}
+            examDate={examDate}
+            roadmapWeek={roadmapInfo?.currentWeek}
+            roadmapTotal={roadmapInfo?.totalWeeks}
+          />
+        </section>
+      )}
 
       {/* Streak */}
       <section>
         <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
-          <Flame className="h-4 w-4 text-orange-500" />
+          <Flame className="h-4 w-4 text-warning" />
           학습 스트릭
         </h2>
         {streakLoading ? (
-          <div className="rounded-2xl border border-border bg-card p-4 animate-pulse">
+          <div className="rounded-xl border border-border bg-card p-4 animate-pulse">
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-xl bg-muted" />
               <div className="space-y-2 flex-1">
@@ -136,25 +343,19 @@ export default function MyPage() {
         )}
       </section>
 
-      {/* Badges */}
-      <section>
-        <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
-          <Award className="h-4 w-4 text-primary" />
-          뱃지 컬렉션
-        </h2>
-        <BadgeGrid earnedIds={earnedIds} showAll />
-      </section>
-
       {/* Stats Grid */}
       <section>
         <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
-          <TrendingUp className="h-4 w-4 text-primary" />
-          학습 통계
+          <Target className="h-4 w-4 text-primary" />
+          정답률
         </h2>
         {statsLoading ? (
           <div className="grid grid-cols-2 gap-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="rounded-xl border border-border bg-card p-4 animate-pulse">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-border bg-card p-4 animate-pulse"
+              >
                 <div className="h-3 w-12 rounded bg-muted mb-2" />
                 <div className="h-6 w-8 rounded bg-muted" />
               </div>
@@ -164,36 +365,47 @@ export default function MyPage() {
           <div className="grid grid-cols-2 gap-3">
             <StatCard
               icon={<BookOpen className="h-4 w-4" />}
-              label="풀이 문항"
-              value={stats.totalSolved}
-              unit="문항"
-              color="primary"
-            />
-            <StatCard
-              icon={<Target className="h-4 w-4" />}
-              label="정답률"
+              label="문항 풀이"
               value={accuracy}
               unit="%"
-              color={accuracy >= 70 ? "success" : accuracy >= 50 ? "warning" : "danger"}
+              sub={`${stats.correctCount} / ${stats.totalSolved}문항`}
+              color={
+                accuracy >= 70
+                  ? "success"
+                  : accuracy >= 50
+                  ? "warning"
+                  : "danger"
+              }
             />
             <StatCard
               icon={<CircleDot className="h-4 w-4" />}
-              label="OX 풀이"
-              value={stats.oxTotal}
-              unit="문항"
-              color="primary"
-            />
-            <StatCard
-              icon={<Trophy className="h-4 w-4" />}
-              label="OX 정답률"
+              label="OX 퀴즈"
               value={oxAccuracy}
               unit="%"
-              color={oxAccuracy >= 70 ? "success" : oxAccuracy >= 50 ? "warning" : "danger"}
+              sub={`${stats.oxCorrect} / ${stats.oxTotal}문항`}
+              color={
+                oxAccuracy >= 70
+                  ? "success"
+                  : oxAccuracy >= 50
+                  ? "warning"
+                  : "danger"
+              }
             />
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">통계를 불러올 수 없습니다.</p>
+          <p className="text-sm text-muted-foreground">
+            통계를 불러올 수 없습니다.
+          </p>
         )}
+      </section>
+
+      {/* Badges */}
+      <section>
+        <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
+          <Award className="h-4 w-4 text-primary" />
+          뱃지 컬렉션
+        </h2>
+        <BadgeGrid earnedIds={earnedIds} showAll />
       </section>
 
       {/* Peer Benchmark */}
@@ -202,7 +414,7 @@ export default function MyPage() {
       </section>
 
       {/* Topic Mastery Map */}
-      <section>
+      <section id="mastery">
         <TopicMasteryMap />
       </section>
 
@@ -221,14 +433,46 @@ export default function MyPage() {
       <section>
         <h2 className="text-sm font-bold text-foreground mb-3">학습하기</h2>
         <div className="space-y-2">
-          <MenuLink href="/dday-strategy" icon={<Calendar className="h-4 w-4 text-primary" />} label="D-day 전략" />
-          <MenuLink href="/weekly-report" icon={<ClipboardList className="h-4 w-4 text-info" />} label="약점 해부 보고서" />
-          <MenuLink href="/practice?filter=random" icon={<Shuffle className="h-4 w-4 text-primary" />} label="랜덤 10문 풀기" />
-          <MenuLink href="/ox" icon={<CircleDot className="h-4 w-4 text-success" />} label="OX 퀴즈" />
-          <MenuLink href="/timer" icon={<Clock className="h-4 w-4 text-warning" />} label="타이머 모드" />
-          <MenuLink href="/review" icon={<FileX className="h-4 w-4 text-danger" />} label="오답노트" />
-          <MenuLink href="/search" icon={<Search className="h-4 w-4 text-info" />} label="문항 검색" />
-          <MenuLink href="/practice" icon={<BookOpen className="h-4 w-4 text-primary" />} label="전체 문항 보기" />
+          <MenuLink
+            href="/dday-strategy"
+            icon={<Calendar className="h-4 w-4 text-primary" />}
+            label="D-day 전략"
+          />
+          <MenuLink
+            href="/weekly-report"
+            icon={<ClipboardList className="h-4 w-4 text-info" />}
+            label="약점 해부 보고서"
+          />
+          <MenuLink
+            href="/practice?filter=random"
+            icon={<Shuffle className="h-4 w-4 text-primary" />}
+            label="랜덤 10문 풀기"
+          />
+          <MenuLink
+            href="/ox"
+            icon={<CircleDot className="h-4 w-4 text-success" />}
+            label="OX 퀴즈"
+          />
+          <MenuLink
+            href="/timer"
+            icon={<Clock className="h-4 w-4 text-warning" />}
+            label="타이머 모드"
+          />
+          <MenuLink
+            href="/review"
+            icon={<FileX className="h-4 w-4 text-danger" />}
+            label="오답노트"
+          />
+          <MenuLink
+            href="/search"
+            icon={<Search className="h-4 w-4 text-info" />}
+            label="문항 검색"
+          />
+          <MenuLink
+            href="/practice"
+            icon={<BookOpen className="h-4 w-4 text-primary" />}
+            label="전체 문항 보기"
+          />
         </div>
       </section>
 
@@ -244,7 +488,9 @@ export default function MyPage() {
                 <BellOff className="h-4 w-4 text-muted-foreground" />
               )}
               <div>
-                <p className="text-sm font-medium text-card-foreground">학습 알림</p>
+                <p className="text-sm font-medium text-card-foreground">
+                  학습 알림
+                </p>
                 <p className="text-[10px] text-muted-foreground">
                   {permission === "denied"
                     ? "브라우저 설정에서 알림을 허용해주세요"
@@ -291,12 +537,14 @@ function StatCard({
   label,
   value,
   unit,
+  sub,
   color,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number;
   unit: string;
+  sub: string;
   color: "primary" | "success" | "warning" | "danger";
 }) {
   const colorMap = {
@@ -319,20 +567,33 @@ function StatCard({
       className="rounded-xl border border-border bg-card p-4"
     >
       <div className="flex items-center gap-2 mb-2">
-        <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${bgMap[color]} ${colorMap[color]}`}>
+        <span
+          className={`flex h-6 w-6 items-center justify-center rounded-lg ${bgMap[color]} ${colorMap[color]}`}
+        >
           {icon}
         </span>
         <p className="text-[10px] font-medium text-muted-foreground">{label}</p>
       </div>
       <p className={`text-2xl font-bold ${colorMap[color]}`}>
         {value}
-        <span className="text-xs font-normal text-muted-foreground ml-0.5">{unit}</span>
+        <span className="text-xs font-normal text-muted-foreground ml-0.5">
+          {unit}
+        </span>
       </p>
+      <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>
     </motion.div>
   );
 }
 
-function MenuLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+function MenuLink({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
   return (
     <Link
       href={href}
@@ -340,9 +601,7 @@ function MenuLink({ href, icon, label }: { href: string; icon: React.ReactNode; 
     >
       {icon}
       <span className="flex-1">{label}</span>
-      <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
+      <ChevronRight className="h-4 w-4 text-muted-foreground" />
     </Link>
   );
 }

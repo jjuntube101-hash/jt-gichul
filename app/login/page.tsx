@@ -143,7 +143,7 @@ export default function LoginPage() {
           {loading
             ? "처리 중..."
             : mode === "login"
-            ? "이메일로 ��그인"
+            ? "이메일로 로그인"
             : "회원가입"}
         </button>
       </form>

@@ -1,18 +1,10 @@
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { BookOpen, Shuffle, Zap, Clock, FileX, Search, Target } from "lucide-react";
+import { BookOpen, Shuffle, Zap, Clock, FileX, Search, Target, Sparkles } from "lucide-react";
 import * as fs from "fs";
 import * as path from "path";
 import type { ExamIndex } from "@/types/question";
-import HomeEngagement from "@/components/engagement/HomeEngagement";
-import QuickStartCTA from "@/components/engagement/QuickStartCTA";
-import DailyQuestCard from "@/components/engagement/DailyQuestCard";
-import DailyStudyPlan from "@/components/engagement/DailyStudyPlan";
-import WeeklyReport from "@/components/engagement/WeeklyReport";
-import SpacedReviewCard from "@/components/engagement/SpacedReviewCard";
-import RoadmapCard from "@/components/roadmap/RoadmapCard";
-import StageHome from "@/components/home/StageHome";
 import HomeContent from "@/components/home/HomeContent";
+import HomeCards from "@/components/home/HomeCards";
 
 function getExamIndex(): ExamIndex {
   const filePath = path.join(process.cwd(), "public/data/exam_index.json");
@@ -35,29 +27,8 @@ export default function Home() {
       {/* Hero + 과목 탭 + 카테고리 (클라이언트 컴포넌트) */}
       <HomeContent taxIndex={taxIndex} accountingIndex={accountingIndex} />
 
-      {/* 단계별 홈 (로그인 유저만 표시) */}
-      <StageHome />
-
-      {/* 1문제만! CTA */}
-      <QuickStartCTA />
-
-      {/* Streak + 미완성 업무 카드 (logged in users) */}
-      <HomeEngagement />
-
-      {/* 이번 주 학습 로드맵 (logged in + onboarded) */}
-      <RoadmapCard />
-
-      {/* 오늘의 학습 플랜 */}
-      <DailyStudyPlan />
-
-      {/* 데일리 퀘스트 (logged in users) */}
-      <DailyQuestCard />
-
-      {/* 주간 리포트 (일요일 저녁~월요일) */}
-      <WeeklyReport />
-
-      {/* 간격 복습 알림 */}
-      <SpacedReviewCard />
+      {/* 단계별 홈 카드 (유저 단계에 따라 축소 표시) */}
+      <HomeCards />
 
       {/* 학습 모드 — 4칸 핵심 */}
       <section className="grid grid-cols-4 gap-2">
@@ -128,6 +99,20 @@ export default function Home() {
             <Target className="h-3.5 w-3.5 text-danger" />
             <span className="text-xs font-medium text-card-foreground">모의고사</span>
           </div>
+        </Link>
+      </section>
+
+      {/* AI 학습 도구 */}
+      <section>
+        <Link href="/ai" className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary-light p-3.5 transition-all hover:border-primary/40 hover:shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-card-foreground">AI 학습 도구</p>
+            <p className="text-[10px] text-muted-foreground">출제 패턴 · 함정 훈련 · 유사문항 · 암기카드</p>
+          </div>
+          <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white">NEW</span>
         </Link>
       </section>
     </div>

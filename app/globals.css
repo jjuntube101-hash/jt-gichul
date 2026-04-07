@@ -160,3 +160,22 @@ body {
   background-color: var(--primary-muted);
   color: var(--foreground);
 }
+
+/* ===== Print Protection ===== */
+@media print {
+  [data-protected] {
+    position: relative;
+  }
+  [data-protected]::after {
+    content: "JT기출 gichul.jttax.co.kr - 무단 복제 금지";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 48px;
+    color: rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 9999;
+  }
+}

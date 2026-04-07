@@ -22,7 +22,7 @@ interface MockExamData {
   generatedAt: string;
 }
 
-type ExamTarget = "9급" | "7급";
+type ExamTarget = "9급" | "7급" | "회계";
 
 export default function MockExamPage() {
   const { user, loading: authLoading } = useAuth();
@@ -70,7 +70,12 @@ export default function MockExamPage() {
       }
 
       const json = await res.json();
-      setExamData(json.data as MockExamData);
+      const examResult = json.data as MockExamData;
+      setExamData(examResult);
+      // 결과 분석 페이지용으로 localStorage에 저장
+      try {
+        localStorage.setItem("jt_mock_exam_data", JSON.stringify(examResult));
+      } catch { /* ignore */ }
     } catch (err) {
       setError(err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.");
     } finally {
@@ -162,10 +167,10 @@ export default function MockExamPage() {
           {/* 직급 선택 */}
           <div className="mb-5">
             <p className="text-xs font-medium text-muted-foreground mb-2">
-              시험 직급
+              시험 목표
             </p>
             <div className="flex rounded-xl bg-muted p-1 gap-1">
-              {(["9급", "7급"] as ExamTarget[]).map((t) => (
+              {(["9급", "7급", "회계"] as ExamTarget[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setExamTarget(t)}
@@ -273,6 +278,14 @@ export default function MockExamPage() {
             className="block w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-primary/90"
           >
             시작하기
+          </Link>
+
+          {/* 결과 분석 (풀이 완료 후) */}
+          <Link
+            href="/mock-exam/result"
+            className="block w-full rounded-xl border border-primary/30 bg-primary/5 py-2.5 text-center text-xs font-medium text-primary transition-colors hover:bg-primary/10 mt-2"
+          >
+            풀이 완료 후 결과 분석 보기
           </Link>
 
           {/* 다시 생성 */}

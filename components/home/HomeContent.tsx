@@ -38,7 +38,7 @@ export default function HomeContent({ taxIndex, accountingIndex }: Props) {
       <SubjectTabs />
 
       {/* 과목별 문제 -- 접힌 카테고리 트리 */}
-      <CategoryTree categories={examIndex.categories} />
+      <CategoryTree categories={examIndex.categories} subject={subject} />
     </>
   );
 }
