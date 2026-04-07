@@ -284,12 +284,53 @@ export default function AskChat({
 function MarkdownContent({ content }: { content: string }) {
   const lines = content.split("\n");
   const elements: React.ReactNode[] = [];
+  let i = 0;
 
-  for (let i = 0; i < lines.length; i++) {
+  while (i < lines.length) {
     const line = lines[i];
 
+    // 빈 줄
     if (!line.trim()) {
       elements.push(<div key={i} className="h-1.5" />);
+      i++;
+      continue;
+    }
+
+    // 구분선
+    if (line.trim() === "---" || line.trim() === "***") {
+      elements.push(<hr key={i} className="border-border/50 my-2" />);
+      i++;
+      continue;
+    }
+
+    // 마크다운 표 감지: | 로 시작하는 연속 행
+    if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
+      const tableRows: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|") && lines[i].trim().endsWith("|")) {
+        tableRows.push(lines[i]);
+        i++;
+      }
+      if (tableRows.length >= 2) {
+        elements.push(<MarkdownTable key={`table-${i}`} rows={tableRows} />);
+      } else {
+        // 표가 아닌 단일 | 행은 일반 텍스트로
+        elements.push(
+          <p key={i - 1} className="text-xs text-foreground leading-relaxed">
+            {formatInline(tableRows[0])}
+          </p>
+        );
+      }
+      continue;
+    }
+
+    // # 제목
+    if (line.startsWith("# ") && !line.startsWith("## ")) {
+      elements.push(
+        <p key={i} className="text-sm font-bold text-foreground mt-2 mb-1">
+          {formatInline(line.slice(2))}
+        </p>
+      );
+      i++;
       continue;
     }
 
@@ -299,6 +340,7 @@ function MarkdownContent({ content }: { content: string }) {
           {formatInline(line.slice(4))}
         </p>
       );
+      i++;
       continue;
     }
     if (line.startsWith("## ")) {
@@ -307,6 +349,7 @@ function MarkdownContent({ content }: { content: string }) {
           {formatInline(line.slice(3))}
         </p>
       );
+      i++;
       continue;
     }
 
@@ -317,6 +360,7 @@ function MarkdownContent({ content }: { content: string }) {
           {formatInline(line.slice(2))}
         </p>
       );
+      i++;
       continue;
     }
 
@@ -329,6 +373,7 @@ function MarkdownContent({ content }: { content: string }) {
             {formatInline(match[2])}
           </p>
         );
+        i++;
         continue;
       }
     }
@@ -338,9 +383,61 @@ function MarkdownContent({ content }: { content: string }) {
         {formatInline(line)}
       </p>
     );
+    i++;
   }
 
   return <div className="space-y-0.5">{elements}</div>;
+}
+
+/** 마크다운 표 렌더러 */
+function MarkdownTable({ rows }: { rows: string[] }) {
+  const parseRow = (row: string) =>
+    row.split("|").slice(1, -1).map((cell) => cell.trim());
+
+  // 구분선 행(---|---) 찾기
+  const separatorIdx = rows.findIndex((r) =>
+    r.replace(/\s/g, "").match(/^\|[-:]+(\|[-:]+)+\|$/)
+  );
+
+  const headerCells = separatorIdx > 0 ? parseRow(rows[0]) : null;
+  const bodyRows = rows
+    .filter((_, idx) => idx !== 0 && idx !== separatorIdx)
+    .filter((r) => !r.replace(/\s/g, "").match(/^\|[-:]+(\|[-:]+)+\|$/));
+
+  return (
+    <div className="overflow-x-auto my-1.5">
+      <table className="w-full text-[11px] border-collapse">
+        {headerCells && (
+          <thead>
+            <tr className="border-b border-border">
+              {headerCells.map((cell, j) => (
+                <th
+                  key={j}
+                  className="px-2 py-1 text-left font-semibold text-foreground bg-muted/50"
+                >
+                  {formatInline(cell)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {bodyRows.map((row, idx) => (
+            <tr
+              key={idx}
+              className="border-b border-border/30 last:border-b-0"
+            >
+              {parseRow(row).map((cell, j) => (
+                <td key={j} className="px-2 py-1 text-foreground">
+                  {formatInline(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function formatInline(text: string): React.ReactNode {
