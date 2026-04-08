@@ -12,7 +12,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 import { AI_FEATURES, type AIFeature } from '@/lib/aiConfig';
+import { featureSchemas } from '@/lib/apiSchemas';
 import { checkAndIncrement, getLimitForFeature } from '@/lib/rateLimit';
 import { makeCacheKey } from '@/lib/aiCache';
 import { diagnoseWrongAnswer } from '@/lib/wrongAnswerEngine';
@@ -345,12 +347,25 @@ export async function POST(
       }
     }
 
-    // 3. 요청 바디 파싱
+    // 3. 요청 바디 파싱 + Zod 검증
     let body: Record<string, unknown> = {};
     try {
-      body = await request.json();
-    } catch {
-      // body가 없어도 진행 가능한 기능이 있음
+      const rawBody = await request.json();
+      const schema = featureSchemas[feature];
+      if (schema) {
+        body = schema.parse(rawBody) as Record<string, unknown>;
+      } else {
+        body = rawBody;
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const messages = err.issues.map((e) => e.message).join(', ');
+        return NextResponse.json(
+          { error: `입력값이 올바르지 않습니다: ${messages}`, code: 'VALIDATION_ERROR' },
+          { status: 400 }
+        );
+      }
+      // body가 없어도 진행 가능한 기능이 있음 (briefing 등)
     }
 
     // 4. 공유캐시 확인 (캐시 히트 시 레이트리밋 소비 안 함)
@@ -397,12 +412,6 @@ export async function POST(
 
     if (feature === 'wrong_answer') {
       const { questionNo, selectedChoice } = body as { questionNo: number; selectedChoice: number };
-      if (!questionNo || !selectedChoice) {
-        return NextResponse.json(
-          { error: 'questionNo와 selectedChoice가 필요합니다.', code: 'BAD_REQUEST' },
-          { status: 400 }
-        );
-      }
       try {
         aiResponse = await diagnoseWrongAnswer({
           questionNo,
@@ -573,19 +582,8 @@ export async function POST(
           );
         }
 
-        const question = body.question as string | undefined;
-        if (!question || question.trim().length < 2) {
-          return NextResponse.json(
-            { error: '질문을 입력해주세요.', code: 'BAD_REQUEST' },
-            { status: 400 }
-          );
-        }
-        if (question.length > 500) {
-          return NextResponse.json(
-            { error: '질문은 500자 이내로 작성해주세요.', code: 'BAD_REQUEST' },
-            { status: 400 }
-          );
-        }
+        const question = body.question as string;
+        // Zod 스키마에서 이미 2~500자 검증 완료
 
         // Premium 확인
         const sb = getServiceSupabase();

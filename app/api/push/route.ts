@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { buildPushMessage, isNotificationHour, type MessageType, type MessageContext } from "@/lib/pushMessages";
+import { z } from "zod";
+import { buildPushMessage, isNotificationHour } from "@/lib/pushMessages";
+import { pushSchema } from "@/lib/apiSchemas";
 
 // web-push는 서버에서만 사용
 // npm install web-push 필요
@@ -38,21 +40,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Outside notification hours (KST 07~22)" }, { status: 200 });
   }
 
-  let body;
+  let parsed;
   try {
-    body = await req.json();
-  } catch {
+    const rawBody = await req.json();
+    parsed = pushSchema.parse(rawBody);
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ error: `Invalid input: ${err.issues.map(e => e.message).join(", ")}` }, { status: 400 });
+    }
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-  const { type, userId, context } = body as {
-    type: MessageType;
-    userId?: string;
-    context?: MessageContext;
-  };
-
-  if (!type) {
-    return NextResponse.json({ error: "type is required" }, { status: 400 });
-  }
+  const { type, userId, context } = parsed;
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -12,7 +12,17 @@
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: Tier 2 기능 완성 (Mock Exam 결과 분석, D-Day 전략, Timer Mode, Zod 검증)
+- 다음 할 일: CSP 헤더 추가, 비동기 파일 I/O 개선
+
+### 모의고사 결과 분석 + Zod 스키마 검증 (260408)
+- [x] **모의고사 결과 함정 유형 분석** — 틀린 문항에서 trap_type/trap_patterns 추출, 빈도순 상위 6개 시각화 (프로그레스 바 + 문항 링크)
+- [x] **API route Zod 스키마 검증** — zod 패키지 설치, `lib/apiSchemas.ts` 중앙 스키마 정의
+  - AI API: feature별 입력 검증 (wrong_answer, mock_exam, weekly_report, dday_strategy, ask, briefing)
+  - Push API: type enum + userId UUID + context 검증
+  - 기존 수동 검증 코드 Zod로 대체 (중복 제거)
+- 수정 파일: `app/mock-exam/result/page.tsx`, `app/api/ai/[feature]/route.ts`, `app/api/push/route.ts`
+- 신규 파일: `lib/apiSchemas.ts`
+- 커밋: `b2c1b0b` (함정 유형 분석), 이어서 Zod 커밋 예정
 
 ### 문제 북마크 + 다크모드 토글 (260408)
 - [x] **useBookmarks 훅** — localStorage 기반 북마크 CRUD (로그인 불필요, 오프라인 지원)
