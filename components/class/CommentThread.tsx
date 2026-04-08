@@ -14,7 +14,6 @@ interface Comment {
   is_pinned: boolean;
   created_at: string;
   authorName: string;
-  isAdmin: boolean;
   isOwner: boolean;
 }
 
@@ -29,6 +28,7 @@ export default function CommentThread({
   const [body, setBody] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getToken = useCallback(async () => {
     const supabase = getSupabase();
@@ -64,6 +64,7 @@ export default function CommentThread({
   async function handleSubmit() {
     if (!body.trim() || submitting) return;
     setSubmitting(true);
+    setError(null);
     const token = await getToken();
     if (!token) { setSubmitting(false); return; }
 
@@ -85,9 +86,12 @@ export default function CommentThread({
         setBody("");
         setReplyTo(null);
         await loadComments();
+      } else {
+        const data = await res.json().catch(() => null);
+        setError(data?.error || "댓글 작성에 실패했습니다.");
       }
     } catch {
-      // 무시
+      setError("네트워크 오류가 발생했습니다.");
     } finally {
       setSubmitting(false);
     }
@@ -156,6 +160,11 @@ export default function CommentThread({
             </div>
           ))}
         </div>
+      )}
+
+      {/* 에러 메시지 */}
+      {error && (
+        <p className="text-xs text-danger text-center py-1">{error}</p>
       )}
 
       {/* 댓글 입력 */}
@@ -228,14 +237,14 @@ function CommentCard({
     >
       <div className="flex items-center gap-2 mb-1.5">
         {comment.is_pinned && <Pin className="h-3 w-3 text-primary" />}
-        {comment.isAdmin && (
+        {comment.is_official && (
           <span className="flex items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">
             <Shield className="h-2.5 w-2.5" />
             강사
           </span>
         )}
         <span className="text-xs font-medium text-foreground">
-          {comment.isAdmin ? "이현준 세무사" : comment.authorName}
+          {comment.authorName}
         </span>
         <span className="text-[10px] text-muted-foreground">{timeAgo}</span>
       </div>

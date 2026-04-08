@@ -39,9 +39,21 @@ function saveBookmarks(bookmarks: BookmarkEntry[]) {
 export function useBookmarks() {
   const [bookmarks, setBookmarks] = useState<BookmarkEntry[]>([]);
 
-  // 초기 로드
+  // 초기 로드 + 다른 탭에서 변경 시 동기화
   useEffect(() => {
     setBookmarks(loadBookmarks());
+
+    function handleStorage(e: StorageEvent) {
+      if (e.key === STORAGE_KEY) {
+        try {
+          setBookmarks(e.newValue ? JSON.parse(e.newValue) : []);
+        } catch {
+          setBookmarks([]);
+        }
+      }
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
   /** 북마크 토글 (있으면 제거, 없으면 추가) */

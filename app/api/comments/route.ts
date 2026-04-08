@@ -80,8 +80,7 @@ export async function GET(request: NextRequest) {
       const { user_id, ...rest } = c;
       return {
         ...rest,
-        authorName: nameMap[user_id] || "수강생",
-        isAdmin: isAdmin(user_id),
+        authorName: isAdmin(user_id) ? "이현준 세무사" : (nameMap[user_id] || "수강생"),
         isOwner: user_id === auth.userId,
       };
     });

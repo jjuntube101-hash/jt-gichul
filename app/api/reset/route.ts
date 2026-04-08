@@ -16,15 +16,19 @@ import { z } from "zod";
 import { resetSchema } from "@/lib/apiSchemas";
 import { authenticateUser, getServiceSupabase } from "@/lib/apiAuth";
 
-// --- 간이 레이트 리밋 (메모리 기반, 서버리스 환경에서는 인스턴스별) ---
+// --- DB 기반 레이트 리밋 ---
 
-const resetLog = new Map<string, number>(); // userId → lastResetTimestamp
+async function checkResetRateLimit(userId: string): Promise<boolean> {
+  const supabase = getServiceSupabase();
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("last_reset_at")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-function checkResetRateLimit(userId: string): boolean {
-  const last = resetLog.get(userId);
-  if (!last) return true;
+  if (!data?.last_reset_at) return true;
   const oneDay = 24 * 60 * 60 * 1000;
-  return Date.now() - last > oneDay;
+  return Date.now() - new Date(data.last_reset_at).getTime() > oneDay;
 }
 
 // --- POST Handler ---
@@ -40,8 +44,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2) 레이트 리밋
-    if (!checkResetRateLimit(auth.userId)) {
+    // 2) 레이트 리밋 (DB 기반)
+    if (!(await checkResetRateLimit(auth.userId))) {
       return NextResponse.json(
         { error: "초기화는 하루에 1번만 가능합니다." },
         { status: 429 }
@@ -118,8 +122,11 @@ export async function POST(request: NextRequest) {
       deleted.profile_reset = 1;
     }
 
-    // 7) 레이트 리밋 기록
-    resetLog.set(auth.userId, Date.now());
+    // 7) 레이트 리밋 기록 (DB에 타임스탬프 저장)
+    await supabase
+      .from("user_profiles")
+      .update({ last_reset_at: new Date().toISOString() })
+      .eq("user_id", auth.userId);
 
     console.log(
       `[RESET] user=${auth.userId} scope=${scope} deleted=${JSON.stringify(deleted)}`
