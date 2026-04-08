@@ -12,7 +12,19 @@
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: 문제별 메모 기능, 주차별 비교 분석 차트
+- 다음 할 일: 추가 개선 사항 대기 (Tier 1~3 전체 완료)
+
+### 문제별 메모 + 주차별 비교 분석 (260408)
+- [x] **문제별 메모** — useBookmarks에 getMemo/setMemo 추가, QuestionView 해설 영역에 메모 UI
+  - localStorage 기반 (오프라인 지원, 로그인 불필요)
+  - 메모 작성 시 자동 북마크, 500자 제한, 실시간 저장 피드백
+- [x] **주차별 비교 분석 차트** — WeeklyTrendChart 컴포넌트 신규
+  - 최근 4주 풀이량 바 차트 + 정답률 표시
+  - 전주 대비 변동 칩 (풀이량 ±N문항, 정답률 ±N%p)
+  - 마이페이지 "과목별 정답률" 위에 배치
+- 신규 파일: `components/stats/WeeklyTrendChart.tsx`
+- 수정 파일: `hooks/useBookmarks.ts`, `app/question/[no]/QuestionView.tsx`, `app/mypage/page.tsx`
+- 커밋: `63dc658`
 
 ### 접근성(A11y) 개선 (260408)
 - [x] **글로벌 포커스 스타일** — focus-visible outline (primary 색상, 2px, offset 2px)
