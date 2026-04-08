@@ -29,7 +29,11 @@ import {
   Check,
   X,
   ChevronRight,
+  Sun,
+  Moon,
+  Monitor,
 } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 import { useStreak } from "@/hooks/useStreak";
 import { useBadges } from "@/hooks/useBadges";
 import { usePush } from "@/hooks/usePush";
@@ -62,6 +66,7 @@ export default function MyPage() {
     subscribe,
     unsubscribe,
   } = usePush();
+  const { theme, setTheme } = useTheme();
 
   // 프로필 편집 상태
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -468,10 +473,46 @@ export default function MyPage() {
         </div>
       </section>
 
-      {/* Push Notification */}
-      {permission !== "unsupported" && (
-        <section>
-          <h2 className="text-sm font-bold text-foreground mb-3">설정</h2>
+      {/* Settings */}
+      <section>
+        <h2 className="text-sm font-bold text-foreground mb-3">설정</h2>
+        <div className="space-y-2">
+          {/* Theme Toggle */}
+          <div className="rounded-xl border border-border bg-card p-3.5">
+            <div className="flex items-center gap-3 mb-2.5">
+              {theme === "dark" ? (
+                <Moon className="h-4 w-4 text-primary" />
+              ) : theme === "light" ? (
+                <Sun className="h-4 w-4 text-warning" />
+              ) : (
+                <Monitor className="h-4 w-4 text-muted-foreground" />
+              )}
+              <p className="text-sm font-medium text-card-foreground">화면 모드</p>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-muted p-1">
+              {([
+                { key: "light" as const, label: "라이트", icon: Sun },
+                { key: "dark" as const, label: "다크", icon: Moon },
+                { key: "system" as const, label: "시스템", icon: Monitor },
+              ]).map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setTheme(key)}
+                  className={`flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors ${
+                    theme === key
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Push Notification */}
+          {permission !== "unsupported" && (
           <div className="rounded-xl border border-border bg-card p-3.5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               {isSubscribed ? (
@@ -504,8 +545,9 @@ export default function MyPage() {
               {pushLoading ? "..." : isSubscribed ? "끄기" : "켜기"}
             </button>
           </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       <Separator className="bg-border" />
 
