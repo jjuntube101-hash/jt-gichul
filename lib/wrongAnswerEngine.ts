@@ -87,7 +87,7 @@ async function countTrapTypeThisMonth(
       checkedNos.add(record.question_no);
 
       const q = getQuestionServer(record.question_no);
-      if (!q) continue;
+      if (!q || !q.analysis?.choices_analysis) continue;
 
       const hasTrap = q.analysis.choices_analysis.some(
         ca => ca.trap_type === trapType
@@ -124,12 +124,20 @@ export async function diagnoseWrongAnswer(
   const { questionNo, selectedChoice, userId } = input;
 
   // 1. 문항 데이터 로드
-  const question = getQuestionServer(questionNo);
+  let question: Question | null;
+  try {
+    question = getQuestionServer(questionNo);
+  } catch (err) {
+    throw new Error(`문항 데이터 로드 실패: ${err instanceof Error ? err.message : String(err)}`);
+  }
   if (!question) {
     throw new Error(`문항 ${questionNo}을 찾을 수 없습니다.`);
   }
 
   const analysis = question.analysis;
+  if (!analysis || !analysis.choices_analysis || analysis.choices_analysis.length === 0) {
+    throw new Error(`문항 ${questionNo}에 분석 데이터가 없습니다.`);
+  }
   const correctAnswerNum = Array.isArray(question.정답)
     ? question.정답[0]
     : question.정답;

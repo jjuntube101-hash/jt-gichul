@@ -169,6 +169,11 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
+    const premium = await checkPremium(auth.userId);
+    if (!premium && !isAdmin(auth.userId)) {
+      return NextResponse.json({ error: "수강생 전용 기능입니다." }, { status: 403 });
+    }
+
     const rawBody = await request.json();
     const { commentId, action } = commentPatchSchema.parse(rawBody);
 

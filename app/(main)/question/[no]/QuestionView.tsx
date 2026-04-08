@@ -693,13 +693,26 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
                   )}
                 </div>
               ) : (
-                <div className="flex items-start gap-1">
-                  <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap flex-1">
+                <div className="space-y-1.5">
+                  <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">
                     {memoText}
                   </p>
-                  {memoSaved && (
-                    <span className="shrink-0 text-[10px] text-success font-medium">저장됨</span>
-                  )}
+                  <div className="flex items-center justify-between">
+                    {memoSaved ? (
+                      <span className="text-[10px] text-success font-medium">저장됨</span>
+                    ) : (
+                      <span />
+                    )}
+                    <button
+                      onClick={() => {
+                        setMemo(q.no, "");
+                        setMemoText("");
+                      }}
+                      className="text-[10px] text-danger/60 hover:text-danger transition-colors"
+                    >
+                      삭제
+                    </button>
+                  </div>
                 </div>
               )}
             </section>

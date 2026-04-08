@@ -150,7 +150,7 @@ export default function WrongAnswerDiagnosis({
           <Search className="h-4 w-4 text-primary" />
           오답 진단
         </h3>
-        <p className="text-sm text-muted-foreground">진단 정보를 불러오지 못했습니다.</p>
+        <p className="text-sm text-muted-foreground">이 문항은 아직 오답 진단 데이터가 준비되지 않았습니다.</p>
       </section>
     );
   }
