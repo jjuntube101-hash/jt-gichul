@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Shuffle, Zap, Clock, FileX, Search, Target, Sparkles } from "lucide-react";
+import { BookOpen, Shuffle, Zap, Clock, FileX, Search, Target, Sparkles, GraduationCap, ChevronRight } from "lucide-react";
 import * as fs from "fs";
 import * as path from "path";
 import type { ExamIndex } from "@/types/question";
@@ -113,6 +113,20 @@ export default function Home() {
             <p className="text-[10px] text-muted-foreground">출제 패턴 · 함정 훈련 · 유사문항 · 암기카드</p>
           </div>
           <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white">NEW</span>
+        </Link>
+      </section>
+
+      {/* JT 강의실 */}
+      <section>
+        <Link href="/class" className="flex items-center gap-3 rounded-xl border border-success/20 bg-success-light p-3.5 transition-all hover:border-success/40 hover:shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
+            <GraduationCap className="h-4 w-4" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-card-foreground">JT 강의실</p>
+            <p className="text-[10px] text-muted-foreground">공지사항 · 문제별 Q&A · 수강생 전용</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       </section>
     </div>

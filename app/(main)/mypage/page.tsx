@@ -307,6 +307,9 @@ export default function MyPage() {
         )}
       </motion.div>
 
+      {/* 강의실 배너 — 프로필 바로 아래 눈에 띄는 위치 */}
+      <ClassroomBanner />
+
       {/* Journey Map — 핵심 대시보드 */}
       {!statsLoading && stats && (
         <section>
@@ -966,5 +969,58 @@ function ResetButton({ user }: { user: { id: string } }) {
         </div>
       )}
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 강의실 배너 — 프로필 바로 아래, 눈에 잘 띄는 위치
+// ---------------------------------------------------------------------------
+
+function ClassroomBanner() {
+  const { isPremium, expiresAt, loading } = usePremium();
+
+  if (loading) return null;
+
+  // premium 사용자: 강의실 바로 입장
+  if (isPremium) {
+    return (
+      <Link
+        href="/class"
+        className="flex items-center gap-3 rounded-2xl border border-success/30 bg-gradient-to-r from-success/5 to-success/10 p-4 shadow-sm transition-all hover:shadow-md hover:border-success/50"
+      >
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/15 text-success">
+          <GraduationCap className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-card-foreground">JT 강의실</p>
+          <p className="text-[10px] text-muted-foreground">
+            공지 · Q&A · 자료
+            {expiresAt && (
+              <span className="ml-1 text-success/70">
+                ({new Date(expiresAt).toLocaleDateString("ko-KR")}까지)
+              </span>
+            )}
+          </p>
+        </div>
+        <ChevronRight className="h-4 w-4 text-success" />
+      </Link>
+    );
+  }
+
+  // 비수강생: 강의실 안내 + 입장 유도
+  return (
+    <Link
+      href="/class"
+      className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
+    >
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <GraduationCap className="h-5 w-5" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-bold text-card-foreground">JT 강의실</p>
+        <p className="text-[10px] text-muted-foreground">수강 코드를 입력하고 강의실에 입장하세요</p>
+      </div>
+      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+    </Link>
   );
 }
