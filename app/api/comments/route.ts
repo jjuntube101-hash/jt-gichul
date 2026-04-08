@@ -112,15 +112,29 @@ export async function POST(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    // 대댓글 깊이 제한 (1단계만)
+    // 대댓글 깊이 제한 (1단계만) + 같은 문제의 댓글인지 확인
     if (parentId) {
       const { data: parent } = await supabase
         .from("question_comments")
-        .select("parent_id")
+        .select("parent_id, question_no")
         .eq("id", parentId)
-        .single();
+        .maybeSingle();
 
-      if (parent?.parent_id) {
+      if (!parent) {
+        return NextResponse.json(
+          { error: "부모 댓글을 찾을 수 없습니다." },
+          { status: 400 }
+        );
+      }
+
+      if (parent.question_no !== questionNo) {
+        return NextResponse.json(
+          { error: "잘못된 요청입니다." },
+          { status: 400 }
+        );
+      }
+
+      if (parent.parent_id) {
         return NextResponse.json(
           { error: "대댓글은 1단계까지만 가능합니다." },
           { status: 400 }
@@ -184,7 +198,7 @@ export async function PATCH(request: NextRequest) {
       .from("question_comments")
       .select("user_id")
       .eq("id", commentId)
-      .single();
+      .maybeSingle();
 
     if (!comment) {
       return NextResponse.json({ error: "댓글을 찾을 수 없습니다." }, { status: 404 });

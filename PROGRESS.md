@@ -11,8 +11,8 @@
 - 9급 커리큘럼: 12주 → **13주** (지방세 분할)
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
-- 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: Supabase에 4개 테이블 마이그레이션 실행 + ADMIN_USER_IDS 환경변수 설정 + 배포
+- 마지막 배포: 260408 (강의 커뮤니티 MVP + 학습 데이터 리셋 + JT 튜터 프롬프트 강화)
+- 다음 할 일: 수강 코드 발급 (curl로 /api/admin/codes POST) → 수강생에게 배포
 
 ### 강의 커뮤니티 MVP (260408)
 - [x] **Route Group 전환** — `app/(main)/` + `app/(class)/` 분리
@@ -30,8 +30,10 @@
 - [x] **마이페이지 연동** — "수강 코드 입력" + "강의실 입장" 버튼
 - [x] **문제 페이지 연동** — "수강생 Q&A (N) →" 링크 (premium만)
 - [x] **빌드 성공** — 2,101 페이지 (기존 2,096 + 강의실 5)
-- [ ] **DB 마이그레이션** — Supabase에 4개 테이블 생성 필요 (아직 미실행)
-- [ ] **환경변수** — ADMIN_USER_IDS 설정 필요
+- [x] **DB 마이그레이션** — Supabase에 4개 테이블 생성 완료 (enrollment_codes, enrollment_logs, question_comments, class_announcements + RLS + 인덱스)
+- [x] **환경변수** — ADMIN_USER_IDS 설정 완료 (Vercel CLI, Production)
+- [x] **프로덕션 배포** — `vercel --prod` 배포 완료 (dpl_5FCe15MgJJsnaNajGwrNTFsC5cWg)
+- [x] **프로덕션 검증** — 홈, 강의실(/class PremiumGate), 마이페이지(수강코드/리셋) 정상 확인
 - 신규 파일: `app/(class)/layout.tsx`, `app/(class)/class/page.tsx`, `app/(class)/class/qna/[no]/page.tsx`, `components/class/ClassHeader.tsx`, `components/class/PremiumGate.tsx`, `components/class/CommentThread.tsx`, `lib/admin.ts`, `hooks/usePremium.ts`, `app/api/enroll/route.ts`, `app/api/comments/route.ts`, `app/api/announce/route.ts`, `app/api/admin/codes/route.ts`
 - 수정 파일: `app/layout.tsx` (분리), `app/(main)/layout.tsx` (신규), `app/(main)/mypage/page.tsx`, `app/(main)/question/[no]/QuestionView.tsx`, `lib/apiSchemas.ts`
 
