@@ -170,7 +170,38 @@ export default function MockExamResultPage() {
       return { difficulty: d, total: qs.length, correct: c, accuracy: qs.length > 0 ? Math.round((c / qs.length) * 100) : 0 };
     }).filter((d) => d.total > 0);
 
-    return { totalQ, solved, correct, wrong, unsolved, accuracy, score, lawAnalysis, difficultyStats };
+    // 함정유형별 분석 (틀린 문제에서 추출)
+    const trapMap = new Map<string, { count: number; questions: number[] }>();
+    for (const result of solveResults) {
+      if (result.isCorrect) continue;
+      const q = questions.get(result.questionNo);
+      if (!q) continue;
+      const choiceAnalysis = q.analysis.choices_analysis?.find(
+        (c) => c.choice_num === result.selectedChoice
+      );
+      const trapType = choiceAnalysis?.trap_type;
+      if (trapType) {
+        const prev = trapMap.get(trapType) ?? { count: 0, questions: [] };
+        prev.count++;
+        prev.questions.push(result.questionNo);
+        trapMap.set(trapType, prev);
+      }
+      for (const pattern of q.analysis.trap_patterns ?? []) {
+        if (pattern && pattern !== trapType) {
+          const prev = trapMap.get(pattern) ?? { count: 0, questions: [] };
+          if (!prev.questions.includes(result.questionNo)) {
+            prev.count++;
+            prev.questions.push(result.questionNo);
+          }
+          trapMap.set(pattern, prev);
+        }
+      }
+    }
+    const trapAnalysis = Array.from(trapMap.entries())
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 6);
+
+    return { totalQ, solved, correct, wrong, unsolved, accuracy, score, lawAnalysis, difficultyStats, trapAnalysis };
   }, [meta, solveResults, questions]);
 
   if (authLoading || loading || !meta) {
@@ -299,6 +330,45 @@ export default function MockExamResultPage() {
           ))}
         </div>
       </div>
+
+      {/* 함정 유형 분석 */}
+      {analysis.trapAnalysis.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+          <h2 className="text-sm font-bold text-card-foreground flex items-center gap-1.5">
+            <TrendingUp className="h-4 w-4 text-danger" />
+            취약 함정 유형
+          </h2>
+          <div className="space-y-2.5">
+            {analysis.trapAnalysis.map(([trapType, info]) => (
+              <div key={trapType} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-card-foreground">{trapType}</span>
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                    {info.count}회
+                  </Badge>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-danger/70 transition-all duration-500"
+                    style={{ width: `${Math.min((info.count / Math.max(analysis.wrong, 1)) * 100, 100)}%` }}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {info.questions.map((no) => (
+                    <Link
+                      key={no}
+                      href={`/question/${no}`}
+                      className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      #{no}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 약점 과목 */}
       {analysis.lawAnalysis.filter((la) => la.accuracy < 70).length > 0 && (
