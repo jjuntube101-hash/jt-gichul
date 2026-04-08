@@ -12,7 +12,18 @@
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: 접근성(A11y) 개선, 문제별 메모 기능, 주차별 비교 분석
+- 다음 할 일: 문제별 메모 기능, 주차별 비교 분석 차트
+
+### 접근성(A11y) 개선 (260408)
+- [x] **글로벌 포커스 스타일** — focus-visible outline (primary 색상, 2px, offset 2px)
+- [x] **스킵 내비게이션** — "본문으로 건너뛰기" 링크 + main#main-content
+- [x] **BottomNav** — nav aria-label, Link aria-current="page", Icon aria-hidden
+- [x] **Header** — 로고 alt="JT기출 로고", Link aria-label="JT기출 홈"
+- [x] **QuestionView** — 선택지 role="radiogroup"/aria-label, 버튼 role="radio"/aria-checked
+- [x] **AskChat** — 메시지 영역 role="log"/aria-live="polite", 이미지 alt 개선, 핸들 aria-hidden
+- [x] **AskFAB** — MessageCircle/뱃지 aria-hidden
+- 수정 파일: 7개 (globals.css, layout.tsx, BottomNav, Header, QuestionView, AskChat, AskFAB)
+- 커밋: `6a1065f`
 
 ### CSP 헤더 + 비동기 I/O (260408)
 - [x] **CSP(Content-Security-Policy) 헤더** — middleware.ts에 포괄적 CSP 정책 추가
