@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "이현준 세무사의 세법 1,245문항 + 회계 820문항 전수분석. 선지별 정오판·근거조문·함정유형·출제의도까지.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icons/icon-192.png",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {

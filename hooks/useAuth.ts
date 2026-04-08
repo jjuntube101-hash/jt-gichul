@@ -10,7 +10,7 @@ async function ensureProfile(supabase: SupabaseClient, userId: string) {
     .from("user_profiles")
     .select("user_id")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
   if (!data) {
     await supabase.from("user_profiles").upsert({ user_id: userId });
   }
