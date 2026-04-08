@@ -6,7 +6,7 @@
  * → 두 결과를 Claude 컨텍스트로 주입하여 근거 기반 답변 생성
  */
 
-import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 import { searchLawContext, type LawContext } from './lawApi';
 import type { Question, ChunkMeta } from '@/types/question';
@@ -21,26 +21,37 @@ interface QuestionContext {
   keyPoint: string;  // 핵심 포인트
 }
 
-/** 서버사이드에서 전체 문항 로드 (캐시) */
+/** 서버사이드에서 전체 문항 로드 (비동기 + 캐시) */
 let cachedQuestions: Question[] | null = null;
+let loadingPromise: Promise<Question[]> | null = null;
 
-function loadAllQuestions(): Question[] {
+async function loadAllQuestionsAsync(): Promise<Question[]> {
   if (cachedQuestions) return cachedQuestions;
-  const metaPath = path.join(process.cwd(), 'public/data/questions/meta.json');
-  const meta: ChunkMeta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-  const all: Question[] = [];
-  for (const chunk of meta.chunks) {
-    const chunkPath = path.join(process.cwd(), `public/data/questions/${chunk.file}`);
-    const questions: Question[] = JSON.parse(fs.readFileSync(chunkPath, 'utf-8'));
-    all.push(...questions);
-  }
-  cachedQuestions = all;
-  return all;
+  // 동시 호출 시 중복 로딩 방지
+  if (loadingPromise) return loadingPromise;
+
+  loadingPromise = (async () => {
+    const metaPath = path.join(process.cwd(), 'public/data/questions/meta.json');
+    const metaRaw = await fs.readFile(metaPath, 'utf-8');
+    const meta: ChunkMeta = JSON.parse(metaRaw);
+    const chunkPromises = meta.chunks.map(async (chunk) => {
+      const chunkPath = path.join(process.cwd(), `public/data/questions/${chunk.file}`);
+      const raw = await fs.readFile(chunkPath, 'utf-8');
+      return JSON.parse(raw) as Question[];
+    });
+    const chunkResults = await Promise.all(chunkPromises);
+    const all = chunkResults.flat();
+    cachedQuestions = all;
+    loadingPromise = null;
+    return all;
+  })();
+
+  return loadingPromise;
 }
 
 /** 질문에서 관련 기출 문항 2~3개 검색 */
-export function findRelevantQuestions(question: string): QuestionContext[] {
-  const questions = loadAllQuestions();
+export async function findRelevantQuestions(question: string): Promise<QuestionContext[]> {
+  const questions = await loadAllQuestionsAsync();
   const lowerQ = question.toLowerCase();
 
   // 키워드 추출
@@ -91,7 +102,7 @@ export async function gatherContext(question: string): Promise<AskContext> {
   // 병렬 실행: 법령 API + 기출 검색
   const [lawContexts, questionContexts] = await Promise.all([
     searchLawContext(question).catch(() => [] as LawContext[]),
-    Promise.resolve(findRelevantQuestions(question)),
+    findRelevantQuestions(question).catch(() => [] as QuestionContext[]),
   ]);
 
   return { lawContexts, questionContexts };
