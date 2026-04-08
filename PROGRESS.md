@@ -12,7 +12,19 @@
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: CSP 헤더 추가, 비동기 파일 I/O 개선
+- 다음 할 일: 접근성(A11y) 개선, 문제별 메모 기능, 주차별 비교 분석
+
+### CSP 헤더 + 비동기 I/O (260408)
+- [x] **CSP(Content-Security-Policy) 헤더** — middleware.ts에 포괄적 CSP 정책 추가
+  - script-src: self + Vercel Analytics
+  - connect-src: self + Supabase + Anthropic API
+  - frame-ancestors: none (클릭재킹 방지)
+  - worker-src: self + blob (Service Worker)
+- [x] **비동기 파일 I/O** — askContextEngine.ts 동기 readFileSync → 비동기 fs.promises.readFile
+  - 청크 파일 병렬 로딩 (Promise.all)
+  - 동시 호출 중복 방지 (loadingPromise 싱글턴)
+- 수정 파일: `middleware.ts`, `lib/askContextEngine.ts`
+- 커밋: `51aed86`
 
 ### 모의고사 결과 분석 + Zod 스키마 검증 (260408)
 - [x] **모의고사 결과 함정 유형 분석** — 틀린 문항에서 trap_type/trap_patterns 추출, 빈도순 상위 6개 시각화 (프로그레스 바 + 문항 링크)
