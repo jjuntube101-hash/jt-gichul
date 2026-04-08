@@ -268,7 +268,7 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
       </div>
 
       {/* Choices */}
-      <div className="space-y-2.5" data-no-transition>
+      <div className="space-y-2.5" data-no-transition role="radiogroup" aria-label="선택지">
         {(() => {
           const hasCircledNumbers = q.선택지.every(t => startsWithCircledNumber(t));
           const isCalc = isCalcQuestion(a.question_subtype);
@@ -296,6 +296,9 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
               <motion.button
                 key={choiceNum}
                 onClick={() => handleSelect(choiceNum)}
+                role="radio"
+                aria-checked={isThis}
+                aria-label={`선택지 ${choiceNum}`}
                 className={`w-full rounded-xl border-2 p-4 text-left transition-colors ${borderClass} ${bgClass} ${
                   !isAnswered ? "hover:border-primary/40 hover:shadow-sm cursor-pointer" : ""
                 }`}

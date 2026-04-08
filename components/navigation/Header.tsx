@@ -17,10 +17,10 @@ export default function Header() {
     <header className="glass sticky top-0 z-50 border-b border-border">
       <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group" aria-label="JT기출 홈">
           <Image
             src="/logo-jt.png"
-            alt="JT"
+            alt="JT기출 로고"
             width={28}
             height={28}
             className={`${resolved === "dark" ? "invert" : ""}`}

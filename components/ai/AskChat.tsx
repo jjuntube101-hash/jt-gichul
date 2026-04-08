@@ -85,7 +85,7 @@ export default function AskChat({
             style={{ maxHeight: "80vh", bottom: "64px" }}
           >
             {/* 드래그 핸들 */}
-            <div className="flex justify-center pt-2 pb-1">
+            <div className="flex justify-center pt-2 pb-1" aria-hidden="true">
               <div className="h-1 w-10 rounded-full bg-muted" />
             </div>
 
@@ -95,7 +95,7 @@ export default function AskChat({
                 {/* 세무사 아바타 */}
                 <Image
                   src="/logo-jt-small.png"
-                  alt="JT"
+                  alt="JT 튜터"
                   width={40}
                   height={40}
                   className="rounded-full shadow-sm"
@@ -133,7 +133,7 @@ export default function AskChat({
               <div className="flex-1 flex flex-col items-center justify-center p-8 gap-3">
                 <Image
                   src="/logo-jt-small.png"
-                  alt="JT"
+                  alt="JT 튜터"
                   width={64}
                   height={64}
                   className="rounded-full"
@@ -158,6 +158,9 @@ export default function AskChat({
                 {/* 메시지 영역 */}
                 <div
                   ref={scrollRef}
+                  role="log"
+                  aria-label="대화 내역"
+                  aria-live="polite"
                   className="flex-1 overflow-y-auto px-4 py-3 space-y-3"
                   style={{ minHeight: "200px" }}
                 >
@@ -168,7 +171,7 @@ export default function AskChat({
                       <div className="flex items-start gap-2">
                         <Image
                           src="/logo-jt-small.png"
-                          alt="JT"
+                          alt="JT 튜터"
                           width={28}
                           height={28}
                           className="shrink-0 rounded-full mt-0.5"

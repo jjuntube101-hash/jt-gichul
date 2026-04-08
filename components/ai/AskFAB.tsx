@@ -26,9 +26,9 @@ export default function AskFAB() {
             className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors"
             aria-label="JT 튜터에게 질문하기"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-6 w-6" aria-hidden="true" />
             {/* 스파클 뱃지 */}
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-warning text-[8px] font-bold text-white">
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-warning text-[8px] font-bold text-white" aria-hidden="true">
               AI
             </span>
           </motion.button>
