@@ -12,15 +12,18 @@
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: 북마크 기능 배포 (git push) → Tier 1 나머지 (다크모드 토글, Zod 검증)
+- 다음 할 일: Tier 2 기능 완성 (Mock Exam 결과 분석, D-Day 전략, Timer Mode, Zod 검증)
 
-### 문제 북마크 기능 (260408)
+### 문제 북마크 + 다크모드 토글 (260408)
 - [x] **useBookmarks 훅** — localStorage 기반 북마크 CRUD (로그인 불필요, 오프라인 지원)
 - [x] **문제 상세 북마크 버튼** — QuestionView 헤더에 Bookmark 아이콘 토글 (fill-warning 활성)
 - [x] **오답노트 북마크 탭** — Review 페이지 3탭 구조 (오답/복습/북마크), 통계+바로풀기+삭제
+- [x] **비로그인 북마크** — 북마크 탭은 로그인 없이 접근 가능 (문항 데이터 독립 로딩)
+- [x] **다크모드 토글 UI** — 마이페이지 설정에 3모드 토글 (라이트/다크/시스템)
 - 신규 파일: `hooks/useBookmarks.ts`
-- 수정 파일: `app/question/[no]/QuestionView.tsx`, `app/review/page.tsx`
+- 수정 파일: `app/question/[no]/QuestionView.tsx`, `app/review/page.tsx`, `app/mypage/page.tsx`
 - 빌드 검증: 2,095페이지, 에러 0
+- 커밋: `a392ba0` 북마크 기능, `c285f02` 다크모드 토글
 
 ### JT 튜터 AI 상담 기능 (260408)
 - [x] **AI 세무 상담 기능 구현** — 플로팅 버튼 + 바텀시트 채팅 UI
