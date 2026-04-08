@@ -433,7 +433,7 @@ export async function POST(
           .from('user_study_profiles')
           .select('onboarding_completed')
           .eq('user_id', auth.userId)
-          .single();
+          .maybeSingle();
 
         if (!profile || !profile.onboarding_completed) {
           return NextResponse.json(
@@ -476,7 +476,7 @@ export async function POST(
           .from('user_study_profiles')
           .select('onboarding_completed')
           .eq('user_id', auth.userId)
-          .single();
+          .maybeSingle();
 
         if (!profile || !profile.onboarding_completed) {
           return NextResponse.json(

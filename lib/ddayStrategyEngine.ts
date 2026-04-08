@@ -124,7 +124,7 @@ export async function generateDdayStrategy(
     .from('user_study_profiles')
     .select('exam_date, exam_name, exam_target')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (!profile?.exam_date) {
     throw new Error('EXAM_DATE_NOT_SET');

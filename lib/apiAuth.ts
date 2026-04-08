@@ -52,7 +52,7 @@ export async function checkPremium(userId: string): Promise<boolean> {
     .from("user_profiles")
     .select("is_premium, premium_expires_at")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
   if (!data?.is_premium) return false;
   if (

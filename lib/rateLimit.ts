@@ -138,7 +138,7 @@ export async function getRemainingUsage(
     .eq('user_id', userId)
     .eq('feature', feature)
     .eq('use_date', useDate)
-    .single();
+    .maybeSingle();
 
   const currentCount = data?.count ?? 0;
   return Math.max(0, dailyLimit - currentCount);

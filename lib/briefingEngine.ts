@@ -115,7 +115,7 @@ export async function collectBriefingData(userId: string): Promise<BriefingData>
         .from('user_study_profiles')
         .select('display_name, exam_target, exam_name, exam_date, daily_study_goal_minutes, weak_subjects, onboarding_completed')
         .eq('user_id', userId)
-        .single(),
+        .maybeSingle(),
 
       // 2) 어제 학습 로그
       sb
