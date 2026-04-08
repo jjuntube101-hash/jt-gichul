@@ -74,9 +74,9 @@ export const resetSchema = z.object({
 export const enrollSchema = z.object({
   code: z
     .string()
-    .min(1)
     .max(10)
-    .transform((s) => s.trim().toUpperCase()),
+    .transform((s) => s.trim().toUpperCase())
+    .pipe(z.string().min(1, "수강 코드를 입력해주세요.")),
 });
 
 // --- Comments API ---
@@ -96,7 +96,7 @@ export const commentPatchSchema = z.object({
 
 export const announceSchema = z.object({
   title: safeString(200).pipe(z.string().min(1)),
-  body: z.string().max(5000).optional(),
+  body: safeString(5000).optional(),
   linkUrl: z.string().url().refine((u) => u.startsWith("http"), { message: "http/https URL만 허용" }).optional(),
   linkLabel: z.string().max(100).optional(),
   isPinned: z.boolean().optional().default(false),

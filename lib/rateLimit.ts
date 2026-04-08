@@ -45,9 +45,10 @@ interface UsageCheckResult {
 }
 
 /**
- * 사용량 확인 및 증가
- * - 제한 내이면 count를 1 증가시키고 allowed: true 반환
- * - 제한 초과이면 증가 없이 allowed: false 반환
+ * 사용량 확인 및 증가 (원자적)
+ * - Supabase RPC `increment_ai_usage`로 원자적 count+1 수행
+ * - TOCTOU 방지: 단일 SQL 문으로 INSERT/UPDATE + 제한 검사
+ * - RPC 미설치 시 기존 upsert 방식으로 fallback
  */
 export async function checkAndIncrement(
   userId: string,
@@ -56,19 +57,41 @@ export async function checkAndIncrement(
 ): Promise<UsageCheckResult> {
   const supabase = getServiceSupabase();
 
-  // 주간 제한 기능은 주 시작일, 일일 제한 기능은 오늘 날짜
   const useDate = isWeeklyLimited(feature)
     ? getWeekStartKST()
     : getTodayKST();
 
-  // 현재 사용량 조회
+  // 원자적 RPC 호출 시도
+  const { data: rpcResult, error: rpcError } = await supabase.rpc(
+    'increment_ai_usage',
+    {
+      p_user_id: userId,
+      p_feature: feature,
+      p_use_date: useDate,
+      p_limit: dailyLimit,
+    }
+  );
+
+  if (!rpcError && rpcResult !== null && rpcResult !== undefined) {
+    const newCount = rpcResult as number;
+    if (newCount === -1) {
+      return { allowed: false, remaining: 0 };
+    }
+    return { allowed: true, remaining: dailyLimit - newCount };
+  }
+
+  // RPC 미설치 시 fallback (기존 방식)
+  if (rpcError) {
+    console.warn('[rateLimit] RPC unavailable, falling back to upsert:', rpcError.message);
+  }
+
   const { data: existing } = await supabase
     .from('ai_usage')
     .select('count')
     .eq('user_id', userId)
     .eq('feature', feature)
     .eq('use_date', useDate)
-    .single();
+    .maybeSingle();
 
   const currentCount = existing?.count ?? 0;
 
@@ -76,7 +99,6 @@ export async function checkAndIncrement(
     return { allowed: false, remaining: 0 };
   }
 
-  // upsert로 카운트 증가
   const newCount = currentCount + 1;
   const { error } = await supabase.from('ai_usage').upsert(
     {
