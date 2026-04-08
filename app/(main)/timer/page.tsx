@@ -31,9 +31,9 @@ type Phase = "setup" | "solving" | "review" | "result";
 
 const PRESETS = [
   { count: 5, minutes: 5, label: "미니 테스트" },
-  { count: 10, minutes: 12, label: "하프 테스트" },
-  { count: 20, minutes: 25, label: "실전 모의" },
-  { count: 40, minutes: 50, label: "풀 세트" },
+  { count: 10, minutes: 10, label: "하프 테스트" },
+  { count: 20, minutes: 20, label: "실전 모의" },
+  { count: 40, minutes: 40, label: "풀 세트" },
 ];
 
 type TaxScope = "all" | "national" | "local";

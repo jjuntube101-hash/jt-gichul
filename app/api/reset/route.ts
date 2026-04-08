@@ -15,6 +15,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { resetSchema } from "@/lib/apiSchemas";
 import { authenticateUser, getServiceSupabase } from "@/lib/apiAuth";
+import { isAdmin } from "@/lib/admin";
 
 // --- DB 기반 레이트 리밋 ---
 
@@ -44,8 +45,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2) 레이트 리밋 (DB 기반)
-    if (!(await checkResetRateLimit(auth.userId))) {
+    // 2) 레이트 리밋 (DB 기반) — 관리자 바이패스
+    if (!isAdmin(auth.userId) && !(await checkResetRateLimit(auth.userId))) {
       return NextResponse.json(
         { error: "초기화는 하루에 1번만 가능합니다." },
         { status: 429 }

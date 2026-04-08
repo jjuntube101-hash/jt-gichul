@@ -8,6 +8,7 @@
 
 import { NextRequest } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { isAdmin } from "@/lib/admin";
 
 // --- 싱글톤 service_role 클라이언트 (C2 해결) ---
 
@@ -47,6 +48,9 @@ export async function authenticateUser(
 // --- Premium 확인 ---
 
 export async function checkPremium(userId: string): Promise<boolean> {
+  // 관리자는 항상 premium
+  if (isAdmin(userId)) return true;
+
   const supabase = getServiceSupabase();
   const { data } = await supabase
     .from("user_profiles")

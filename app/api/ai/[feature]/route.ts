@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { isAdmin } from '@/lib/admin';
 import { z } from 'zod';
 import { AI_FEATURES, type AIFeature } from '@/lib/aiConfig';
 import { featureSchemas } from '@/lib/apiSchemas';
@@ -326,8 +327,8 @@ export async function POST(
       );
     }
 
-    // 2a. 신규 가입자 쿨다운 체크 (계정 팜 방지)
-    if (!checkNewAccountCooldown(auth.createdAt)) {
+    // 2a. 신규 가입자 쿨다운 체크 (계정 팜 방지) — 관리자 바이패스
+    if (!isAdmin(auth.userId) && !checkNewAccountCooldown(auth.createdAt)) {
       logSecurityEvent('NEW_ACCOUNT_BLOCKED', { userId: auth.userId, feature });
       return NextResponse.json(
         { error: '가입 후 24시간이 지나야 AI 기능을 사용할 수 있습니다.', code: 'ACCOUNT_TOO_NEW' },
@@ -386,13 +387,12 @@ export async function POST(
       }
     }
 
-    // 5. 레이트리밋 확인 (캐시 미스 시에만)
+    // 5. 레이트리밋 확인 (캐시 미스 시에만) — 관리자 바이패스
+    const adminBypass = isAdmin(auth.userId);
     const limit = getLimitForFeature(feature);
-    const { allowed, remaining } = await checkAndIncrement(
-      auth.userId,
-      feature,
-      limit
-    );
+    const { allowed, remaining } = adminBypass
+      ? { allowed: true, remaining: 999 }
+      : await checkAndIncrement(auth.userId, feature, limit);
 
     if (!allowed) {
       logSecurityEvent('RATE_LIMITED', { userId: auth.userId, feature });
