@@ -29,7 +29,10 @@ import {
   Brain,
   Play,
   Calendar,
+  Bookmark,
+  Trash2,
 } from "lucide-react";
+import { useBookmarks } from "@/hooks/useBookmarks";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -45,7 +48,7 @@ interface WrongRecord {
 
 type SortKey = "recent" | "count" | "law";
 type FilterMode = "all" | "practice" | "ox";
-type TabKey = "wrong" | "spaced";
+type TabKey = "wrong" | "spaced" | "bookmark";
 type LawFilter = "all" | string;
 
 // ---------------------------------------------------------------------------
@@ -203,6 +206,126 @@ function SpacedReviewTab({ questions }: { questions: Map<number, Question> }) {
 }
 
 // ---------------------------------------------------------------------------
+// 북마크 탭
+// ---------------------------------------------------------------------------
+
+function BookmarkTab({ questions }: { questions: Map<number, Question> }) {
+  const { bookmarks, toggleBookmark } = useBookmarks();
+
+  if (bookmarks.length === 0) {
+    return (
+      <div className="text-center py-16 space-y-4">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-warning-light">
+          <Bookmark className="h-8 w-8 text-warning" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-foreground">북마크가 없습니다</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            문제 상세에서 북마크 아이콘을 눌러 저장하세요
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const bookmarkNos = bookmarks.map((b) => b.questionNo);
+
+  return (
+    <div className="space-y-4">
+      {/* 통계 */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-xl bg-warning-light p-3 text-center">
+          <p className="text-xl font-bold text-warning">{bookmarks.length}</p>
+          <p className="text-[10px] text-warning/70">북마크 문항</p>
+        </div>
+        <div className="rounded-xl bg-primary-light p-3 text-center">
+          <p className="text-xl font-bold text-primary">
+            {new Set(
+              bookmarks
+                .map((b) => questions.get(b.questionNo)?.대분류)
+                .filter(Boolean)
+            ).size}
+          </p>
+          <p className="text-[10px] text-primary/70">과목 수</p>
+        </div>
+      </div>
+
+      {/* 바로 풀기 */}
+      <Link
+        href={`/practice?nos=${bookmarkNos.slice(0, 20).join(",")}`}
+        className="flex items-center justify-center gap-2 rounded-xl bg-warning px-4 py-2.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+      >
+        <Play className="h-3.5 w-3.5" />
+        북마크 {Math.min(bookmarks.length, 20)}문항 바로 풀기
+      </Link>
+
+      <Separator className="bg-border" />
+
+      {/* 목록 */}
+      <AnimatePresence mode="popLayout">
+        {bookmarks.map((entry, idx) => {
+          const q = questions.get(entry.questionNo);
+          if (!q) return null;
+
+          return (
+            <motion.div
+              key={entry.questionNo}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ delay: idx * 0.03 }}
+            >
+              <div className="rounded-xl border border-border bg-card p-4 transition-all hover:border-warning/30 hover:shadow-sm">
+                <div className="flex items-start gap-3">
+                  <Link
+                    href={`/question/${entry.questionNo}?from=review`}
+                    className="flex-1 min-w-0"
+                  >
+                    <p className="text-base font-medium text-card-foreground line-clamp-2 leading-relaxed">
+                      {q.문제_내용.slice(0, 80)}
+                      {q.문제_내용.length > 80 ? "..." : ""}
+                    </p>
+                    <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                      <Badge className="text-[10px] bg-primary-light text-primary">
+                        {q.대분류}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">
+                        {q.중분류}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        난이도 {q.analysis.difficulty}/5
+                      </span>
+                    </div>
+                    <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>#{q.no}</span>
+                      <span>
+                        {q.시험_구분} {q.시행년도}
+                      </span>
+                    </div>
+                  </Link>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => toggleBookmark(entry.questionNo)}
+                      className="flex items-center justify-center rounded-lg p-2 text-muted-foreground hover:text-danger hover:bg-danger-light transition-colors"
+                      aria-label="북마크 해제"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <Link href={`/question/${entry.questionNo}?from=review`}>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main ReviewPage
 // ---------------------------------------------------------------------------
 
@@ -223,7 +346,8 @@ function ReviewPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") === "spaced" ? "spaced" : "wrong";
+  const tabParam = searchParams.get("tab");
+  const initialTab: TabKey = tabParam === "spaced" ? "spaced" : tabParam === "bookmark" ? "bookmark" : "wrong";
 
   const [tab, setTab] = useState<TabKey>(initialTab);
   const [records, setRecords] = useState<WrongRecord[]>([]);
@@ -236,57 +360,55 @@ function ReviewPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
+
+    // 북마크 탭은 로그인 불필요 (localStorage 기반)
+    if (!user && tab !== "bookmark") {
       router.replace("/login");
       return;
     }
 
     async function load() {
-      const supabase = getSupabase();
-      if (!supabase || !user) {
-        setLoading(false);
-        return;
-      }
-
       try {
-        // solve_records (연습/타이머 모드) + ox_records (OX/1분퀴즈 모드) 병합
-        const [solveRes, oxRes] = await Promise.all([
-          supabase
-            .from("solve_records")
-            .select("question_no, selected_choice, is_correct, created_at, mode")
-            .eq("user_id", user.id)
-            .eq("is_correct", false)
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("ox_records")
-            .select("question_no, ox_index, is_correct, created_at")
-            .eq("user_id", user.id)
-            .eq("is_correct", false)
-            .order("created_at", { ascending: false }),
-        ]);
-
-        const solveWrong: WrongRecord[] = solveRes.data ?? [];
-        const oxWrong: WrongRecord[] = (oxRes.data ?? []).map((r: { question_no: number; ox_index: number; is_correct: boolean; created_at: string }) => ({
-          question_no: r.question_no,
-          selected_choice: r.ox_index,
-          is_correct: r.is_correct,
-          created_at: r.created_at,
-          mode: "ox",
-        }));
-
-        // 병합 후 최신순 정렬
-        const wrongRecords = [...solveWrong, ...oxWrong].sort(
-          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        setRecords(wrongRecords);
-
-        // 문항 데이터는 양쪽 탭 모두 필요
+        // 문항 데이터는 모든 탭에서 필요 (로그인 불필요)
         const allQ = await loadAllQuestions();
         const qMap = new Map<number, Question>();
         for (const q of allQ) {
           qMap.set(q.no, q);
         }
         setQuestions(qMap);
+
+        // 오답 데이터는 로그인 시에만 로드
+        const supabase = getSupabase();
+        if (supabase && user) {
+          const [solveRes, oxRes] = await Promise.all([
+            supabase
+              .from("solve_records")
+              .select("question_no, selected_choice, is_correct, created_at, mode")
+              .eq("user_id", user.id)
+              .eq("is_correct", false)
+              .order("created_at", { ascending: false }),
+            supabase
+              .from("ox_records")
+              .select("question_no, ox_index, is_correct, created_at")
+              .eq("user_id", user.id)
+              .eq("is_correct", false)
+              .order("created_at", { ascending: false }),
+          ]);
+
+          const solveWrong: WrongRecord[] = solveRes.data ?? [];
+          const oxWrong: WrongRecord[] = (oxRes.data ?? []).map((r: { question_no: number; ox_index: number; is_correct: boolean; created_at: string }) => ({
+            question_no: r.question_no,
+            selected_choice: r.ox_index,
+            is_correct: r.is_correct,
+            created_at: r.created_at,
+            mode: "ox",
+          }));
+
+          const wrongRecords = [...solveWrong, ...oxWrong].sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          setRecords(wrongRecords);
+        }
       } catch (err) {
         console.error("오답 로드 실패:", err);
       } finally {
@@ -295,7 +417,7 @@ function ReviewPage() {
     }
 
     load();
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, tab]);
 
   // 문항별 오답 횟수
   const wrongCountMap = useMemo(() => {
@@ -403,7 +525,8 @@ function ReviewPage() {
     );
   }
 
-  if (!user) return null;
+  // 북마크 탭은 비로그인 허용, 나머지 탭은 로그인 필수
+  if (!user && tab !== "bookmark") return null;
 
   return (
     <div className="space-y-4 pb-8">
@@ -420,7 +543,7 @@ function ReviewPage() {
         )}
       </div>
 
-      {/* 탭 전환: 오답 목록 / 간격 복습 */}
+      {/* 탭 전환: 오답 목록 / 간격 복습 / 북마크 */}
       <div className="flex rounded-xl bg-muted p-1 gap-1">
         <button
           onClick={() => setTab("wrong")}
@@ -431,7 +554,7 @@ function ReviewPage() {
           }`}
         >
           <AlertTriangle className="h-3.5 w-3.5" />
-          오답 목록
+          오답
         </button>
         <button
           onClick={() => setTab("spaced")}
@@ -442,12 +565,26 @@ function ReviewPage() {
           }`}
         >
           <Brain className="h-3.5 w-3.5" />
-          간격 복습
+          복습
+        </button>
+        <button
+          onClick={() => setTab("bookmark")}
+          className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold transition-colors ${
+            tab === "bookmark"
+              ? "bg-card text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Bookmark className="h-3.5 w-3.5" />
+          북마크
         </button>
       </div>
 
       {/* 간격 복습 탭 */}
       {tab === "spaced" && <SpacedReviewTab questions={questions} />}
+
+      {/* 북마크 탭 */}
+      {tab === "bookmark" && <BookmarkTab questions={questions} />}
 
       {/* 오답 목록 탭 */}
       {tab === "wrong" && (

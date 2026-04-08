@@ -1,18 +1,46 @@
 # JT기출 진행기록
 
 ## 현재 상태
-- **완료**: 보안/저작권 강화 + Claude API 인프라 + UX 개선 + **프로덕션 배포 완료**
+- **완료**: 보안/저작권 강화 + Claude API 인프라 + UX 개선 + **JT 튜터 AI 상담** + **프로덕션 배포 완료**
 - 배포 URL: https://gichul.jttax.co.kr (커스텀 도메인) / https://jt-gichul.vercel.app
-- GitHub: https://github.com/jjuntube101-hash/jt-gichul (Private)
-- 배포 방법: `npx vercel --prod --yes` (CLI 직접 배포, Git 연동 미사용)
+- GitHub: https://github.com/jjuntube101-hash/jt-gichul (Public)
+- 배포 방법: Git 연동 (GitHub push → Vercel 자동 배포)
 - Supabase: xddaqkymeactyfqqfcuv, **11테이블** (기존 6 + Sprint 19 추가 5)
 - 총 문항: 2,065 (세법 1,245 + 회계 820)
 - 빌드: 2,095 페이지 정상 생성
 - 9급 커리큘럼: 12주 → **13주** (지방세 분할)
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
-- 마지막 배포: 260407 (API 보안 + UX 개선 + 오답노트 필터 + SEO/성능)
-- 다음 할 일: 크로스 브라우저 테스트 (프로덕션 사이트에서)
+- 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
+- 다음 할 일: 북마크 기능 배포 (git push) → Tier 1 나머지 (다크모드 토글, Zod 검증)
+
+### 문제 북마크 기능 (260408)
+- [x] **useBookmarks 훅** — localStorage 기반 북마크 CRUD (로그인 불필요, 오프라인 지원)
+- [x] **문제 상세 북마크 버튼** — QuestionView 헤더에 Bookmark 아이콘 토글 (fill-warning 활성)
+- [x] **오답노트 북마크 탭** — Review 페이지 3탭 구조 (오답/복습/북마크), 통계+바로풀기+삭제
+- 신규 파일: `hooks/useBookmarks.ts`
+- 수정 파일: `app/question/[no]/QuestionView.tsx`, `app/review/page.tsx`
+- 빌드 검증: 2,095페이지, 에러 0
+
+### JT 튜터 AI 상담 기능 (260408)
+- [x] **AI 세무 상담 기능 구현** — 플로팅 버튼 + 바텀시트 채팅 UI
+  - 시스템 프롬프트: "JT 튜터" 페르소나 (세법·회계 전문 + 심리 멘토)
+  - law.go.kr API 연동: 실시간 법령 조문 컨텍스트 주입
+  - 기출 DB 연동: 관련 문항 2~3개 자동 검색
+  - 멀티턴 대화: 최대 5왕복(10메시지)
+  - Rate limiting: Free 3회/일 (Haiku), Premium 20회/일 (Sonnet)
+  - 추천 질문 칩 4개 (양도소득세, 면세/영세율, 가산세, 심리 상담)
+  - 마크다운 렌더링 (볼드, 리스트, 이모지)
+- [x] **StudyTimer 삭제** — 하단 네비게이션의 "타이머" 탭 제거
+- [x] **GitHub repo Public 전환** — Vercel Hobby 플랜 git author 제한 해결
+- [x] **Vercel Git 연동 복구** — repo visibility 변경 후 재연결
+- [x] **프로덕션 배포 + E2E 테스트 완료** — gichul.jttax.co.kr에서 실제 AI 답변 수신 확인
+- [x] **마크다운 표·구분선·h1 렌더링** — MarkdownTable 컴포넌트 추가, 커스텀 파서 확장
+- [x] **JT 로고 이미지 적용** — 텍스트 "JT" → logo-jt-small.png 이미지로 교체 (헤더/버블/로딩)
+- [x] **바텀시트 BottomNav 겹침 해결** — bottom: 64px로 바텀시트를 네비바 위에 배치
+- 신규 파일: `lib/lawApi.ts`, `lib/askContextEngine.ts`, `components/ai/AskFAB.tsx`, `components/ai/AskChat.tsx`, `hooks/useAskAI.ts`
+- 수정 파일: `lib/aiConfig.ts`, `lib/aiPrompts.ts`, `lib/claude.ts`, `app/api/ai/[feature]/route.ts`, `app/layout.tsx`
+- 알려진 이슈: AI 답변 내 마크다운 표가 raw 텍스트로 표시됨 (테이블 파싱 미구현)
 
 ### 기능 개선 + SEO + 성능 (260407 심야)
 - [x] **오답노트 필터 강화** — 모드 필터(전체/연습/OX) UI 노출 + 법별(과목별) 필터 추가 (review/page.tsx)

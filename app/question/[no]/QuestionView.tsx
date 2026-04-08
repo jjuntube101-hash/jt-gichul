@@ -6,7 +6,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap, Bookmark } from "lucide-react";
+import { useBookmarks } from "@/hooks/useBookmarks";
 import type { Question } from "@/types/question";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import BadgeToast from "@/components/engagement/BadgeToast";
@@ -83,7 +84,9 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
   const [startTime] = useState(() => Date.now());
   const searchParams = useSearchParams();
   const { saveSolve, newBadges, dismissNewBadges } = useSolveRecord();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
   const q = question;
+  const bookmarked = isBookmarked(q.no);
   const a = q.analysis;
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(["choices"]));
@@ -171,11 +174,24 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
       </nav>
 
       {/* Question Header */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">{q.시험_구분} {q.직급}</Badge>
-        <Badge variant="secondary" className="bg-primary-light text-primary text-[10px]">{q.시행년도}</Badge>
-        <span className="text-[10px] text-muted-foreground">#{q.문제번호}</span>
-        <span className="text-[10px] text-muted-foreground">{q.대분류} &gt; {q.중분류}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">{q.시험_구분} {q.직급}</Badge>
+          <Badge variant="secondary" className="bg-primary-light text-primary text-[10px]">{q.시행년도}</Badge>
+          <span className="text-[10px] text-muted-foreground">#{q.문제번호}</span>
+          <span className="text-[10px] text-muted-foreground">{q.대분류} &gt; {q.중분류}</span>
+        </div>
+        <button
+          onClick={() => toggleBookmark(q.no)}
+          className="flex items-center justify-center rounded-lg p-2 transition-colors hover:bg-muted"
+          aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
+        >
+          <Bookmark
+            className={`h-5 w-5 transition-colors ${
+              bookmarked ? "fill-warning text-warning" : "text-muted-foreground"
+            }`}
+          />
+        </button>
       </div>
 
       {/* Difficulty & Stats */}
