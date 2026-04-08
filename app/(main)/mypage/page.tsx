@@ -32,11 +32,16 @@ import {
   Sun,
   Moon,
   Monitor,
+  Trash2,
+  AlertTriangle,
+  GraduationCap,
+  KeyRound,
 } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useStreak } from "@/hooks/useStreak";
 import { useBadges } from "@/hooks/useBadges";
 import { usePush } from "@/hooks/usePush";
+import { usePremium } from "@/hooks/usePremium";
 import StreakBanner from "@/components/engagement/StreakBanner";
 import BadgeGrid from "@/components/engagement/BadgeGrid";
 import LawAccuracyChart from "@/components/stats/LawAccuracyChart";
@@ -556,6 +561,12 @@ export default function MyPage() {
             </button>
           </div>
           )}
+
+          {/* Premium / 강의실 */}
+          <PremiumSection />
+
+          {/* Data Reset */}
+          <ResetButton user={user} />
         </div>
       </section>
 
@@ -647,5 +658,313 @@ function MenuLink({
       <span className="flex-1">{label}</span>
       <ChevronRight className="h-4 w-4 text-muted-foreground" />
     </Link>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 수강생 / 강의실 섹션
+// ---------------------------------------------------------------------------
+
+function PremiumSection() {
+  const { isPremium, expiresAt, loading } = usePremium();
+  const [showEnroll, setShowEnroll] = useState(false);
+  const [code, setCode] = useState("");
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrollResult, setEnrollResult] = useState<string | null>(null);
+
+  if (loading) return null;
+
+  // 이미 premium → 강의실 입장 버튼
+  if (isPremium) {
+    return (
+      <Link
+        href="/class"
+        className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3.5 text-sm font-medium text-primary hover:bg-primary/10 transition-all"
+      >
+        <GraduationCap className="h-4 w-4" />
+        <div className="flex-1">
+          <p className="font-bold">강의실 입장</p>
+          {expiresAt && (
+            <p className="text-[10px] text-primary/70">
+              {new Date(expiresAt).toLocaleDateString("ko-KR")}까지
+            </p>
+          )}
+        </div>
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    );
+  }
+
+  // premium 아님 → 수강 코드 입력
+  async function handleEnroll() {
+    if (!code.trim() || enrolling) return;
+    setEnrolling(true);
+    setEnrollResult(null);
+
+    try {
+      const supabase = getSupabase();
+      const session = supabase
+        ? (await supabase.auth.getSession()).data.session
+        : null;
+      const token = session?.access_token;
+      if (!token) {
+        setEnrollResult("인증 정보가 없습니다.");
+        setEnrolling(false);
+        return;
+      }
+
+      const res = await fetch("/api/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ code: code.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setEnrollResult(data.error || "오류가 발생했습니다.");
+        setEnrolling(false);
+        return;
+      }
+
+      setEnrollResult("수강생으로 등록되었습니다!");
+      setTimeout(() => window.location.reload(), 1500);
+    } catch {
+      setEnrollResult("네트워크 오류가 발생했습니다.");
+      setEnrolling(false);
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-3.5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <KeyRound className="h-4 w-4 text-primary" />
+          <div>
+            <p className="text-sm font-medium text-card-foreground">수강 코드</p>
+            <p className="text-[10px] text-muted-foreground">수강생 전용 강의실에 입장합니다</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowEnroll(!showEnroll)}
+          className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-hover transition-colors"
+        >
+          {showEnroll ? "닫기" : "입력"}
+        </button>
+      </div>
+      {showEnroll && (
+        <div className="mt-3 space-y-2">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="JT-XXXX"
+            maxLength={7}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-center text-sm font-mono font-bold tracking-widest text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          />
+          <button
+            onClick={handleEnroll}
+            disabled={!code.trim() || enrolling}
+            className="w-full rounded-lg bg-primary py-2 text-xs font-bold text-white hover:bg-primary-hover transition-colors disabled:opacity-50"
+          >
+            {enrolling ? "확인 중..." : "등록"}
+          </button>
+          {enrollResult && (
+            <p className={`text-xs text-center font-medium ${enrollResult.includes("등록") ? "text-success" : "text-danger"}`}>
+              {enrollResult}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 학습 데이터 초기화 버튼 + 확인 모달
+// ---------------------------------------------------------------------------
+
+function ResetButton({ user }: { user: { id: string } }) {
+  const [showModal, setShowModal] = useState(false);
+  const [scope, setScope] = useState<"solve" | "all">("solve");
+  const [confirmText, setConfirmText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+
+  const canConfirm = confirmText === "초기화";
+
+  async function handleReset() {
+    if (!canConfirm || loading) return;
+    setLoading(true);
+    setResult(null);
+
+    try {
+      // supabase session에서 access_token 가져오기
+      const supabase = getSupabase();
+      const session = supabase ? (await supabase.auth.getSession()).data.session : null;
+      const token = session?.access_token;
+      if (!token) {
+        setResult("인증 정보가 없습니다. 다시 로그인해주세요.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ scope }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setResult(data.error || "오류가 발생했습니다.");
+        setLoading(false);
+        return;
+      }
+
+      // scope=all → localStorage/IndexedDB도 클리어
+      if (scope === "all") {
+        try {
+          localStorage.removeItem("jt-gichul-bookmarks");
+          // IndexedDB 캐시 삭제
+          const dbs = await indexedDB.databases();
+          for (const db of dbs) {
+            if (db.name) indexedDB.deleteDatabase(db.name);
+          }
+        } catch {
+          // 브라우저 지원 안 되면 무시
+        }
+      }
+
+      setResult("초기화가 완료되었습니다. 페이지를 새로고침합니다...");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch {
+      setResult("네트워크 오류가 발생했습니다.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <div className="rounded-xl border border-danger/20 bg-card p-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Trash2 className="h-4 w-4 text-danger" />
+          <div>
+            <p className="text-sm font-medium text-card-foreground">학습 데이터 초기화</p>
+            <p className="text-[10px] text-muted-foreground">풀이 기록을 삭제하고 처음부터 시작합니다</p>
+          </div>
+        </div>
+        <button
+          onClick={() => {
+            setShowModal(true);
+            setConfirmText("");
+            setResult(null);
+            setScope("solve");
+          }}
+          className="rounded-lg bg-danger/10 px-3 py-1.5 text-xs font-medium text-danger hover:bg-danger/20 transition-colors"
+        >
+          초기화
+        </button>
+      </div>
+
+      {/* 확인 모달 */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xl"
+          >
+            {/* 헤더 */}
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-danger" />
+              <h3 className="text-base font-bold text-foreground">학습 데이터 초기화</h3>
+            </div>
+
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              이 작업은 <span className="font-bold text-danger">되돌릴 수 없습니다.</span> 삭제된 데이터는 복구할 수 없으니 신중하게 결정해주세요.
+            </p>
+
+            {/* 범위 선택 */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-foreground">초기화 범위</p>
+              <label className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer transition-colors ${scope === "solve" ? "border-primary bg-primary/5" : "border-border"}`}>
+                <input
+                  type="radio"
+                  name="resetScope"
+                  checked={scope === "solve"}
+                  onChange={() => setScope("solve")}
+                  className="mt-0.5 accent-primary"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground">풀이 기록만</p>
+                  <p className="text-[10px] text-muted-foreground">풀이 기록, OX 기록만 삭제 (북마크·설정 유지)</p>
+                </div>
+              </label>
+              <label className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer transition-colors ${scope === "all" ? "border-danger bg-danger/5" : "border-border"}`}>
+                <input
+                  type="radio"
+                  name="resetScope"
+                  checked={scope === "all"}
+                  onChange={() => setScope("all")}
+                  className="mt-0.5 accent-danger"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground">전체 초기화</p>
+                  <p className="text-[10px] text-muted-foreground">풀이·뱃지·스트릭·AI 사용량·북마크 모두 삭제</p>
+                </div>
+              </label>
+            </div>
+
+            {/* 확인 텍스트 입력 */}
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground">
+                확인을 위해 <span className="font-bold text-foreground">&quot;초기화&quot;</span>를 입력해주세요.
+              </p>
+              <input
+                type="text"
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                placeholder="초기화"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-danger/50"
+              />
+            </div>
+
+            {/* 결과 메시지 */}
+            {result && (
+              <p className={`text-xs font-medium ${result.includes("완료") ? "text-success" : "text-danger"}`}>
+                {result}
+              </p>
+            )}
+
+            {/* 버튼 */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                disabled={loading}
+                className="flex-1 rounded-lg border border-border py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={!canConfirm || loading}
+                className="flex-1 rounded-lg bg-danger py-2.5 text-sm font-bold text-white hover:bg-danger/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                {loading ? "처리 중..." : "초기화 실행"}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </>
   );
 }

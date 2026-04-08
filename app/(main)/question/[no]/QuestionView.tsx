@@ -6,8 +6,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap, Bookmark, StickyNote, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap, Bookmark, StickyNote, Check, MessageCircle } from "lucide-react";
 import { useBookmarks } from "@/hooks/useBookmarks";
+import { usePremium } from "@/hooks/usePremium";
 import type { Question } from "@/types/question";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
 import BadgeToast from "@/components/engagement/BadgeToast";
@@ -703,6 +704,9 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
               )}
             </section>
 
+            {/* 수강생 Q&A 링크 */}
+            <QnALink questionNo={q.no} />
+
             {/* Share */}
             <ShareButton question={q} isCorrect={isCorrect} />
 
@@ -786,6 +790,52 @@ function ShareButton({ question, isCorrect }: { question: Question; isCorrect: b
       <Share2 className="h-4 w-4" />
       {copied ? "복사됨!" : "결과 공유하기"}
     </button>
+  );
+}
+
+function QnALink({ questionNo }: { questionNo: number }) {
+  const { isPremium, loading } = usePremium();
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (loading || !isPremium) return;
+    // 댓글 수 조회
+    (async () => {
+      try {
+        const { getSupabase } = await import("@/lib/supabase");
+        const supabase = getSupabase();
+        const session = supabase
+          ? (await supabase.auth.getSession()).data.session
+          : null;
+        if (!session?.access_token) return;
+
+        const res = await fetch(
+          `/api/comments?no=${questionNo}&count=1`,
+          { headers: { Authorization: `Bearer ${session.access_token}` } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setCount(data.count ?? 0);
+        }
+      } catch {
+        // 무시
+      }
+    })();
+  }, [questionNo, isPremium, loading]);
+
+  if (loading || !isPremium) return null;
+
+  return (
+    <Link
+      href={`/class/qna/${questionNo}`}
+      className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+    >
+      <MessageCircle className="h-4 w-4" />
+      <span className="flex-1">
+        수강생 Q&A{count !== null && count > 0 ? ` (${count})` : ""}
+      </span>
+      <ChevronRight className="h-4 w-4" />
+    </Link>
   );
 }
 

@@ -63,6 +63,54 @@ export const pushSchema = z.object({
   context: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
+// --- Reset API ---
+
+export const resetSchema = z.object({
+  scope: z.enum(["solve", "all"]),
+});
+
+// --- Enrollment API ---
+
+export const enrollSchema = z.object({
+  code: z
+    .string()
+    .min(1)
+    .max(10)
+    .transform((s) => s.trim().toUpperCase()),
+});
+
+// --- Comments API ---
+
+export const commentSchema = z.object({
+  questionNo: z.number().int().min(1).max(99999),
+  body: safeString(1000).pipe(z.string().min(1, "댓글 내용을 입력해주세요.")),
+  parentId: z.string().uuid().optional(),
+});
+
+export const commentPatchSchema = z.object({
+  commentId: z.string().uuid(),
+  action: z.enum(["delete", "pin", "unpin"]),
+});
+
+// --- Announce API ---
+
+export const announceSchema = z.object({
+  title: safeString(200).pipe(z.string().min(1)),
+  body: z.string().max(5000).optional(),
+  linkUrl: z.string().url().refine((u) => u.startsWith("http"), { message: "http/https URL만 허용" }).optional(),
+  linkLabel: z.string().max(100).optional(),
+  isPinned: z.boolean().optional().default(false),
+});
+
+// --- Admin Codes API ---
+
+export const adminCodesSchema = z.object({
+  count: z.number().int().min(1).max(200),
+  batchName: z.string().max(100).optional().default(""),
+  premiumDays: z.number().int().min(1).max(3650).optional().default(180),
+  expiresAt: z.string().datetime().optional(),
+});
+
 // --- Feature → Schema 매핑 ---
 
 export const featureSchemas: Record<string, z.ZodTypeAny> = {

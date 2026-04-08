@@ -5,14 +5,50 @@
 - 배포 URL: https://gichul.jttax.co.kr (커스텀 도메인) / https://jt-gichul.vercel.app
 - GitHub: https://github.com/jjuntube101-hash/jt-gichul (Public)
 - 배포 방법: Git 연동 (GitHub push → Vercel 자동 배포)
-- Supabase: xddaqkymeactyfqqfcuv, **11테이블** (기존 6 + Sprint 19 추가 5)
+- Supabase: xddaqkymeactyfqqfcuv, **15테이블** (기존 11 + 커뮤니티 4: enrollment_codes, enrollment_logs, question_comments, class_announcements)
 - 총 문항: 2,065 (세법 1,245 + 회계 820)
-- 빌드: 2,095 페이지 정상 생성
+- 빌드: 2,101 페이지 정상 생성
 - 9급 커리큘럼: 12주 → **13주** (지방세 분할)
 - 7급 커리큘럼: 16주 → **17주** (지방세 분할)
 - Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
 - 마지막 배포: 260408 (JT 튜터 AI 상담 기능 + 마크다운 표 렌더링 + 로고 + UI 겹침 수정)
-- 다음 할 일: 추가 개선 사항 대기 (Tier 1~3 전체 완료)
+- 다음 할 일: Supabase에 4개 테이블 마이그레이션 실행 + ADMIN_USER_IDS 환경변수 설정 + 배포
+
+### 강의 커뮤니티 MVP (260408)
+- [x] **Route Group 전환** — `app/(main)/` + `app/(class)/` 분리
+  - root layout: html/body/fonts/auth만 유지
+  - (main) layout: Header, BottomNav, AskFAB 등 기출앱 전용
+  - (class) layout: ClassHeader, PremiumGate 강의실 전용
+- [x] **인프라 코드** — `lib/admin.ts`, `hooks/usePremium.ts`, apiSchemas 확장
+- [x] **수강 코드 API** — POST `/api/enroll` (1인1코드, 원자적 사용, race condition 방지)
+- [x] **관리자 코드 API** — `/api/admin/codes` (일괄 생성 GET/POST, JT-XXXX 형식)
+- [x] **댓글 API** — `/api/comments` (GET/POST/PATCH, premium 체크, 대댓글 1단계)
+- [x] **공지 API** — `/api/announce` (GET/POST, 관리자만 등록)
+- [x] **강의실 홈** — `/class` 공지 목록 + Google Drive 자료 링크
+- [x] **문제별 Q&A** — `/class/qna/[no]` 댓글 스레드 (강사 배지, 핀 고정, 대댓글)
+- [x] **PremiumGate** — 비수강생 차단 + 코드 입력 화면
+- [x] **마이페이지 연동** — "수강 코드 입력" + "강의실 입장" 버튼
+- [x] **문제 페이지 연동** — "수강생 Q&A (N) →" 링크 (premium만)
+- [x] **빌드 성공** — 2,101 페이지 (기존 2,096 + 강의실 5)
+- [ ] **DB 마이그레이션** — Supabase에 4개 테이블 생성 필요 (아직 미실행)
+- [ ] **환경변수** — ADMIN_USER_IDS 설정 필요
+- 신규 파일: `app/(class)/layout.tsx`, `app/(class)/class/page.tsx`, `app/(class)/class/qna/[no]/page.tsx`, `components/class/ClassHeader.tsx`, `components/class/PremiumGate.tsx`, `components/class/CommentThread.tsx`, `lib/admin.ts`, `hooks/usePremium.ts`, `app/api/enroll/route.ts`, `app/api/comments/route.ts`, `app/api/announce/route.ts`, `app/api/admin/codes/route.ts`
+- 수정 파일: `app/layout.tsx` (분리), `app/(main)/layout.tsx` (신규), `app/(main)/mypage/page.tsx`, `app/(main)/question/[no]/QuestionView.tsx`, `lib/apiSchemas.ts`
+
+### JT 튜터 프롬프트 강화 + 학습 데이터 리셋 (260408)
+- [x] **JT 튜터 프롬프트 강화** — ASK_SYSTEM 상수 수정
+  - 시험 출제 범위 내 답변 한정 (기본서·수험서 수준만)
+  - 실무 내용(사례, 세무조사, 서식 작성법) 포함 절대 금지
+  - 판례 언급 최소화 (빈출 원칙만, 번호·사실관계 생략)
+  - 실무 질문 → 거부 대신 시험 관점으로 전환 (예시 포함)
+  - "세무사에게 상담하세요" 등 실무 안내 금지
+- [x] **학습 데이터 리셋** — POST /api/reset API + 마이페이지 UI
+  - 2단계 범위: "풀이 기록만" (solve_records + ox_records) / "전체 초기화" (+ badges, SRC, logs, AI, profile reset, localStorage, IndexedDB)
+  - 안전 장치: "초기화" 텍스트 입력 확인, 1일 1회 레이트 리밋
+  - service_role 키로 삭제 (RLS DELETE 정책 없으므로)
+  - 완료 후 자동 페이지 새로고침
+- 신규 파일: `app/api/reset/route.ts`
+- 수정 파일: `lib/aiPrompts.ts`, `lib/apiSchemas.ts`, `app/mypage/page.tsx`
 
 ### 문제별 메모 + 주차별 비교 분석 (260408)
 - [x] **문제별 메모** — useBookmarks에 getMemo/setMemo 추가, QuestionView 해설 영역에 메모 UI
