@@ -71,11 +71,44 @@ export function useBookmarks() {
   /** 북마크된 문항 번호 Set */
   const bookmarkedNos = new Set(bookmarks.map((b) => b.questionNo));
 
+  /** 특정 문항의 메모 가져오기 */
+  const getMemo = useCallback(
+    (questionNo: number) => bookmarks.find((b) => b.questionNo === questionNo)?.memo ?? "",
+    [bookmarks]
+  );
+
+  /** 특정 문항 메모 저장 (빈 문자열이면 메모 삭제) */
+  const setMemo = useCallback((questionNo: number, memo: string) => {
+    setBookmarks((prev) => {
+      const trimmed = memo.trim();
+      const idx = prev.findIndex((b) => b.questionNo === questionNo);
+
+      let next: BookmarkEntry[];
+      if (idx >= 0) {
+        // 이미 북마크됨 → 메모만 업데이트
+        next = [...prev];
+        next[idx] = { ...next[idx], memo: trimmed || undefined };
+      } else if (trimmed) {
+        // 북마크 안 됐지만 메모 있으면 → 자동 북마크 + 메모
+        next = [
+          { questionNo, createdAt: new Date().toISOString(), memo: trimmed },
+          ...prev,
+        ];
+      } else {
+        return prev; // 변경 없음
+      }
+      saveBookmarks(next);
+      return next;
+    });
+  }, []);
+
   return {
     bookmarks,
     bookmarkedNos,
     toggleBookmark,
     isBookmarked,
+    getMemo,
+    setMemo,
     count: bookmarks.length,
   };
 }

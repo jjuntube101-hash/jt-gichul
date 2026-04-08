@@ -40,6 +40,7 @@ import { usePush } from "@/hooks/usePush";
 import StreakBanner from "@/components/engagement/StreakBanner";
 import BadgeGrid from "@/components/engagement/BadgeGrid";
 import LawAccuracyChart from "@/components/stats/LawAccuracyChart";
+import WeeklyTrendChart from "@/components/stats/WeeklyTrendChart";
 import TopicMasteryMap from "@/components/stats/TopicMasteryMap";
 import PeerBenchmark from "@/components/engagement/PeerBenchmark";
 import JourneyMap from "@/components/progress/JourneyMap";
@@ -413,6 +414,15 @@ export default function MyPage() {
       {/* Topic Mastery Map */}
       <section id="mastery">
         <TopicMasteryMap />
+      </section>
+
+      {/* Weekly Trend */}
+      <section>
+        <h2 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
+          <TrendingUp className="h-4 w-4 text-success" />
+          주간 추이
+        </h2>
+        <WeeklyTrendChart />
       </section>
 
       {/* Law Accuracy */}

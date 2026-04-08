@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap, Bookmark } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Share2, RotateCcw, BookOpen, AlertTriangle, Lightbulb, Target, Hash, Zap, Bookmark, StickyNote, Check } from "lucide-react";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import type { Question } from "@/types/question";
 import { useSolveRecord } from "@/hooks/useSolveRecord";
@@ -84,12 +84,20 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
   const [startTime] = useState(() => Date.now());
   const searchParams = useSearchParams();
   const { saveSolve, newBadges, dismissNewBadges } = useSolveRecord();
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isBookmarked, toggleBookmark, getMemo, setMemo } = useBookmarks();
   const q = question;
   const bookmarked = isBookmarked(q.no);
   const a = q.analysis;
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(["choices"]));
+  const [memoText, setMemoText] = useState("");
+  const [memoEditing, setMemoEditing] = useState(false);
+  const [memoSaved, setMemoSaved] = useState(false);
+
+  // 메모 초기값 로드
+  useEffect(() => {
+    setMemoText(getMemo(q.no));
+  }, [q.no, getMemo]);
 
   const isAnswered = selected !== null;
   const isCorrect = selected !== null && isCorrectAnswer(selected, q.정답);
@@ -626,6 +634,74 @@ export default function QuestionView({ question, totalQuestions, prevNo, nextNo,
                 </div>
               </section>
             )}
+
+            {/* 내 메모 */}
+            <section className="rounded-xl border border-border bg-card p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="flex items-center gap-1.5 text-xs font-bold text-card-foreground">
+                  <StickyNote className="h-3.5 w-3.5 text-warning" />
+                  내 메모
+                </h3>
+                {!memoEditing && memoText && (
+                  <button
+                    onClick={() => setMemoEditing(true)}
+                    className="text-[10px] text-primary hover:underline"
+                  >
+                    수정
+                  </button>
+                )}
+              </div>
+              {memoEditing || !memoText ? (
+                <div className="space-y-2">
+                  <textarea
+                    value={memoText}
+                    onChange={(e) => setMemoText(e.target.value)}
+                    onFocus={() => setMemoEditing(true)}
+                    placeholder="이 문제에 대한 메모를 남겨보세요..."
+                    rows={3}
+                    maxLength={500}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none"
+                  />
+                  {memoEditing && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-muted-foreground">{memoText.length}/500</span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setMemoText(getMemo(q.no));
+                            setMemoEditing(false);
+                          }}
+                          className="rounded-lg px-3 py-1.5 text-[10px] font-medium text-muted-foreground hover:bg-muted transition-colors"
+                        >
+                          취소
+                        </button>
+                        <button
+                          onClick={() => {
+                            setMemo(q.no, memoText);
+                            setMemoEditing(false);
+                            setMemoSaved(true);
+                            setTimeout(() => setMemoSaved(false), 1500);
+                          }}
+                          className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-[10px] font-medium text-white hover:bg-primary/90 transition-colors"
+                        >
+                          <Check className="h-3 w-3" />
+                          저장
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-start gap-1">
+                  <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap flex-1">
+                    {memoText}
+                  </p>
+                  {memoSaved && (
+                    <span className="shrink-0 text-[10px] text-success font-medium">저장됨</span>
+                  )}
+                </div>
+              )}
+            </section>
 
             {/* Share */}
             <ShareButton question={q} isCorrect={isCorrect} />
