@@ -1,0 +1,39 @@
+{
+  "subject": "economics",
+  "examTarget": "7급",
+  "totalWeeks": 16,
+  "source": "플레이스홀더 — 학원 조사 기반 일반 커리큘럼",
+  "stages": [
+    {
+      "name": "미시경제학",
+      "weeks": [
+        { "week": 1, "title": "경제학 기초·수요공급", "laws": [], "topics": ["경제학기초", "수요공급"], "focus": "경제학 방법론 + 수요·공급 모형", "targetQuestions": 30 },
+        { "week": 2, "title": "탄력성·소비자이론 (1)", "laws": [], "topics": ["탄력성", "소비자선택"], "focus": "가격탄력성 + 효용이론·무차별곡선", "targetQuestions": 30 },
+        { "week": 3, "title": "소비자이론 (2)", "laws": [], "topics": ["소득효과", "대체효과", "현시선호"], "focus": "소득·대체 효과 + 현시선호이론", "targetQuestions": 25 },
+        { "week": 4, "title": "생산자이론", "laws": [], "topics": ["생산함수", "비용이론"], "focus": "생산함수·비용곡선·이윤극대화", "targetQuestions": 30 },
+        { "week": 5, "title": "완전경쟁·독점", "laws": [], "topics": ["완전경쟁", "독점"], "focus": "완전경쟁 시장 + 독점 이론", "targetQuestions": 30 },
+        { "week": 6, "title": "불완전경쟁·게임이론", "laws": [], "topics": ["독점적경쟁", "과점", "게임이론"], "focus": "독점적 경쟁·과점·내쉬 균형", "targetQuestions": 30 },
+        { "week": 7, "title": "요소시장·소득분배", "laws": [], "topics": ["요소시장", "소득분배"], "focus": "노동시장·자본시장·소득분배 이론", "targetQuestions": 25 },
+        { "week": 8, "title": "시장실패·공공경제", "laws": [], "topics": ["외부성", "공공재", "정보비대칭"], "focus": "외부성·공공재·정보 비대칭·정부 실패", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "거시경제학",
+      "weeks": [
+        { "week": 9, "title": "거시경제 기초·국민소득", "laws": [], "topics": ["GDP", "국민소득"], "focus": "GDP 개념·측정 + 국민소득 결정이론", "targetQuestions": 30 },
+        { "week": 10, "title": "소비·투자·화폐시장", "laws": [], "topics": ["소비함수", "투자이론", "화폐시장"], "focus": "소비·투자 이론 + 화폐 수요·공급", "targetQuestions": 30 },
+        { "week": 11, "title": "IS-LM 모형", "laws": [], "topics": ["IS곡선", "LM곡선", "재정정책", "금융정책"], "focus": "IS-LM 균형 + 재정·금융정책 효과", "targetQuestions": 30 },
+        { "week": 12, "title": "AD-AS 모형·인플레이션", "laws": [], "topics": ["총수요", "총공급", "인플레이션"], "focus": "총수요-총공급 + 필립스 곡선", "targetQuestions": 30 },
+        { "week": 13, "title": "실업·경기변동·성장", "laws": [], "topics": ["실업", "경기변동", "경제성장"], "focus": "실업 이론·경기변동·솔로우 성장 모형", "targetQuestions": 25 },
+        { "week": 14, "title": "거시경제 학파·기대", "laws": [], "topics": ["거시학파", "합리적기대"], "focus": "고전학파·케인즈·통화주의·새고전·새케인즈", "targetQuestions": 25 }
+      ]
+    },
+    {
+      "name": "국제경제학",
+      "weeks": [
+        { "week": 15, "title": "국제무역", "laws": [], "topics": ["비교우위", "무역정책", "무역이론"], "focus": "비교우위·헥셔-올린 + 관세·비관세장벽", "targetQuestions": 25 },
+        { "week": 16, "title": "국제금융·환율", "laws": [], "topics": ["환율", "국제수지", "개방거시"], "focus": "환율결정·국제수지·먼델-플레밍 모형", "targetQuestions": 25 }
+      ]
+    }
+  ]
+}

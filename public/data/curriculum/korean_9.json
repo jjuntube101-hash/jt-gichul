@@ -1,0 +1,40 @@
+{
+  "subject": "korean",
+  "examTarget": "9급",
+  "totalWeeks": 12,
+  "source": "플레이스홀더 — 학원 조사 기반 일반 커리큘럼",
+  "stages": [
+    {
+      "name": "문법",
+      "weeks": [
+        { "week": 1, "title": "국어 문법 (1)", "laws": [], "topics": ["음운론", "형태론"], "focus": "음운 체계·변동, 형태소·단어 구조", "targetQuestions": 30 },
+        { "week": 2, "title": "국어 문법 (2)", "laws": [], "topics": ["통사론", "의미론"], "focus": "문장 구조·호응, 의미 관계", "targetQuestions": 30 },
+        { "week": 3, "title": "국어 문법 (3)", "laws": [], "topics": ["맞춤법", "표준어규정"], "focus": "한글 맞춤법·표준어 규정 핵심", "targetQuestions": 30 },
+        { "week": 4, "title": "국어 문법 (4)", "laws": [], "topics": ["외래어표기법", "로마자표기법", "언어예절"], "focus": "외래어·로마자 표기 + 높임법·언어예절", "targetQuestions": 25 }
+      ]
+    },
+    {
+      "name": "문학",
+      "weeks": [
+        { "week": 5, "title": "고전문학", "laws": [], "topics": ["고전시가", "고전산문"], "focus": "향가·고려가요·시조·가사·고전소설", "targetQuestions": 30 },
+        { "week": 6, "title": "현대문학 (1)", "laws": [], "topics": ["현대시"], "focus": "현대시 감상·표현기법·주요 작품", "targetQuestions": 30 },
+        { "week": 7, "title": "현대문학 (2)", "laws": [], "topics": ["현대소설", "현대수필·희곡"], "focus": "현대소설·수필·희곡 분석", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "비문학/독해",
+      "weeks": [
+        { "week": 8, "title": "비문학 독해 (1)", "laws": [], "topics": ["독해원리", "글의구조"], "focus": "중심내용 파악·글의 전개 방식", "targetQuestions": 30 },
+        { "week": 9, "title": "비문학 독해 (2)", "laws": [], "topics": ["추론", "비판적읽기"], "focus": "추론·비판적 읽기·논리적 오류", "targetQuestions": 30 },
+        { "week": 10, "title": "비문학 독해 (3)", "laws": [], "topics": ["실용문", "논증"], "focus": "실용문 분석·논증 구조", "targetQuestions": 25 }
+      ]
+    },
+    {
+      "name": "어휘/한자",
+      "weeks": [
+        { "week": 11, "title": "어휘·한자 (1)", "laws": [], "topics": ["어휘", "관용표현"], "focus": "어휘력·관용 표현·속담·고사성어", "targetQuestions": 30 },
+        { "week": 12, "title": "어휘·한자 (2)", "laws": [], "topics": ["한자", "한자성어"], "focus": "한자 음훈·한자 성어 집중", "targetQuestions": 30 }
+      ]
+    }
+  ]
+}

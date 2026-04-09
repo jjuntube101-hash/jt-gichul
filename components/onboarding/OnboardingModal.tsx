@@ -11,6 +11,8 @@ import {
   Check,
 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase';
+import { CURRICULUM_PRESETS } from '@/lib/curriculum';
+import { getSubjectsForGrade, SUBJECT_CONFIG } from '@/types/question';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -452,6 +454,75 @@ function Step3({
 }
 
 // ---------------------------------------------------------------------------
+// Step 4: Curriculum selection
+// ---------------------------------------------------------------------------
+
+function Step3Curriculum({
+  examTarget,
+  curriculumChoices,
+  setCurriculumChoice,
+}: {
+  examTarget: ExamTarget;
+  curriculumChoices: Record<string, string>;
+  setCurriculumChoice: (subject: string, presetId: string) => void;
+}) {
+  const subjects = getSubjectsForGrade(examTarget);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="text-center">
+        <h2 className="text-xl font-bold text-card-foreground">학습 커리큘럼</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          과목별 학습 진도를 선택해주세요
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3 max-h-[280px] overflow-y-auto">
+        {subjects.map((subject) => {
+          const config = SUBJECT_CONFIG[subject];
+          const presets = CURRICULUM_PRESETS.filter(
+            (p) => p.subject === subject && p.examTarget === examTarget,
+          );
+          const selectedPreset = curriculumChoices[subject] || presets[0]?.id || '';
+          const selectedPresetData = presets.find((p) => p.id === selectedPreset);
+
+          return (
+            <div key={subject} className="rounded-2xl border border-border bg-card p-4">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-card-foreground">{config.label}</span>
+                {presets.length <= 1 ? (
+                  <span className="text-xs text-muted-foreground rounded-full bg-muted px-3 py-1">
+                    기본 커리큘럼
+                  </span>
+                ) : (
+                  <select
+                    value={selectedPreset}
+                    onChange={(e) => setCurriculumChoice(subject, e.target.value)}
+                    className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-card-foreground"
+                  >
+                    {presets.map((p) => (
+                      <option key={p.id} value={p.id}>{p.label}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {selectedPresetData?.totalWeeks ?? '?'}주 과정
+                {selectedPresetData?.teacher && ` · ${selectedPresetData.teacher}`}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="text-center text-xs text-muted-foreground">
+        강의실에서 언제든 변경할 수 있어요
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
 
@@ -495,6 +566,13 @@ export default function OnboardingModal({
     });
   }, []);
 
+  // Step 4 state
+  const [curriculumChoices, setCurriculumChoices] = useState<Record<string, string>>({});
+
+  const handleCurriculumChoice = useCallback((subject: string, presetId: string) => {
+    setCurriculumChoices((prev) => ({ ...prev, [subject]: presetId }));
+  }, []);
+
   // When exam target changes on step 1, recalculate the default selected exam
   const handleExamTargetChange = useCallback((target: ExamTarget) => {
     setExamTarget(target);
@@ -527,7 +605,7 @@ export default function OnboardingModal({
   }, [showCustom, customDate, selectedExamName, examTarget]);
 
   const handleNext = useCallback(async () => {
-    if (step < 2) {
+    if (step < 3) {
       setDirection(1);
       setStep((s) => s + 1);
       return;
@@ -545,6 +623,12 @@ export default function OnboardingModal({
 
       const examInfo = resolveExamDate();
 
+      // Build curriculum_settings from choices
+      const currSettings: Record<string, { presetId: string; customWeeks: null }> = {};
+      for (const [subject, presetId] of Object.entries(curriculumChoices)) {
+        currSettings[subject] = { presetId, customWeeks: null };
+      }
+
       const { error } = await supabase.from('user_study_profiles').upsert(
         {
           user_id: userId,
@@ -553,6 +637,7 @@ export default function OnboardingModal({
           exam_name: examInfo?.examName ?? null,
           exam_date: examInfo?.examDate ?? null,
           weak_subjects: Array.from(weakSubjects),
+          curriculum_settings: Object.keys(currSettings).length > 0 ? currSettings : null,
           onboarding_completed: true,
           updated_at: new Date().toISOString(),
         },
@@ -576,6 +661,7 @@ export default function OnboardingModal({
     displayName,
     examTarget,
     weakSubjects,
+    curriculumChoices,
     resolveExamDate,
     onComplete,
   ]);
@@ -588,10 +674,10 @@ export default function OnboardingModal({
         ? showCustom
           ? customDate !== ''
           : selectedExamName !== null
-        : true; // step 2: weak subjects are optional
+        : true; // step 2, 3: optional selections
 
   const buttonLabel =
-    step < 2 ? '다음' : saving ? '저장 중...' : '시작하기';
+    step < 3 ? '다음' : saving ? '저장 중...' : '시작하기';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
@@ -616,7 +702,7 @@ export default function OnboardingModal({
         <div className="flex flex-col px-6 pb-6 pt-8">
           {/* Step dots */}
           <div className="mb-6">
-            <StepDots current={step} total={3} />
+            <StepDots current={step} total={4} />
           </div>
 
           {/* Animated step content */}
@@ -657,6 +743,13 @@ export default function OnboardingModal({
                     examTarget={examTarget}
                   />
                 )}
+                {step === 3 && (
+                  <Step3Curriculum
+                    examTarget={examTarget}
+                    curriculumChoices={curriculumChoices}
+                    setCurriculumChoice={handleCurriculumChoice}
+                  />
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -670,7 +763,7 @@ export default function OnboardingModal({
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3.5 font-semibold text-white transition-opacity disabled:opacity-50"
             >
               {buttonLabel}
-              {step < 2 && <ChevronRight className="h-4 w-4" />}
+              {step < 3 && <ChevronRight className="h-4 w-4" />}
             </button>
 
             <button

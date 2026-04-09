@@ -1,0 +1,40 @@
+{
+  "subject": "english",
+  "examTarget": "9급",
+  "totalWeeks": 12,
+  "source": "플레이스홀더 — 학원 조사 기반 일반 커리큘럼",
+  "stages": [
+    {
+      "name": "어휘",
+      "weeks": [
+        { "week": 1, "title": "어휘 (1)", "laws": [], "topics": ["기본어휘", "동의어·반의어"], "focus": "빈출 어휘 500 + 동의어·반의어", "targetQuestions": 30 },
+        { "week": 2, "title": "어휘 (2)", "laws": [], "topics": ["숙어", "생활영어"], "focus": "빈출 숙어·관용표현 + 생활영어", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "문법",
+      "weeks": [
+        { "week": 3, "title": "영문법 (1)", "laws": [], "topics": ["동사시제", "조동사"], "focus": "시제·조동사 체계", "targetQuestions": 30 },
+        { "week": 4, "title": "영문법 (2)", "laws": [], "topics": ["준동사", "접속사"], "focus": "부정사·동명사·분사 + 접속사", "targetQuestions": 30 },
+        { "week": 5, "title": "영문법 (3)", "laws": [], "topics": ["관계사", "가정법"], "focus": "관계대명사·관계부사 + 가정법", "targetQuestions": 30 },
+        { "week": 6, "title": "영문법 (4)", "laws": [], "topics": ["일치·화법", "특수구문"], "focus": "수일치·화법전환·도치·강조", "targetQuestions": 25 }
+      ]
+    },
+    {
+      "name": "구문독해",
+      "weeks": [
+        { "week": 7, "title": "구문독해 (1)", "laws": [], "topics": ["주어·동사파악", "수식구조"], "focus": "긴 문장 구조 분석 — 주어·동사 찾기", "targetQuestions": 30 },
+        { "week": 8, "title": "구문독해 (2)", "laws": [], "topics": ["삽입·도치구문", "병렬구조"], "focus": "삽입·도치·병렬 구문 해석", "targetQuestions": 30 },
+        { "week": 9, "title": "구문독해 (3)", "laws": [], "topics": ["복합문해석", "의미단위끊기"], "focus": "복합문 해석 + 의미 단위 끊어 읽기", "targetQuestions": 25 }
+      ]
+    },
+    {
+      "name": "독해",
+      "weeks": [
+        { "week": 10, "title": "독해 (1)", "laws": [], "topics": ["주제·요지", "제목추론"], "focus": "주제·요지·제목 추론 유형", "targetQuestions": 30 },
+        { "week": 11, "title": "독해 (2)", "laws": [], "topics": ["빈칸추론", "문장삽입"], "focus": "빈칸 완성·문장 삽입·순서 배열", "targetQuestions": 30 },
+        { "week": 12, "title": "독해 (3)", "laws": [], "topics": ["내용일치", "실용문독해"], "focus": "내용 일치·불일치 + 실용문 독해", "targetQuestions": 30 }
+      ]
+    }
+  ]
+}

@@ -44,7 +44,34 @@ export interface Analysis {
   analysis_basis: string;
 }
 
-export type SubjectType = 'tax' | 'accounting';
+export type SubjectType =
+  | 'tax' | 'accounting'       // 기존 (데이터 있음)
+  | 'korean' | 'english'       // 공통 9급 (데이터 추후 수집)
+  | 'constitution'             // 헌법 7급 (데이터 추후 수집)
+  | 'economics';               // 경제학 7급 (데이터 추후 수집)
+
+/** 과목 메타데이터 — 전 과목 중앙 설정 */
+export const SUBJECT_CONFIG: Record<SubjectType, {
+  label: string;
+  examGrades: ('9급' | '7급')[];
+  dataAvailable: boolean;
+  noRange: [number, number];
+  categoryLabel: string;
+}> = {
+  tax:          { label: '세법', examGrades: ['9급', '7급'], dataAvailable: true,  noRange: [1, 2000],     categoryLabel: '법별' },
+  accounting:   { label: '회계', examGrades: ['9급', '7급'], dataAvailable: true,  noRange: [2001, 3000],  categoryLabel: '과목별' },
+  korean:       { label: '국어', examGrades: ['9급'],        dataAvailable: false, noRange: [3001, 4000],  categoryLabel: '영역별' },
+  english:      { label: '영어', examGrades: ['9급'],        dataAvailable: false, noRange: [4001, 5000],  categoryLabel: '영역별' },
+  constitution: { label: '헌법', examGrades: ['7급'],        dataAvailable: false, noRange: [5001, 6000],  categoryLabel: '편별' },
+  economics:    { label: '경제학', examGrades: ['7급'],      dataAvailable: false, noRange: [6001, 7000],  categoryLabel: '분야별' },
+};
+
+/** 시험 등급별 과목 목록 반환 */
+export function getSubjectsForGrade(grade: '9급' | '7급'): SubjectType[] {
+  return (Object.entries(SUBJECT_CONFIG) as [SubjectType, typeof SUBJECT_CONFIG[SubjectType]][])
+    .filter(([, config]) => config.examGrades.includes(grade))
+    .map(([subject]) => subject);
+}
 
 export interface Question {
   no: number;

@@ -5,7 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { getRoadmap, getCurrentWeek } from '@/lib/roadmap';
+import { getRoadmap, getCurrentWeek } from '@/lib/curriculum';
 
 // ---------------------------------------------------------------------------
 // Types

@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTopicMastery, type LawMastery } from "@/hooks/useTopicMastery";
 import { getSupabase } from "@/lib/supabase";
 import RoadmapCard from "@/components/roadmap/RoadmapCard";
-import { getRoadmap } from "@/lib/roadmap";
+import { getRoadmap } from "@/lib/curriculum";
 import DailyBriefing from "@/components/engagement/DailyBriefing";
 
 // ---------------------------------------------------------------------------

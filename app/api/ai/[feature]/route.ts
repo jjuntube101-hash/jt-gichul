@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { isAdmin } from '@/lib/admin';
 import { z } from 'zod';
-import { AI_FEATURES, type AIFeature } from '@/lib/aiConfig';
+import { AI_FEATURES, type AIFeature, getFeatureModel, isFreeMonthlyLimited } from '@/lib/aiConfig';
 import { featureSchemas } from '@/lib/apiSchemas';
 import { checkAndIncrement, getLimitForFeature } from '@/lib/rateLimit';
 import { makeCacheKey } from '@/lib/aiCache';
@@ -184,6 +184,7 @@ async function enhanceWithClaude(
   localResult: unknown,
   body: Record<string, unknown>,
   userId: string,
+  isPremium: boolean = false,
 ): Promise<{ enhanced: unknown; aiMeta?: { model: string; inputTokens: number; outputTokens: number; durationMs: number } }> {
   if (!isClaudeEnabled()) {
     return { enhanced: localResult };
@@ -206,6 +207,7 @@ async function enhanceWithClaude(
             totalSolved: (lr.totalSolved as number) ?? 0,
             daysUntilExam: (lr.daysUntilExam as number | null) ?? null,
           }),
+          modelOverride: getFeatureModel(feature, isPremium),
           maxTokens: 512,
         });
         return {
@@ -230,6 +232,7 @@ async function enhanceWithClaude(
             lawRef: (lr.lawRef as string) ?? '',
             topic: (lr.topic as string) ?? '',
           }),
+          modelOverride: getFeatureModel(feature, isPremium),
           maxTokens: 512,
         });
         return {
@@ -252,6 +255,7 @@ async function enhanceWithClaude(
             streakDays: (lr.streakDays as number) ?? 0,
             comparedToLastWeek: (lr.comparedToLastWeek as { solvedDiff: number; accuracyDiff: number }) ?? { solvedDiff: 0, accuracyDiff: 0 },
           }),
+          modelOverride: getFeatureModel(feature, isPremium),
           maxTokens: 1024,
         });
         return {
@@ -275,6 +279,7 @@ async function enhanceWithClaude(
             strongTopics: (lr.strongTopics as { topic: string; law: string; accuracy: number }[]) ?? [],
             currentStreak: (lr.currentStreak as number) ?? 0,
           }),
+          modelOverride: getFeatureModel(feature, isPremium),
           maxTokens: 1024,
         });
         return {
@@ -348,6 +353,21 @@ export async function POST(
       }
     }
 
+    // 2c. Premium 여부 확인
+    let isPremium = false;
+    try {
+      const sb = getServiceSupabase();
+      const { data: userProfile } = await sb
+        .from('user_profiles')
+        .select('is_premium, premium_expires_at')
+        .eq('user_id', auth.userId)
+        .single();
+      isPremium = !!(userProfile?.is_premium &&
+        (!userProfile.premium_expires_at || new Date(userProfile.premium_expires_at) > new Date()));
+    } catch {
+      // 프로필 조회 실패 시 무료 사용자로 처리
+    }
+
     // 3. 요청 바디 파싱 + Zod 검증
     let body: Record<string, unknown> = {};
     try {
@@ -389,17 +409,40 @@ export async function POST(
 
     // 5. 레이트리밋 확인 (캐시 미스 시에만) — 관리자 바이패스
     const adminBypass = isAdmin(auth.userId);
-    const limit = getLimitForFeature(feature);
+    const limit = getLimitForFeature(feature, isPremium);
     const { allowed, remaining } = adminBypass
       ? { allowed: true, remaining: 999 }
-      : await checkAndIncrement(auth.userId, feature, limit);
+      : await checkAndIncrement(auth.userId, feature, limit, isPremium);
 
     if (!allowed) {
-      logSecurityEvent('RATE_LIMITED', { userId: auth.userId, feature });
-      const isWeekly = feature === 'weekly_report' || feature === 'dday_strategy';
+      logSecurityEvent('RATE_LIMITED', { userId: auth.userId, feature, isPremium });
+
+      // 무료 사용자에게 Premium 업그레이드 안내
+      if (!isPremium) {
+        const premiumLimit = getLimitForFeature(feature, true);
+        if (premiumLimit > limit) {
+          return NextResponse.json(
+            {
+              error: 'PREMIUM_UPGRADE',
+              message: 'Premium 업그레이드 시 더 많이 사용할 수 있습니다.',
+              code: 'PREMIUM_UPGRADE',
+              currentLimit: limit,
+              premiumLimit,
+              remaining: 0,
+            },
+            { status: 429 }
+          );
+        }
+      }
+
+      const periodLabel = isFreeMonthlyLimited(feature) && !isPremium
+        ? '월간'
+        : (feature === 'weekly_report' || feature === 'dday_strategy') && isPremium
+          ? '주간'
+          : '일일';
       return NextResponse.json(
         {
-          error: `${AI_FEATURES[feature].label} ${isWeekly ? '주간' : '일일'} 사용 한도를 초과했습니다.`,
+          error: `${AI_FEATURES[feature].label} ${periodLabel} 사용 한도를 초과했습니다.`,
           code: 'RATE_LIMITED',
           remaining: 0,
         },
@@ -585,18 +628,8 @@ export async function POST(
         const question = body.question as string;
         // Zod 스키마에서 이미 2~500자 검증 완료
 
-        // Premium 확인
-        const sb = getServiceSupabase();
-        const { data: profile } = await sb
-          .from('user_profiles')
-          .select('is_premium, premium_expires_at')
-          .eq('user_id', auth.userId)
-          .single();
-
-        const isPremium = profile?.is_premium &&
-          (!profile.premium_expires_at || new Date(profile.premium_expires_at) > new Date());
-
-        const effectiveModel = isPremium ? 'sonnet' : 'haiku';
+        // 공통 premium 체크 결과 활용 (2c에서 이미 확인)
+        const effectiveModel = getFeatureModel('ask', isPremium);
         const effectiveMaxTokens = isPremium ? 2048 : 1024;
 
         // 이중 컨텍스트 수집 (법령 + 기출)
@@ -654,7 +687,7 @@ export async function POST(
     }
 
     // 7. Claude API 보강 (Tier 2) — ANTHROPIC_API_KEY 설정 시 활성
-    const { enhanced, aiMeta } = await enhanceWithClaude(feature, aiResponse, body, auth.userId);
+    const { enhanced, aiMeta } = await enhanceWithClaude(feature, aiResponse, body, auth.userId, isPremium);
     const finalResponse = enhanced;
 
     // 8. AI 사용량 로깅 (Claude 보강 시에만)

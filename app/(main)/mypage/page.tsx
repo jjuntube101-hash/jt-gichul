@@ -49,7 +49,7 @@ import WeeklyTrendChart from "@/components/stats/WeeklyTrendChart";
 import TopicMasteryMap from "@/components/stats/TopicMasteryMap";
 import PeerBenchmark from "@/components/engagement/PeerBenchmark";
 import JourneyMap from "@/components/progress/JourneyMap";
-import { getRoadmap } from "@/lib/roadmap";
+import { getRoadmap } from "@/lib/curriculum";
 
 interface Stats {
   totalSolved: number;

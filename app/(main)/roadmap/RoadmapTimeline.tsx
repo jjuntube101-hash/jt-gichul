@@ -20,7 +20,7 @@ import {
   getWeekPracticeHref,
   type RoadmapConfig,
   type WeekProgress,
-} from "@/lib/roadmap";
+} from "@/lib/curriculum";
 
 // ---------------------------------------------------------------------------
 // Types

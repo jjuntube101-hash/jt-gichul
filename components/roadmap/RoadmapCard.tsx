@@ -14,7 +14,7 @@ import {
   type WeekProgress,
   type RoadmapWeek,
   type RoadmapConfig,
-} from "@/lib/roadmap";
+} from "@/lib/curriculum";
 
 const SELECTED_WEEK_KEY = "jt_selected_week";
 

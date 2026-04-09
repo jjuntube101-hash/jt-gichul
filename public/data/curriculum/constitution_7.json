@@ -1,0 +1,40 @@
+{
+  "subject": "constitution",
+  "examTarget": "7급",
+  "totalWeeks": 12,
+  "source": "플레이스홀더 — 학원 조사 기반 일반 커리큘럼",
+  "stages": [
+    {
+      "name": "헌법총론",
+      "weeks": [
+        { "week": 1, "title": "헌법총론 (1)", "laws": [], "topics": ["헌법일반", "대한민국헌법총설"], "focus": "헌법의 의의·분류·해석, 헌법 전문·기본원리", "targetQuestions": 30 },
+        { "week": 2, "title": "헌법총론 (2)", "laws": [], "topics": ["국민주권", "민주주의", "법치주의"], "focus": "국민주권·민주주의·법치주의·사회국가 원리", "targetQuestions": 30 },
+        { "week": 3, "title": "헌법총론 (3)", "laws": [], "topics": ["정당제도", "선거제도", "지방자치"], "focus": "정당·선거·지방자치 제도", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "기본권론",
+      "weeks": [
+        { "week": 4, "title": "기본권 총론", "laws": [], "topics": ["기본권총론", "기본권주체", "기본권제한"], "focus": "기본권의 주체·효력·제한·침해구제", "targetQuestions": 35 },
+        { "week": 5, "title": "자유권적 기본권 (1)", "laws": [], "topics": ["인간존엄", "평등권", "신체자유"], "focus": "인간 존엄·평등권·신체의 자유", "targetQuestions": 35 },
+        { "week": 6, "title": "자유권적 기본권 (2)", "laws": [], "topics": ["정신적자유", "경제적자유"], "focus": "양심·종교·표현의 자유 + 재산권·직업의 자유", "targetQuestions": 35 },
+        { "week": 7, "title": "사회권·참정권·청구권", "laws": [], "topics": ["사회권", "참정권", "청구권"], "focus": "사회적 기본권·참정권·청구권적 기본권", "targetQuestions": 30 },
+        { "week": 8, "title": "기본권 판례 집중", "laws": [], "topics": ["기본권판례", "헌재결정례"], "focus": "주요 헌재 결정례 분석 — 위헌·합헌·한정 결정", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "통치구조론",
+      "weeks": [
+        { "week": 9, "title": "국회", "laws": [], "topics": ["국회구성", "국회운영", "입법과정"], "focus": "국회 구성·운영·입법권·재정권", "targetQuestions": 30 },
+        { "week": 10, "title": "대통령·행정부", "laws": [], "topics": ["대통령", "행정부", "감사원"], "focus": "대통령 권한·행정부 조직·감사원", "targetQuestions": 30 },
+        { "week": 11, "title": "법원·헌법재판소", "laws": [], "topics": ["법원", "사법권"], "focus": "법원 조직·사법권 독립·재판 유형", "targetQuestions": 30 }
+      ]
+    },
+    {
+      "name": "헌법재판소",
+      "weeks": [
+        { "week": 12, "title": "헌법재판소", "laws": [], "topics": ["헌법재판소", "위헌심사", "헌법소원"], "focus": "헌법재판소 권한 — 위헌법률심판·헌법소원·권한쟁의", "targetQuestions": 35 }
+      ]
+    }
+  ]
+}
