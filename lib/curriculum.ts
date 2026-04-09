@@ -786,6 +786,17 @@ export const CURRICULUM_PRESETS: CurriculumPreset[] = [
     totalWeeks: 8,
     stages: [{ name: '기본이론+문풀', weeks: ACCOUNTING_9_WEEKS }],
   },
+  // 회계 7급 (9급과 동일 커리큘럼)
+  {
+    id: 'default_accounting_7',
+    subject: 'accounting',
+    examTarget: '7급',
+    academy: '기본',
+    teacher: '공통',
+    label: '회계학 7급 기본 커리큘럼',
+    totalWeeks: 8,
+    stages: [{ name: '기본이론+문풀', weeks: ACCOUNTING_9_WEEKS }],
+  },
   // 국어 9급
   {
     id: 'default_korean_9',
