@@ -1,18 +1,44 @@
 # JT기출 진행기록
 
 ## 현재 상태
-- **완료**: 보안/저작권 강화 + Claude API 인프라 + UX 개선 + **JT 튜터 AI 상담** + **프로덕션 배포 완료**
+- **완료**: AI 합격 코치 시스템 + 커리큘럼 프리셋 + Premium 차등화
 - 배포 URL: https://gichul.jttax.co.kr (커스텀 도메인) / https://jt-gichul.vercel.app
 - GitHub: https://github.com/jjuntube101-hash/jt-gichul (Public)
 - 배포 방법: Git 연동 (GitHub push → Vercel 자동 배포)
-- Supabase: xddaqkymeactyfqqfcuv, **15테이블** (기존 11 + 커뮤니티 4: enrollment_codes, enrollment_logs, question_comments, class_announcements)
+- Supabase: xddaqkymeactyfqqfcuv, **15테이블** + curriculum_settings/self_assessed_scores 컬럼
 - 총 문항: 2,065 (세법 1,245 + 회계 820)
-- 빌드: 2,101 페이지 정상 생성
-- 9급 커리큘럼: 12주 → **13주** (지방세 분할)
-- 7급 커리큘럼: 16주 → **17주** (지방세 분할)
-- Anthropic API: 크레딧 $10 충전, Auto reload OFF (소진 시 자동 차단)
-- 마지막 배포: 260408 (강의 커뮤니티 MVP + 학습 데이터 리셋 + JT 튜터 프롬프트 강화)
-- 다음 할 일: 수강 코드 발급 (curl로 /api/admin/codes POST) → 수강생에게 배포
+- 빌드: 2,106 페이지 정상 생성
+- 커리큘럼: 학생 직접 선택 프리셋 시스템 (8개 프리셋: 세법9/7, 회계9/7, 국어, 영어, 헌법, 경제학)
+- AI 차등화: Free/Premium 한도 분리 (freeDailyLimit, freeMonthlyLimit)
+- 마지막 배포: 260409 (AI 합격 코치 + 프리셋 커리큘럼)
+- **✅ Supabase SQL 실행 완료**: migration_v9_curriculum.sql (curriculum_settings, self_assessed_scores JSONB 컬럼 추가 확인)
+- 다음 할 일: 실제 강의 커리큘럼 프리셋 추가 (선생님 강의 목차 기반) → 수강 코드 발급
+
+### AI 합격 코치 시스템 (260409)
+- [x] **6과목 SubjectType 확장** — 세법/회계/국어/영어/헌법/경제학
+- [x] **커리큘럼 프리셋 시스템** — 하드코딩→학생 직접 선택, 8개 프리셋, 온보딩 Step4 추가
+- [x] **3단계 학습 플래너** — 월간/주간/일일, AI 미션 배합 (약점40+이번주30+복습20+도전10)
+- [x] **합격 예측 엔진** — 기출 기반 + 자기평가, 과목별 점수/신뢰도/우선순위
+- [x] **강의실 대시보드 리디자인** — 5개 카드 (월간/주간/일일/예측/공지)
+- [x] **AI Free/Premium 차등화** — 한도 분리, PREMIUM_UPGRADE 응답 코드
+- [x] **roadmap→curriculum 마이그레이션** — 8개 파일 import 전환, 하위호환 유지
+- [x] **4개 에이전트 병렬 검증** — 커리큘럼 정합성/API+엔진/UI+온보딩/AI차등화 모두 PASS
+- 검증 이슈 수정: accounting 7급 프리셋 누락 → 추가 완료
+- 신규 파일 26개, 수정 파일 13개, +4,154줄
+- 테스트: npm run build 성공 + tsc --noEmit 통과
+
+### 버그 헌팅 + 기능 개선 (260408, 2차)
+- [x] **체계적 버그 헌팅** — 30개 세밀 타겟 + 교차 검증 루프, 3회 연속 클린 달성
+- [x] **댓글 API 안정성** — .single()→.maybeSingle(), cross-question 대댓글 검증
+- [x] **보안·안정성 4건** — reset 레이트리밋 DB 전환, 댓글 에러 표시, isAdmin 제거, 북마크 동기화
+- [x] **AI 레이트리밋 원자적** — TOCTOU 취약점 수정 (Supabase RPC `increment_ai_usage`)
+- [x] **입력 검증 강화** — enrollSchema trim 순서, announceSchema whitespace
+- [x] **useAuth 수정** — .single()→.maybeSingle() 신규 사용자 crash 방지
+- [x] **favicon 수정** — /favicon.ico→/icons/icon-192.png
+- [x] **.single()→.maybeSingle() 일괄** — rateLimit, apiAuth, AI route(2곳), ddayStrategy, briefingEngine
+- [x] **관리자 무제한 바이패스** — AI 레이트리밋, 쿨다운, 리셋 제한, premium 자동 인정
+- [x] **타이머 1문 1분** — 10문/10분, 20문/20분, 40문/40분
+- 수정 커밋: 5aad8fb, 9b9cf13, 9d47864, 0d641d5, a91d261, 7773783
 
 ### 강의 커뮤니티 MVP (260408)
 - [x] **Route Group 전환** — `app/(main)/` + `app/(class)/` 분리

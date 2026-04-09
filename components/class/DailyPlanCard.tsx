@@ -14,7 +14,7 @@ export default function DailyPlanCard({ plan, loading }: Props) {
 
   if (loading) {
     return (
-      <div className="animate-pulse rounded-xl border-2 border-primary/20 bg-card p-4 h-48" />
+      <div className="animate-pulse rounded-xl border-2 border-primary/20 bg-card p-4 h-48" aria-label="오늘의 미션 로딩 중" />
     );
   }
 
@@ -56,7 +56,7 @@ export default function DailyPlanCard({ plan, loading }: Props) {
               ) : s.type === 'mission' ? (
                 <Star className="h-4 w-4 text-yellow-500" />
               ) : (
-                <div className="h-4 w-4 rounded-sm border-2 border-muted-foreground/30" />
+                <div className="h-4 w-4 rounded-sm border-2 border-muted-foreground/30" aria-hidden="true" />
               )}
             </div>
 
@@ -90,6 +90,7 @@ export default function DailyPlanCard({ plan, loading }: Props) {
             <div className="shrink-0">
               {s.type === 'mission' && !s.completed && (
                 <button
+                  aria-label={`${s.label} 미션 풀기`}
                   className="flex items-center gap-0.5 text-primary font-medium text-[10px] bg-primary/10 px-2 py-1 rounded-md"
                   onClick={() => {
                     if (s.mission?.questionNos.length) {
@@ -117,7 +118,7 @@ export default function DailyPlanCard({ plan, loading }: Props) {
           <span>오늘 진행률</span>
           <span>{plan.completionRate}%</span>
         </div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <div className="h-2 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={plan.completionRate} aria-valuemin={0} aria-valuemax={100} aria-label={`오늘 진행률 ${plan.completionRate}%`}>
           <div
             className={`h-full rounded-full transition-all ${
               plan.completionRate >= 100 ? 'bg-green-500' : 'bg-primary'

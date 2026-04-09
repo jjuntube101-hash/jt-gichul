@@ -11,7 +11,7 @@ interface Props {
 export default function WeeklyPlanCard({ plan, loading }: Props) {
   if (loading) {
     return (
-      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-36" />
+      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-36" aria-label="주간 플랜 로딩 중" />
     );
   }
 
@@ -73,7 +73,7 @@ export default function WeeklyPlanCard({ plan, loading }: Props) {
           <span>주간 목표: {plan.weeklyGoal}문항</span>
           <span>{plan.weeklyProgress}%</span>
         </div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <div className="h-2 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={plan.weeklyProgress} aria-valuemin={0} aria-valuemax={100} aria-label={`주간 진행률 ${plan.weeklyProgress}%`}>
           <div
             className="h-full bg-primary rounded-full transition-all"
             style={{ width: `${Math.min(100, plan.weeklyProgress)}%` }}

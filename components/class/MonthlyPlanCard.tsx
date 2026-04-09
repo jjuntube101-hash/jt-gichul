@@ -14,7 +14,7 @@ export default function MonthlyPlanCard({ plan, loading }: Props) {
 
   if (loading) {
     return (
-      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-24" />
+      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-24" aria-label="월간 플랜 로딩 중" />
     );
   }
 
@@ -25,6 +25,8 @@ export default function MonthlyPlanCard({ plan, loading }: Props) {
       <button
         className="w-full p-4 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        aria-label={`${plan.month} 월간 플랜 ${expanded ? '접기' : '펼치기'}`}
       >
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-primary" />
@@ -73,7 +75,7 @@ export default function MonthlyPlanCard({ plan, loading }: Props) {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">{s.topicsOverview}</p>
-              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={s.progress} aria-valuemin={0} aria-valuemax={100} aria-label={`${s.label} 진행률 ${s.progress}%`}>
                 <div
                   className="h-full bg-primary rounded-full transition-all"
                   style={{ width: `${Math.min(100, s.progress)}%` }}

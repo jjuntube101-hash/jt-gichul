@@ -11,7 +11,7 @@ interface Props {
 export default function PredictedScoreCard({ prediction, loading }: Props) {
   if (loading) {
     return (
-      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-32" />
+      <div className="animate-pulse rounded-xl border border-border bg-card p-4 h-32" aria-label="합격 예측 로딩 중" />
     );
   }
 
@@ -64,8 +64,8 @@ export default function PredictedScoreCard({ prediction, loading }: Props) {
         </div>
 
         {/* Circular progress (simplified as bar) */}
-        <div className="w-16 h-16 rounded-full border-4 border-muted flex items-center justify-center relative">
-          <svg className="absolute inset-0 w-full h-full -rotate-90">
+        <div className="w-16 h-16 rounded-full border-4 border-muted flex items-center justify-center relative" role="img" aria-label={`예측 점수 ${prediction.totalScore}점`}>
+          <svg className="absolute inset-0 w-full h-full -rotate-90" aria-hidden="true">
             <circle
               cx="32"
               cy="32"

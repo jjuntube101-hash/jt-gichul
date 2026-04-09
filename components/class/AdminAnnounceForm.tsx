@@ -68,7 +68,7 @@ export default function AdminAnnounceForm({ onSuccess, onCancel }: Props) {
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-foreground">공지 작성</span>
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" onClick={onCancel} aria-label="공지 작성 취소">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
@@ -77,6 +77,7 @@ export default function AdminAnnounceForm({ onSuccess, onCancel }: Props) {
       <input
         type="text"
         placeholder="제목"
+        aria-label="공지 제목"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground"
@@ -84,6 +85,7 @@ export default function AdminAnnounceForm({ onSuccess, onCancel }: Props) {
 
       <textarea
         placeholder="내용 (선택)"
+        aria-label="공지 내용"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         rows={3}
@@ -94,6 +96,7 @@ export default function AdminAnnounceForm({ onSuccess, onCancel }: Props) {
         <input
           type="url"
           placeholder="링크 URL (선택)"
+          aria-label="링크 URL"
           value={linkUrl}
           onChange={(e) => setLinkUrl(e.target.value)}
           className="flex-1 px-3 py-2 text-sm border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground"
@@ -101,6 +104,7 @@ export default function AdminAnnounceForm({ onSuccess, onCancel }: Props) {
         <input
           type="text"
           placeholder="링크 라벨"
+          aria-label="링크 라벨"
           value={linkLabel}
           onChange={(e) => setLinkLabel(e.target.value)}
           className="w-28 px-3 py-2 text-sm border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground"
