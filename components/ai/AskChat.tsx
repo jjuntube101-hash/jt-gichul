@@ -23,7 +23,7 @@ export default function AskChat({
   onClose: () => void;
 }) {
   const { user } = useAuth();
-  const { messages, isLoading, error, remaining, sendQuestion, clearChat } =
+  const { messages, isLoading, error, remaining, isPremium, sendQuestion, clearChat } =
     useAskAI();
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -115,7 +115,7 @@ export default function AskChat({
               <div className="flex items-center gap-2">
                 {remaining !== null && (
                   <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                    {remaining}회 남음
+                    {isPremium ? `${remaining}회 남음` : `무료 ${remaining}회 남음`}
                   </span>
                 )}
                 <button
@@ -284,7 +284,7 @@ export default function AskChat({
                     </button>
                   </div>
                   <p className="mt-1.5 text-[10px] text-muted-foreground text-center">
-                    하루 3회 무료 질문
+                    {isPremium ? '하루 20회 질문 가능' : '하루 3회 무료 질문'}
                   </p>
                 </div>
               </>

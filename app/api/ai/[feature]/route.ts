@@ -353,19 +353,21 @@ export async function POST(
       }
     }
 
-    // 2c. Premium 여부 확인
-    let isPremium = false;
-    try {
-      const sb = getServiceSupabase();
-      const { data: userProfile } = await sb
-        .from('user_profiles')
-        .select('is_premium, premium_expires_at')
-        .eq('user_id', auth.userId)
-        .single();
-      isPremium = !!(userProfile?.is_premium &&
-        (!userProfile.premium_expires_at || new Date(userProfile.premium_expires_at) > new Date()));
-    } catch {
-      // 프로필 조회 실패 시 무료 사용자로 처리
+    // 2c. Premium 여부 확인 — 관리자는 자동 Premium
+    let isPremium = isAdmin(auth.userId);
+    if (!isPremium) {
+      try {
+        const sb = getServiceSupabase();
+        const { data: userProfile } = await sb
+          .from('user_profiles')
+          .select('is_premium, premium_expires_at')
+          .eq('user_id', auth.userId)
+          .single();
+        isPremium = !!(userProfile?.is_premium &&
+          (!userProfile.premium_expires_at || new Date(userProfile.premium_expires_at) > new Date()));
+      } catch {
+        // 프로필 조회 실패 시 무료 사용자로 처리
+      }
     }
 
     // 3. 요청 바디 파싱 + Zod 검증
